@@ -9,7 +9,6 @@ buildscript {
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
-apply plugin: 'android-apt'
 
 android {
     compileSdkVersion rootProject.COMPILE_SDK_VERSION
@@ -45,7 +44,6 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$rootProject.SUPPORT_LIBRARY_VERSION"
 
     compile "com.jakewharton:butterknife:$rootProject.BUTTERKNIFE_VERSION"
-    apt "com.jakewharton:butterknife-compiler:$rootProject.BUTTERKNIFE_VERSION"
 
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.2.1'

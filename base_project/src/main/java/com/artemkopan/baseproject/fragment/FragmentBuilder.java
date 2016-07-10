@@ -16,15 +16,15 @@ import static com.artemkopan.baseproject.fragment.IFragment.Anim;
 import static com.artemkopan.baseproject.fragment.IFragment.Build;
 
 /**
- * <li>{@link Method} set default {@link Method#REPLACE}</li>
- * <li>{@link FragmentTransaction#addToBackStack(String)} set default <b>true</b></li>
- * <li>Default custom animation set default:
+ * <p> - {@link Method} set default {@link Method#REPLACE}</p>
+ * <p> - {@link FragmentTransaction#addToBackStack(String)} set default <b>true</b> </p>
+ * <p> - Default custom animation set default:
  * {@link R.anim#fragment_enter},
  * {@link R.anim#fragment_exit},
  * {@link R.anim#fragment_pop_enter},
- * {@link R.anim#fragment_pop_exit}</li>
- * <li>Default shared anim:  <b>Enter</b>, <b>Exit</b> - {@link DetailsTransition}</li>
- * <li>Default fragment transaction: <b>Enter</b>, <b>Exit</b> - {@link Fade}</li>
+ * {@link R.anim#fragment_pop_exit}</p>
+ * <p> - Default shared anim:  <b>Enter</b>, <b>Exit</b> - {@link DetailsTransition}</p>
+ * <p> - Default fragment transaction: <b>Enter</b>, <b>Exit</b> - {@link Fade}</p>
  */
 public class FragmentBuilder implements Anim, Build {
 
@@ -223,6 +223,7 @@ public class FragmentBuilder implements Anim, Build {
     public enum Method {
         ADD, REPLACE, SWITCH
     }
+
 
     public class FragmentBuilderException extends RuntimeException {
         public FragmentBuilderException(String detailMessage) {
