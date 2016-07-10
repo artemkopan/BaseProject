@@ -9,7 +9,5 @@ compile 'com.github.artemkopan:baseproject:0.0.4'
 
 ```java 
 FragmentBuilder.setIdResDefault(R.id.fragment_container); 
-```
-```java 
 Log.enable(BuildConfig.DEBUG); 
 ```
