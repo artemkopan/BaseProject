@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.3.4'
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'android-apt'
+
+android {
+    compileSdkVersion rootProject.COMPILE_SDK_VERSION
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        minSdkVersion rootProject.MIN_SDK_VERSION
+        targetSdkVersion 23
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+publish {
+    groupId = 'com.github.artemkopan'
+    artifactId = 'baseproject'
+    publishVersion = '0.0.4'
+    desc = 'A small project containing all base elemnt for start project (Activities, Fragment, Utils and other)'
+    licences = ['Apache-2.0']
+    website = 'https://github.com/artemkopan/BaseProject'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.android.support:appcompat-v7:$rootProject.SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:recyclerview-v7:$rootProject.SUPPORT_LIBRARY_VERSION"
+
+    compile "com.jakewharton:butterknife:$rootProject.BUTTERKNIFE_VERSION"
+    apt "com.jakewharton:butterknife-compiler:$rootProject.BUTTERKNIFE_VERSION"
+
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'io.reactivex:rxandroid:1.2.1'
+}

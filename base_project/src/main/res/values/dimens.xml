@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="base_progress_size">50dp</dimen>
+    <dimen name="base_progress_size_small">35dp</dimen>
+    <dimen name="base_progress_border_width">2dp</dimen>
+    <dimen name="base_progress_border_width_4">4dp</dimen>
+
+</resources>
