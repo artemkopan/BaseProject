@@ -32,7 +32,7 @@ android {
 publish {
     groupId = 'com.github.artemkopan'
     artifactId = 'baseproject'
-    publishVersion = '0.0.5'
+    publishVersion = '0.0.6'
     desc = 'A small project containing all base elemnt for start project (Activities, Fragment, Utils and other)'
     licences = ['Apache-2.0']
     website = 'https://github.com/artemkopan/BaseProject'
