@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 public class Log {
 
-    static boolean sLog;
+    private static boolean sLog;
 
     public static void enable(boolean isEnable) {
         sLog = isEnable;
@@ -23,6 +23,14 @@ public class Log {
         if (sLog) android.util.Log.e(tag, string, throwable);
     }
 
+    public static void w(String tag, String string) {
+        if (sLog) android.util.Log.w(tag, string);
+    }
+
+    public static void w(String tag, String string, Throwable throwable) {
+        if (sLog) android.util.Log.w(tag, string, throwable);
+    }
+
     public static void d(String tag, String string) {
         if (sLog) android.util.Log.d(tag, string);
     }
@@ -31,18 +39,12 @@ public class Log {
         if (sLog) android.util.Log.v(tag, string);
     }
 
-    public static void w(String tag, String string) {
-        if (sLog) android.util.Log.w(tag, string);
-    }
-
     private static String getLocation() {
         final String className = Log.class.getName();
         final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
         boolean found = false;
 
-        for (int i = 0; i < traces.length; i++) {
-            StackTraceElement trace = traces[i];
-
+        for (StackTraceElement trace : traces) {
             try {
                 if (found) {
                     if (!trace.getClassName().startsWith(className)) {
@@ -51,9 +53,9 @@ public class Log {
                     }
                 } else if (trace.getClassName().startsWith(className)) {
                     found = true;
-                    continue;
                 }
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException ignored) {
+
             }
         }
 

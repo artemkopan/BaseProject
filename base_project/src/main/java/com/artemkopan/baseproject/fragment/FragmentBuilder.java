@@ -5,12 +5,13 @@ import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
+import android.view.View;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.animations.DetailsTransition;
-import com.artemkopan.baseproject.utils.animations.SharedElement;
 
 import static com.artemkopan.baseproject.fragment.IFragment.Anim;
 import static com.artemkopan.baseproject.fragment.IFragment.Build;
@@ -26,6 +27,7 @@ import static com.artemkopan.baseproject.fragment.IFragment.Build;
  * <p> - Default shared anim:  <b>Enter</b>, <b>Exit</b> - {@link DetailsTransition}</p>
  * <p> - Default fragment transaction: <b>Enter</b>, <b>Exit</b> - {@link Fade}</p>
  */
+@SuppressWarnings("WeakerAccess")
 public class FragmentBuilder implements Anim, Build {
 
     @IdRes
@@ -36,7 +38,7 @@ public class FragmentBuilder implements Anim, Build {
     private int mEnter, mExit, mPopEnter, mPopExit;
     private Method mMethod = Method.REPLACE;
     private Fragment mFragment;
-    private SharedElement[] mSharedElements;
+    private Pair<View, String>[] mSharedElements;
     private Object mSharedEnterTransaction, mSharedReturnTransaction, mEnterTransaction, mExitTransaction;
     private boolean mAddToBackStack = true, mUseCustomAnim = true;
 
@@ -97,7 +99,7 @@ public class FragmentBuilder implements Anim, Build {
     }
 
     @Override
-    public Anim setSharedElements(SharedElement... sharedElements) {
+    public Anim setSharedElements(Pair<View, String>... sharedElements) {
         mSharedElements = sharedElements;
         return this;
     }
@@ -189,9 +191,10 @@ public class FragmentBuilder implements Anim, Build {
             mFragment.setEnterTransition(mEnterTransaction == null ? new Fade() : mEnterTransaction);
             mFragment.setExitTransition(mExitTransaction == null ? new Fade() : mExitTransaction);
 
-            for (SharedElement sharedElement : mSharedElements) {
-                fragmentTransaction.addSharedElement(sharedElement.getView(), sharedElement.getName());
+            for (Pair<View, String> sharedElement : mSharedElements) {
+                fragmentTransaction.addSharedElement(sharedElement.first, sharedElement.second);
             }
+
         } else if (mUseCustomAnim) {
             fragmentTransaction.setCustomAnimations(
                     mEnter == 0 ? R.anim.fragment_enter : mEnter,

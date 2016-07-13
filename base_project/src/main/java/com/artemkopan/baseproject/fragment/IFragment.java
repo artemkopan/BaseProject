@@ -3,9 +3,9 @@ package com.artemkopan.baseproject.fragment;
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
-
-import com.artemkopan.baseproject.utils.animations.SharedElement;
+import android.view.View;
 
 
 @SuppressWarnings("ALL")
@@ -26,7 +26,7 @@ public interface IFragment {
 
         Anim setExitTransaction(Object object);
 
-        Anim setSharedElements(SharedElement... sharedElements);
+        Anim setSharedElements(Pair<View, String>... sharedElements);
 
         Anim setPopExitAnim(@AnimRes int idRes);
 
