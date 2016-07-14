@@ -1,14 +1,18 @@
 package com.artemkopan.baseproject.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -64,7 +68,14 @@ public abstract class BaseFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void onToolbarInit(@IdRes int toolbarId, boolean fromActivity) {
+    /**
+     * Toolbar init. Usually call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     *
+     * @param toolbarId    Res id your toolbar;
+     * @param homeDrawable Set home image resources ( - optional)
+     * @param fromActivity If need find toolbar in {@link AppCompatActivity}
+     */
+    public void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
         if (fromActivity && getActivity() != null) {
             mToolbar = findById(getActivity(), toolbarId);
         } else if (fromActivity && getView() != null) {
@@ -75,16 +86,38 @@ public abstract class BaseFragment extends Fragment {
                             "\nActivity: " + getActivity() +
                             "\nView: " + getView());
         }
+
+        if (mToolbar != null && homeDrawable > 0) {
+            mToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), homeDrawable));
+        }
+
         setActionBar(mToolbar);
     }
 
+    /**
+     * Set toolbar title
+     *
+     * @param titleRes string res value
+     */
+    public void onToolbarSetTitle(@StringRes int titleRes) {
+        onToolbarSetTitle(getString(titleRes));
+    }
+
+    /**
+     * Set toolbar title
+     *
+     * @param title title string value
+     */
     public void onToolbarSetTitle(String title) {
         if (mToolbar != null) {
             mToolbar.setTitle(title);
         }
     }
 
-    public void onToolbarShowBackBtn(boolean show) {
+    /**
+     * If you want enable home button. You can listen event in {@link #onOptionsItemSelected(MenuItem)} with item id {@link android.R.id#home}
+     */
+    public void onToolbarHomeBtn(boolean show) {
         if (mActionBar == null) {
             return;
         }
@@ -92,13 +125,6 @@ public abstract class BaseFragment extends Fragment {
             mActionBar.setDisplayHomeAsUpEnabled(true);
         } else {
             mActionBar.setDisplayHomeAsUpEnabled(false);
-        }
-    }
-
-    private void setActionBar(Toolbar toolbar) {
-        if (toolbar != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         }
     }
 
@@ -114,6 +140,14 @@ public abstract class BaseFragment extends Fragment {
      */
     public boolean onBackPressed() {
         return true;
+    }
+
+
+    private void setActionBar(@Nullable Toolbar toolbar) {
+        if (toolbar != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        }
     }
 
 }

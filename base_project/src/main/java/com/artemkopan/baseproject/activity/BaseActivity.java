@@ -4,8 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.artemkopan.baseproject.fragment.BaseFragment;
 import com.artemkopan.baseproject.rx.Lifecycle;
@@ -64,15 +62,4 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         super.onBackPressed();
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
 }
