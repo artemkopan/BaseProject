@@ -1,9 +1,11 @@
 package com.artemkopan.baseproject.widget;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -17,7 +19,7 @@ public class CircularProgressView extends View {
     private CircularProgressDrawable mDrawable;
 
     public CircularProgressView(Context context) {
-        this(context, null);
+        this(context, null, 0);
     }
 
     public CircularProgressView(Context context, AttributeSet attrs) {
@@ -26,15 +28,34 @@ public class CircularProgressView extends View {
 
     public CircularProgressView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(attrs);
+    }
 
-        TypedArray attributes = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.CircularProgressView,
-                0, 0);
-        int color = attributes.getColor(R.styleable.CircularProgressView_cpv_progressColor, -1);
-        int borderWidth = attributes.getDimensionPixelSize(R.styleable.CircularProgressView_cpv_border_width, -1);
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public CircularProgressView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(attrs);
+    }
+
+    private void init(AttributeSet attrs) {
+        int color = -1;
+        int borderWidth = -1;
+
+        if (attrs != null) {
+            TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
+            try {
+                color = array.getColor(R.styleable.CircularProgressView_cpv_progressColor, -1);
+                borderWidth = array.getDimensionPixelSize(R.styleable.CircularProgressView_cpv_border_width, -1);
+            } finally {
+                array.recycle();
+            }
+        }
+
+
         TypedValue typedValue = new TypedValue();
+
         TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorPrimary});
+
         try {
             if (color == -1)
                 color = a.getColor(0, 0);

@@ -24,6 +24,7 @@
         android:paddingTop="24dp">
     </View>
 
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/appbar"
         android:layout_width="match_parent"

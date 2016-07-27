@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean on = ((ToggleButton) v).isChecked();
-
                 if (on) {
                     animateAppAndStatusBar(R.color.colorPrimary, R.color.colorAccent);
                 } else {
