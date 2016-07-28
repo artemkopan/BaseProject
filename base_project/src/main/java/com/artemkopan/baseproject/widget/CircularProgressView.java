@@ -51,7 +51,6 @@ public class CircularProgressView extends View {
             }
         }
 
-
         TypedValue typedValue = new TypedValue();
 
         TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorPrimary});

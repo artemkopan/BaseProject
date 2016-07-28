@@ -17,18 +17,17 @@ import android.view.Gravity;
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.drawable.CircularProgressDrawable;
 import com.artemkopan.baseproject.drawable.TextDrawable;
-import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener;
 
 
 public class ExRecyclerView extends RecyclerView {
 
+    private static final String TAG = "ExRecyclerView";
     private TextDrawable mTextDrawable;
     private CircularProgressDrawable mProgressDrawable;
     private int mProgressSize;
     private boolean mDrawText, mDrawProgress;
     private OnRecyclerPaginationListener mPaginationListener;
-
 
     public ExRecyclerView(Context context) {
         this(context, null, 0);
@@ -96,7 +95,6 @@ public class ExRecyclerView extends RecyclerView {
         mProgressDrawable.setBounds(0, 0, mProgressSize, mProgressSize);
     }
 
-    private static final String TAG = "ExRecyclerView";
     public void addPaginationListener(OnRecyclerPaginationListener scrollListener) {
         mPaginationListener = scrollListener;
         addOnScrollListener(scrollListener);

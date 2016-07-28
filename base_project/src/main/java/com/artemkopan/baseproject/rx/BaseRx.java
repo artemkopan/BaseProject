@@ -1,10 +1,7 @@
 package com.artemkopan.baseproject.rx;
 
-import com.artemkopan.baseproject.utils.ExtraUtils;
-
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
