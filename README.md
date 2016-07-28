@@ -2,7 +2,7 @@
 
 <b>Dependency:</b>
 ```java
-compile 'com.github.artemkopan:baseproject:0.0.7'
+compile 'com.github.artemkopan:baseproject:0.0.9'
 ```
 
 <b>App Settigns:</b>
