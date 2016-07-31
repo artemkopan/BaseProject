@@ -5,17 +5,23 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.rx.Lifecycle;
 
+import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.subjects.PublishSubject;
 
@@ -41,6 +47,25 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
         mShown = true;
     }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (onCreateInflateView() > 0) {
+            View view = inflater.inflate(onCreateInflateView(), container, false);
+            mUnbinder = ButterKnife.bind(this, view);
+            return view;
+        } else {
+            return super.onCreateView(inflater, container, savedInstanceState);
+        }
+    }
+
+    /**
+     * Call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} with auto inflate
+     *
+     * @return {@link LayoutRes} layout res id
+     */
+    public abstract int onCreateInflateView();
 
 
     @Override

@@ -13,8 +13,8 @@ import android.view.View;
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.animations.DetailsTransition;
 
-import static com.artemkopan.baseproject.fragment.IFragment.Anim;
-import static com.artemkopan.baseproject.fragment.IFragment.Build;
+import static com.artemkopan.baseproject.fragment.IRouterBuilder.Anim;
+import static com.artemkopan.baseproject.fragment.IRouterBuilder.Build;
 
 /**
  * <p> - {@link Method} set default {@link Method#REPLACE}</p>
@@ -28,7 +28,7 @@ import static com.artemkopan.baseproject.fragment.IFragment.Build;
  * <p> - Default fragment transaction: <b>Enter</b>, <b>Exit</b> - {@link Fade}</p>
  */
 @SuppressWarnings("WeakerAccess")
-public class FragmentBuilder implements Anim, Build {
+public class Router implements Anim, Build {
 
     @IdRes
     private static int sIdResDefault;
@@ -43,8 +43,8 @@ public class FragmentBuilder implements Anim, Build {
     private boolean mAddToBackStack = true, mUseCustomAnim = true;
 
 
-    public static FragmentBuilder builder() {
-        return new FragmentBuilder();
+    public static Router builder() {
+        return new Router();
     }
 
     /**
@@ -99,7 +99,8 @@ public class FragmentBuilder implements Anim, Build {
     }
 
     @Override
-    public Anim setSharedElements(Pair<View, String>... sharedElements) {
+    @SafeVarargs
+    public final Anim setSharedElements(Pair<View, String>... sharedElements) {
         mSharedElements = sharedElements;
         return this;
     }
@@ -167,11 +168,11 @@ public class FragmentBuilder implements Anim, Build {
 
     private void startFragment(FragmentManager fragmentManager) {
         if (mFragment == null) {
-            throw new FragmentBuilderException("You must set fragment");
+            throw new RouterBuilderException("You must set fragment");
         }
         if (mIdRes <= 0 && sIdResDefault <= 0) {
-            throw new FragmentBuilderException("Your fragment container id myst be >= 0.\n\n" +
-                    "You can call in Application onCreate() FragmentBuilder.setIdResDefault()\n");
+            throw new RouterBuilderException("Your fragment container id myst be >= 0.\n\n" +
+                    "You can call in Application onCreate() Router.setIdResDefault()\n");
         }
 
         int idRes = mIdRes > 0 ? mIdRes : sIdResDefault;
@@ -227,9 +228,8 @@ public class FragmentBuilder implements Anim, Build {
         ADD, REPLACE, SWITCH
     }
 
-
-    public class FragmentBuilderException extends RuntimeException {
-        public FragmentBuilderException(String detailMessage) {
+    public class RouterBuilderException extends RuntimeException {
+        public RouterBuilderException(String detailMessage) {
             super(detailMessage);
         }
     }

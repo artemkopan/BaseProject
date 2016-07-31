@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">BaseProject</string>
     <string name="base_info_items_not_found">Items not found</string>
+    <string name="base_info_loading">Loading. Please wait…</string>
+    <string name="base_info_try_again">Please try again…</string>
 </resources>

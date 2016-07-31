@@ -4,8 +4,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -38,13 +40,13 @@ public class CircularProgressView extends View {
     }
 
     private void init(AttributeSet attrs) {
-        int color = -1;
+        int color = Color.TRANSPARENT;
         int borderWidth = -1;
 
         if (attrs != null) {
             TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
             try {
-                color = array.getColor(R.styleable.CircularProgressView_cpv_progressColor, -1);
+                color = array.getColor(R.styleable.CircularProgressView_cpv_progressColor, color);
                 borderWidth = array.getDimensionPixelSize(R.styleable.CircularProgressView_cpv_border_width, -1);
             } finally {
                 array.recycle();
@@ -56,7 +58,7 @@ public class CircularProgressView extends View {
         TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorPrimary});
 
         try {
-            if (color == -1)
+            if (color == Color.TRANSPARENT)
                 color = a.getColor(0, 0);
             if (borderWidth == -1)
                 borderWidth = 5;
@@ -69,9 +71,18 @@ public class CircularProgressView extends View {
         mDrawable.start();
     }
 
+    public void setProgressColor(@ColorInt int color) {
+        if (mDrawable != null) {
+            mDrawable.setColor(color);
+        }
+    }
+
     @Override
     protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
+        if (mDrawable == null) {
+            return;
+        }
         if (visibility == VISIBLE) {
             mDrawable.start();
         } else {

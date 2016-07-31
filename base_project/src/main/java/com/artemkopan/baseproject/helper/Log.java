@@ -2,17 +2,32 @@ package com.artemkopan.baseproject.helper;
 
 import android.text.TextUtils;
 
-
+/**
+ * Extend LogCat with easy disabled;
+ * Logs are enabled by default;
+ */
 public class Log {
 
-    private static boolean sLog;
+    private static boolean sLog = true;
 
     public static void enable(boolean isEnable) {
         sLog = isEnable;
     }
 
+    public static void i(String string) {
+        if (sLog) android.util.Log.i(getLocation(), string);
+    }
+
     public static void i(String tag, String string) {
         if (sLog) android.util.Log.i(tag, string);
+    }
+
+    public static void e(String string) {
+        if (sLog) android.util.Log.e(getLocation(), string);
+    }
+
+    public static void e(String string, Throwable throwable) {
+        if (sLog) android.util.Log.e(getLocation(), string, throwable);
     }
 
     public static void e(String tag, String string) {
@@ -23,6 +38,14 @@ public class Log {
         if (sLog) android.util.Log.e(tag, string, throwable);
     }
 
+    public static void w(String string) {
+        if (sLog) android.util.Log.w(getLocation(), string);
+    }
+
+    public static void w(String string, Throwable throwable) {
+        if (sLog) android.util.Log.w(getLocation(), string, throwable);
+    }
+
     public static void w(String tag, String string) {
         if (sLog) android.util.Log.w(tag, string);
     }
@@ -31,8 +54,16 @@ public class Log {
         if (sLog) android.util.Log.w(tag, string, throwable);
     }
 
+    public static void d(String string) {
+        if (sLog) android.util.Log.d(getLocation(), string);
+    }
+
     public static void d(String tag, String string) {
         if (sLog) android.util.Log.d(tag, string);
+    }
+
+    public static void v(String string) {
+        if (sLog) android.util.Log.v(getLocation(), string);
     }
 
     public static void v(String tag, String string) {

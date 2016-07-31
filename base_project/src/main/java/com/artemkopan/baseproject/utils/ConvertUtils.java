@@ -12,9 +12,19 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.text.TextUtils;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ConvertUtils {
 
@@ -41,27 +51,57 @@ public class ConvertUtils {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
 
+    public static <K, V> Observable<List<V>> convertMapToList(final Map<K, V> events) {
+        Observable<List<V>> observable;
+        if (events == null) {
+            observable = Observable.empty();
+        } else {
+            observable = Observable.create(new Observable.OnSubscribe<List<V>>() {
+                @Override
+                public void call(Subscriber<? super List<V>> subscriber) {
+                    subscriber.onNext(new ArrayList<>(events.values()));
+                    subscriber.onCompleted();
+                }
+            });
+        }
+        return observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
+    }
 
-    public static String getRealPath(Context context, Uri fileUri) {
-        String realPath;
-        // SDK < API11
-        if (Build.VERSION.SDK_INT < 11) {
-            realPath = getRealPathFromURI_BelowAPI11(context, fileUri);
-        }
-        // SDK >= 11 && SDK < 19
-        else if (Build.VERSION.SDK_INT < 19) {
-            realPath = getRealPathFromURI_API11to18(context, fileUri);
-        }
-        // SDK > 19 (Android 4.4) and up
-        else {
-            realPath = getRealPathFromURI_API19(context, fileUri);
-        }
-        return realPath;
+
+    public static Observable<String> convertUriToRealPath(final Context context, final Uri fileUri) {
+        Observable<String> observable = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                String realPath = null;
+
+                if (context != null && fileUri != null) {
+                    // SDK < API11
+                    if (Build.VERSION.SDK_INT < 11) {
+                        realPath = getRealPathFromURI_BelowAPI11(context, fileUri);
+                    }
+                    // SDK >= 11 && SDK < 19
+                    else if (Build.VERSION.SDK_INT < 19) {
+                        realPath = getRealPathFromURI_API11to18(context, fileUri);
+                    }
+                    // SDK > 19 (Android 4.4) and up
+                    else {
+                        realPath = getRealPathFromURI_API19(context, fileUri);
+                    }
+                }
+
+                if (TextUtils.isEmpty(realPath)) {
+                    subscriber.onError(new IOException("We can't get real path from " + fileUri));
+                }
+                subscriber.onNext(realPath);
+                subscriber.onCompleted();
+            }
+        });
+        return observable.subscribeOn(Schedulers.io());
     }
 
 
     @SuppressLint("NewApi")
-    public static String getRealPathFromURI_API11to18(Context context, Uri contentUri) {
+    private static String getRealPathFromURI_API11to18(Context context, Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         String result = null;
 
@@ -77,7 +117,7 @@ public class ConvertUtils {
         return result;
     }
 
-    public static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
+    private static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
         int column_index = 0;
@@ -101,7 +141,7 @@ public class ConvertUtils {
      * @param uri     The Uri to query.
      */
     @SuppressLint("NewApi")
-    public static String getRealPathFromURI_API19(final Context context, final Uri uri) {
+    private static String getRealPathFromURI_API19(final Context context, final Uri uri) {
 
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
@@ -177,8 +217,8 @@ public class ConvertUtils {
      * @param selectionArgs (Optional) Selection arguments used in the query.
      * @return The value of the _data column, which is typically a file path.
      */
-    public static String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
+    private static String getDataColumn(Context context, Uri uri, String selection,
+                                        String[] selectionArgs) {
 
         Cursor cursor = null;
         final String column = "_data";

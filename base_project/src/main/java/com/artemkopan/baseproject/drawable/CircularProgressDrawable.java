@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.v4.view.GravityCompat;
 import android.util.Property;
 import android.view.Gravity;
@@ -75,6 +76,7 @@ public class CircularProgressDrawable extends Drawable
         setupAnimations();
     }
 
+
     @Override
     public void draw(Canvas canvas) {
         setCanvasGravity(canvas);
@@ -96,6 +98,14 @@ public class CircularProgressDrawable extends Drawable
 
     public void setGravity(int gravity) {
         mGravity = gravity;
+    }
+
+    public void setColor(@ColorInt int color) {
+        mPaint.setColor(color);
+    }
+
+    public void setStrokeWidth(int borderWidth) {
+        mPaint.setStrokeWidth(borderWidth);
     }
 
     @Override

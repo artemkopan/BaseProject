@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -385,6 +386,11 @@ public class TextDrawable extends Drawable {
     }
 
     @Override
+    public int getOpacity() {
+        return PixelFormat.UNKNOWN;
+    }
+
+    @Override
     protected boolean onStateChange(int[] state) {
         //Upon state changes, grab the correct text color
         return updateTextColors(state);
@@ -427,15 +433,15 @@ public class TextDrawable extends Drawable {
     }
 
     @Override
+    public int getAlpha() {
+        return mTextPaint.getAlpha();
+    }
+
+    @Override
     public void setAlpha(int alpha) {
         if (mTextPaint.getAlpha() != alpha) {
             mTextPaint.setAlpha(alpha);
         }
-    }
-
-    @Override
-    public int getOpacity() {
-        return mTextPaint.getAlpha();
     }
 
     @Override

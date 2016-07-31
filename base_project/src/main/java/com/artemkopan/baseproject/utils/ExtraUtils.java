@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -138,4 +139,7 @@ public class ExtraUtils {
         return sslContext;
     }
 
+    public static boolean postLollipop() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
 }

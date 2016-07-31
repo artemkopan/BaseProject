@@ -1,6 +1,7 @@
 package com.artemkopan.baseproject.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -20,6 +21,8 @@ import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.rx.Lifecycle;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.subjects.PublishSubject;
@@ -28,15 +31,13 @@ import static butterknife.ButterKnife.findById;
 
 public abstract class BaseFragment extends Fragment {
 
-    private static final String TAG = "BaseFragment";
     public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
-    @SuppressWarnings("SpellCheckingInspection")
-    protected Unbinder mUnbinder;
-
     @Nullable
     protected ActionBar mActionBar;
     @Nullable
     protected Toolbar mToolbar;
+    @SuppressWarnings("SpellCheckingInspection")
+    private Unbinder mUnbinder;
 
     @Nullable
     @Override
@@ -69,66 +70,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
-     * Toolbar init. Usually call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
-     *
-     * @param toolbarId    Res id your toolbar;
-     * @param homeDrawable Set home image resources ( - optional)
-     * @param fromActivity If need find toolbar in {@link AppCompatActivity}
-     */
-    public void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
-        if (fromActivity && getActivity() != null) {
-            mToolbar = findById(getActivity(), toolbarId);
-        } else if (fromActivity && getView() != null) {
-            mToolbar = findById(getView(), toolbarId);
-        } else {
-            Log.e(TAG,
-                    "From Activity: " + fromActivity +
-                            "\nActivity: " + getActivity() +
-                            "\nView: " + getView());
-        }
-
-        if (mToolbar != null && homeDrawable > 0) {
-            mToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), homeDrawable));
-        }
-
-        setActionBar(mToolbar);
-    }
-
-    /**
-     * Set toolbar title
-     *
-     * @param titleRes string res value
-     */
-    public void onToolbarSetTitle(@StringRes int titleRes) {
-        onToolbarSetTitle(getString(titleRes));
-    }
-
-    /**
-     * Set toolbar title
-     *
-     * @param title title string value
-     */
-    public void onToolbarSetTitle(String title) {
-        if (mToolbar != null) {
-            mToolbar.setTitle(title);
-        }
-    }
-
-    /**
-     * If you want enable home button. You can listen event in {@link #onOptionsItemSelected(MenuItem)} with item id {@link android.R.id#home}
-     */
-    public void onToolbarHomeBtn(boolean show) {
-        if (mActionBar == null) {
-            return;
-        }
-        if (show) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-        } else {
-            mActionBar.setDisplayHomeAsUpEnabled(false);
-        }
-    }
-
-    /**
      * Call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} with auto inflate
      *
      * @return {@link LayoutRes} layout res id
@@ -143,11 +84,92 @@ public abstract class BaseFragment extends Fragment {
     }
 
 
-    private void setActionBar(@Nullable Toolbar toolbar) {
+    //region Toolbar methods
+
+    /**
+     * Toolbar init. Usually call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     *
+     * @param toolbarId    Res id your toolbar;
+     * @param homeDrawable Set home image resources ( - optional)
+     * @param fromActivity If need find toolbar in {@link AppCompatActivity}
+     */
+    protected void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
+        if (fromActivity && getActivity() != null) {
+            mToolbar = findById(getActivity(), toolbarId);
+        } else if (fromActivity && getView() != null) {
+            mToolbar = findById(getView(), toolbarId);
+        } else {
+            Log.e("From Activity: " + fromActivity +
+                    "\nActivity: " + getActivity() +
+                    "\nView: " + getView());
+        }
+
+        if (mToolbar != null && homeDrawable > 0) {
+            mToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), homeDrawable));
+        }
+
+        setActionBar(mToolbar);
+    }
+
+    /**
+     * Set toolbar title
+     *
+     * @param titleRes string res value
+     */
+    protected void onToolbarSetTitle(@StringRes int titleRes) {
+        onToolbarSetTitle(getString(titleRes));
+    }
+
+    /**
+     * Set toolbar title
+     *
+     * @param title title string value
+     */
+    protected void onToolbarSetTitle(String title) {
+        if (mToolbar != null) {
+            mToolbar.setTitle(title);
+        }
+    }
+
+    /**
+     * If you want enable home button. You can listen event in {@link #onOptionsItemSelected(MenuItem)} with item id {@link android.R.id#home}
+     */
+    protected void onToolbarHomeBtn(boolean show) {
+        if (mActionBar == null) {
+            return;
+        }
+        if (show) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        } else {
+            mActionBar.setDisplayHomeAsUpEnabled(false);
+        }
+    }
+
+
+    protected void setActionBar(@Nullable Toolbar toolbar) {
         if (toolbar != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         }
     }
 
+    //endregion
+
+    //region status bar methods
+    protected void setStatusBarColor(@ColorInt int color) {
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).setStatusBarColor(color);
+        } else {
+            Log.e("Please check your activity on null or extends " + getActivity());
+        }
+    }
+
+    protected void setStatusBarColor(@ColorInt int color, long delay, TimeUnit timeUnit) {
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).setStatusBarColor(color, delay, timeUnit);
+        } else {
+            Log.e("Please check your activity on null or extends " + getActivity());
+        }
+    }
+    //endregion
 }

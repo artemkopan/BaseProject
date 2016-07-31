@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.artemkopan.baseproject.helper.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
+    private static final String TAG = "RecyclerBaseAdapter";
     protected List<M> mList;
 
     public RecyclerBaseAdapter() {
@@ -54,6 +57,10 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     }
 
     public void addItemRanged(Collection<M> collection) {
+        if (collection == null) {
+            Log.e(TAG, "Collection is empty");
+            return;
+        }
         int size = mList.size();
         mList.addAll(collection);
         notifyItemRangeInserted(size, mList.size() - size);

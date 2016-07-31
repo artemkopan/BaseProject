@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
@@ -54,7 +55,7 @@ public class ExRecyclerView extends RecyclerView {
                 progressColor = array.getColor(R.styleable.ExRecyclerView_erv_progressColor, -1);
 
                 textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize, textSize);
-                textColor = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textColor, textColor);
+                textColor = array.getColor(R.styleable.ExRecyclerView_erv_textColor, textColor);
                 textDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
             } finally {
                 array.recycle();
@@ -100,13 +101,20 @@ public class ExRecyclerView extends RecyclerView {
         addOnScrollListener(scrollListener);
     }
 
-    public void setPaginationState(boolean isEnable){
-        if(isEnable){
+    public void setPaginationState(boolean isEnable) {
+        if (isEnable) {
             enablePagination();
-        }else {
+        } else {
             disablePagination();
         }
     }
+
+    public void setProgressColor(@ColorInt int color) {
+        if (mProgressDrawable != null) {
+            mProgressDrawable.setColor(color);
+        }
+    }
+
 
     public void enablePagination() {
         if (mPaginationListener != null) {

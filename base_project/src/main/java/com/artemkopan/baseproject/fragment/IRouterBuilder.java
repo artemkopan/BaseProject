@@ -9,7 +9,7 @@ import android.view.View;
 
 
 @SuppressWarnings("ALL")
-public interface IFragment {
+public interface IRouterBuilder {
 
     interface Anim {
         Anim setEnterAnim(@AnimRes int idRes);
@@ -40,7 +40,7 @@ public interface IFragment {
 
         Build setFragment(Fragment fragment);
 
-        Build setMethod(FragmentBuilder.Method method);
+        Build setMethod(Router.Method method);
 
         Build addToBackStack(boolean addToBackStack);
 
