@@ -12,5 +12,9 @@ FragmentBuilder.setIdResDefault(R.id.fragment_container);
 Log.enable(BuildConfig.DEBUG); 
 ```
 
-# Recomment use File Template for Android Studio:
+# Other
+* File Template for Android Studio:
   <a href="https://github.com/artemkopan/MVPTemplate">MVPTemplate</a>
+* Live Template for Android Studio:
+  <a href="https://github.com/artemkopan/LIVETemplate">LIVETemplate</a>
+ 
