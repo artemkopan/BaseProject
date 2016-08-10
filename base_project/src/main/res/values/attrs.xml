@@ -19,4 +19,12 @@
         <attr name="siv_by_height" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="ViewPositionBehavior">
+        <attr name="vpb_end_view" format="integer"/>
+        <attr name="vpb_end_width" format="dimension"/>
+        <attr name="vpb_end_height" format="dimension"/>
+        <attr name="vpb_end_x" format="dimension"/>
+        <attr name="vpb_end_y" format="dimension"/>
+    </declare-styleable>
+
 </resources>
