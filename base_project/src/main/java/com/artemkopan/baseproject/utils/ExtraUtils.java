@@ -1,6 +1,7 @@
 package com.artemkopan.baseproject.utils;
 
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -13,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -53,6 +55,7 @@ public class ExtraUtils {
 
     /**
      * Check current internet connection
+     *
      * @param context {@link Application#getApplicationContext()}
      * @return if internet (WIFI or MOBILE) is connected return true;
      */
@@ -113,31 +116,46 @@ public class ExtraUtils {
      * @throws KeyManagementException
      */
     public static SSLContext getUnsafeSSL() throws NoSuchAlgorithmException, KeyManagementException {
+        return getUnsafeSSL(getTrustAllCerts());
+    }
 
-        final TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                    }
-
-                    @Override
-                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                    }
-
-                    @Override
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return new java.security.cert.X509Certificate[]{};
-                    }
-                }
-        };
-
-        // Install the all-trusting trust manager
+    /**
+     * Allow all ssl certificates
+     *
+     * @return {@link SSLSocketFactory}
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
+    public static SSLContext getUnsafeSSL(TrustManager[] trustAllCerts) throws NoSuchAlgorithmException, KeyManagementException {
         final SSLContext sslContext = SSLContext.getInstance("SSL");
         sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
         // Create an ssl socket factory with our all-trusting manager
-
         return sslContext;
     }
+
+    /**
+     * Get all trusted certificates manager;
+     */
+    @SuppressLint("TrustAllX509TrustManager")
+    public static TrustManager[] getTrustAllCerts() {
+        return new TrustManager[]{
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[]{};
+                    }
+                }
+        };
+    }
+
 
     public static boolean postLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
