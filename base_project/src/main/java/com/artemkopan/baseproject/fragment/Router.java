@@ -221,7 +221,7 @@ public class Router implements Anim, Build {
             fragmentTransaction.addToBackStack(tag);
         }
 
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     public enum Method {
