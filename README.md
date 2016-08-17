@@ -1,10 +1,11 @@
 # BaseProject
 
 <b>Dependency:</b>
-Version see in Tags
+
 ```java
 compile 'com.github.artemkopan:baseproject:x.y.z'
 ```
+* version see in Tags
 
 <b>App Settigns:</b>
 
