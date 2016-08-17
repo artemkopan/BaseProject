@@ -5,7 +5,7 @@
 ```java
 compile 'com.github.artemkopan:baseproject:x.y.z'
 ```
-* version see in Tags
+p.s. version see in Tags
 
 <b>App Settigns:</b>
 
