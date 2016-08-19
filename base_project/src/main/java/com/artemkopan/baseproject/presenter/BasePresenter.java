@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 @SuppressWarnings("unused")
 public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
 
-    //    protected Subscription mSubscription;
     private T mMvpView;
 
     @Override
@@ -22,7 +21,6 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
     @Override
     public void detachView() {
         mMvpView = null;
-//        if (mSubscription != null) mSubscription.unsubscribe();
     }
 
     @Override
