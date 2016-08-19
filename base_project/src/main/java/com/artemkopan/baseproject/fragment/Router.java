@@ -2,6 +2,7 @@ package com.artemkopan.baseproject.fragment;
 
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
+import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,6 +31,7 @@ import static com.artemkopan.baseproject.fragment.IRouterBuilder.Build;
 @SuppressWarnings("WeakerAccess")
 public class Router implements Anim, Build {
 
+    public static final int ANIM_ALPHA = 1, ANIM_SLIDE = 2;
     @IdRes
     private static int sIdResDefault;
     @IdRes
@@ -41,7 +43,6 @@ public class Router implements Anim, Build {
     private Pair<View, String>[] mSharedElements;
     private Object mSharedEnterTransaction, mSharedReturnTransaction, mEnterTransaction, mExitTransaction;
     private boolean mAddToBackStack = true, mUseCustomAnim = true;
-
 
     public static Router builder() {
         return new Router();
@@ -108,6 +109,23 @@ public class Router implements Anim, Build {
     @Override
     public Anim setPopExitAnim(@AnimRes int idRes) {
         mPopExit = idRes;
+        return this;
+    }
+
+    @Override
+    public Anim setDefaultAnim(@ANIM_DEFAULT int defaultAnim) {
+        switch (defaultAnim) {
+            case ANIM_ALPHA:
+                mPopEnter = mEnter = R.anim.fragment_alpha_enter;
+                mPopExit = mExit = R.anim.fragment_alpha_exit;
+                break;
+            case ANIM_SLIDE:
+                mPopEnter = R.anim.fragment_pop_enter;
+                mEnter = R.anim.fragment_enter;
+                mPopExit = R.anim.fragment_pop_exit;
+                mExit = R.anim.fragment_exit;
+                break;
+        }
         return this;
     }
 
@@ -181,8 +199,8 @@ public class Router implements Anim, Build {
 
         String tag = mFragment.getClass().getSimpleName();
 
-        if (mSharedElements != null && mSharedElements.length > 0 &&
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (mSharedElements != null && mSharedElements.length > 0
+                && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 
             mFragment.setSharedElementEnterTransition(
                     mSharedEnterTransaction == null ? new DetailsTransition() : mSharedEnterTransaction);
@@ -195,7 +213,12 @@ public class Router implements Anim, Build {
             for (Pair<View, String> sharedElement : mSharedElements) {
                 fragmentTransaction.addSharedElement(sharedElement.first, sharedElement.second);
             }
-
+        } else if (mEnterTransaction != null
+                && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            mFragment.setEnterTransition(mEnterTransaction);
+        } else if (mExitTransaction != null
+                && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            mFragment.setExitTransition(mExitTransaction);
         } else if (mUseCustomAnim) {
             fragmentTransaction.setCustomAnimations(
                     mEnter == 0 ? R.anim.fragment_enter : mEnter,
@@ -226,6 +249,10 @@ public class Router implements Anim, Build {
 
     public enum Method {
         ADD, REPLACE, SWITCH
+    }
+
+    @IntDef({ANIM_ALPHA, ANIM_SLIDE})
+    public @interface ANIM_DEFAULT {
     }
 
     public class RouterBuilderException extends RuntimeException {

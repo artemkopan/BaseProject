@@ -18,6 +18,10 @@ public interface IRouterBuilder {
 
         Anim setPopEnterAnim(@AnimRes int idRes);
 
+        Anim setPopExitAnim(@AnimRes int idRes);
+
+        Anim setDefaultAnim(@Router.ANIM_DEFAULT int defaultAnim);
+
         Anim setSharedEnterTransaction(Object object);
 
         Anim setSharedReturnTransaction(Object object);
@@ -27,8 +31,6 @@ public interface IRouterBuilder {
         Anim setExitTransaction(Object object);
 
         Anim setSharedElements(Pair<View, String>... sharedElements);
-
-        Anim setPopExitAnim(@AnimRes int idRes);
 
         Anim useCustomAnim(boolean isUse);
 
