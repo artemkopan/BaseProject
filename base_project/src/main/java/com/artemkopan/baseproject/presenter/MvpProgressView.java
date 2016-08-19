@@ -2,11 +2,13 @@ package com.artemkopan.baseproject.presenter;
 
 import android.support.annotation.Nullable;
 
-@Deprecated
 public interface MvpProgressView extends MvpView {
 
-    void startProgress();
+    /**
+     * You can set specific tag for different progress bars;
+     */
+    void showProgress(@Nullable Object tag);
 
-    void stopProgress();
+    void hideProgress(@Nullable Object tag);
 
 }
