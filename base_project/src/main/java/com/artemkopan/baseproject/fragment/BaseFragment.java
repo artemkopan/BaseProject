@@ -96,7 +96,7 @@ public abstract class BaseFragment extends Fragment {
     protected void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
         if (fromActivity && getActivity() != null) {
             mToolbar = findById(getActivity(), toolbarId);
-        } else if (fromActivity && getView() != null) {
+        } else if (!fromActivity && getView() != null) {
             mToolbar = findById(getView(), toolbarId);
         } else {
             Log.e("From Activity: " + fromActivity +
@@ -138,11 +138,7 @@ public abstract class BaseFragment extends Fragment {
         if (mActionBar == null) {
             return;
         }
-        if (show) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-        } else {
-            mActionBar.setDisplayHomeAsUpEnabled(false);
-        }
+        mActionBar.setDisplayHomeAsUpEnabled(show);
     }
 
 
