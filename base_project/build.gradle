@@ -17,6 +17,7 @@ android {
     defaultConfig {
         minSdkVersion rootProject.MIN_SDK_VERSION
         targetSdkVersion 23
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -43,6 +44,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:recyclerview-v7:$rootProject.SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:design:$rootProject.SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:transition:$rootProject.SUPPORT_LIBRARY_VERSION"
 
     compile "com.jakewharton:butterknife:$rootProject.BUTTERKNIFE_VERSION"
 

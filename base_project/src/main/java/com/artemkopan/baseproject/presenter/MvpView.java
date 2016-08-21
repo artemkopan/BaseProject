@@ -1,5 +1,7 @@
 package com.artemkopan.baseproject.presenter;
 
+import android.support.annotation.UiThread;
+
 /**
  * Base interface that any class that wants to act as a View in the MVP (Model View Presenter)
  * pattern must implement. Generally this interface will be extended by a more specific interface
@@ -7,6 +9,7 @@ package com.artemkopan.baseproject.presenter;
  */
 public interface MvpView {
 
+    @UiThread
     void showError(String error);
 
 }

@@ -3,12 +3,12 @@ package com.artemkopan.baseproject.fragment;
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
+import android.support.transition.Fade;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Fade;
 import android.view.View;
 
 import com.artemkopan.baseproject.R;
@@ -41,8 +41,10 @@ public class Router implements Anim, Build {
     private Method mMethod = Method.REPLACE;
     private Fragment mFragment;
     private Pair<View, String>[] mSharedElements;
-    private Object mSharedEnterTransaction, mSharedReturnTransaction, mEnterTransaction, mExitTransaction;
+    private Object mSharedEnterTransition, mSharedReturnTransition;
+    private Object mEnterTransition, mExitTransition, mReenterTransition, mReturnTransition;
     private boolean mAddToBackStack = true, mUseCustomAnim = true;
+
 
     public static Router builder() {
         return new Router();
@@ -75,29 +77,6 @@ public class Router implements Anim, Build {
         return this;
     }
 
-    @Override
-    public Anim setSharedEnterTransaction(Object object) {
-        mSharedEnterTransaction = object;
-        return this;
-    }
-
-    @Override
-    public Anim setSharedReturnTransaction(Object object) {
-        mSharedReturnTransaction = object;
-        return this;
-    }
-
-    @Override
-    public Anim setEnterTransaction(Object object) {
-        mEnterTransaction = object;
-        return this;
-    }
-
-    @Override
-    public Anim setExitTransaction(Object object) {
-        mExitTransaction = object;
-        return this;
-    }
 
     @Override
     @SafeVarargs
@@ -126,6 +105,43 @@ public class Router implements Anim, Build {
                 mExit = R.anim.fragment_exit;
                 break;
         }
+        return this;
+    }
+
+
+    @Override
+    public Anim setSharedEnterTransition(Object object) {
+        mSharedEnterTransition = object;
+        return this;
+    }
+
+    @Override
+    public Anim setSharedReturnTransition(Object object) {
+        mSharedReturnTransition = object;
+        return this;
+    }
+
+    @Override
+    public Anim setEnterTransition(Object object) {
+        mEnterTransition = object;
+        return this;
+    }
+
+    @Override
+    public Anim setExitTransition(Object object) {
+        mExitTransition = object;
+        return this;
+    }
+
+    @Override
+    public Anim setReenterTransition(Object object) {
+        mReenterTransition = object;
+        return this;
+    }
+
+    @Override
+    public Anim setReturnTransition(Object object) {
+        mReturnTransition = object;
         return this;
     }
 
@@ -199,27 +215,27 @@ public class Router implements Anim, Build {
 
         String tag = mFragment.getClass().getSimpleName();
 
-        if (mSharedElements != null && mSharedElements.length > 0
-                && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            if (mSharedElements != null && mSharedElements.length > 0) {
+                mFragment.setSharedElementEnterTransition(
+                        mSharedEnterTransition == null ? new DetailsTransition() : mSharedEnterTransition);
+                mFragment.setSharedElementReturnTransition(
+                        mSharedReturnTransition == null ? new DetailsTransition() : mSharedReturnTransition);
 
-            mFragment.setSharedElementEnterTransition(
-                    mSharedEnterTransaction == null ? new DetailsTransition() : mSharedEnterTransaction);
-            mFragment.setSharedElementReturnTransition(
-                    mSharedReturnTransaction == null ? new DetailsTransition() : mSharedReturnTransaction);
+                if (mEnterTransition == null) mEnterTransition = new Fade();
+                if (mExitTransition == null) mExitTransition = new Fade();
 
-            mFragment.setEnterTransition(mEnterTransaction == null ? new Fade() : mEnterTransaction);
-            mFragment.setExitTransition(mExitTransaction == null ? new Fade() : mExitTransaction);
-
-            for (Pair<View, String> sharedElement : mSharedElements) {
-                fragmentTransaction.addSharedElement(sharedElement.first, sharedElement.second);
+                for (Pair<View, String> sharedElement : mSharedElements) {
+                    fragmentTransaction.addSharedElement(sharedElement.first, sharedElement.second);
+                }
             }
-        } else if (mEnterTransaction != null
-                && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            mFragment.setEnterTransition(mEnterTransaction);
-        } else if (mExitTransaction != null
-                && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            mFragment.setExitTransition(mExitTransaction);
-        } else if (mUseCustomAnim) {
+            if (mEnterTransition != null) mFragment.setEnterTransition(mEnterTransition);
+            if (mExitTransition != null) mFragment.setExitTransition(mExitTransition);
+            if (mReenterTransition != null) mFragment.setReenterTransition(mReenterTransition);
+            if (mReturnTransition != null) mFragment.setReturnTransition(mReturnTransition);
+        }
+
+        if (mUseCustomAnim) {
             fragmentTransaction.setCustomAnimations(
                     mEnter == 0 ? R.anim.fragment_enter : mEnter,
                     mExit == 0 ? R.anim.fragment_exit : mExit,

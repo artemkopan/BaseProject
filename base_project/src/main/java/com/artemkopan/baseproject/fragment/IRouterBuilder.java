@@ -22,13 +22,17 @@ public interface IRouterBuilder {
 
         Anim setDefaultAnim(@Router.ANIM_DEFAULT int defaultAnim);
 
-        Anim setSharedEnterTransaction(Object object);
+        Anim setSharedEnterTransition(Object object);
 
-        Anim setSharedReturnTransaction(Object object);
+        Anim setSharedReturnTransition(Object object);
 
-        Anim setEnterTransaction(Object object);
+        Anim setEnterTransition(Object object);
 
-        Anim setExitTransaction(Object object);
+        Anim setExitTransition(Object object);
+
+        Anim setReenterTransition(Object object);
+
+        Anim setReturnTransition(Object object);
 
         Anim setSharedElements(Pair<View, String>... sharedElements);
 
