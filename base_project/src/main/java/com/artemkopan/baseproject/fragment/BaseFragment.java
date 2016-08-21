@@ -32,8 +32,7 @@ import static butterknife.ButterKnife.findById;
 public abstract class BaseFragment extends Fragment {
 
     public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
-    @Nullable
-    protected ActionBar mActionBar;
+
     @Nullable
     protected Toolbar mToolbar;
     @SuppressWarnings("SpellCheckingInspection")
@@ -135,17 +134,17 @@ public abstract class BaseFragment extends Fragment {
      * If you want enable home button. You can listen event in {@link #onOptionsItemSelected(MenuItem)} with item id {@link android.R.id#home}
      */
     protected void onToolbarHomeBtn(boolean show) {
-        if (mActionBar == null) {
-            return;
-        }
-        mActionBar.setDisplayHomeAsUpEnabled(show);
-    }
+        if (getActivity() != null
+                && getActivity() instanceof AppCompatActivity
+                && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
 
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(show);
+        }
+    }
 
     protected void setActionBar(@Nullable Toolbar toolbar) {
         if (toolbar != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         }
     }
 
