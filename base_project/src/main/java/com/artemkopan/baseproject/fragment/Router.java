@@ -14,6 +14,9 @@ import android.view.View;
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.animations.DetailsTransition;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import static com.artemkopan.baseproject.fragment.IRouterBuilder.Anim;
 import static com.artemkopan.baseproject.fragment.IRouterBuilder.Build;
 
@@ -268,6 +271,7 @@ public class Router implements Anim, Build {
     }
 
     @IntDef({ANIM_ALPHA, ANIM_SLIDE})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ANIM_DEFAULT {
     }
 

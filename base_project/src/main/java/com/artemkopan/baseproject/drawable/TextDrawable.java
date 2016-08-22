@@ -14,6 +14,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -417,7 +418,7 @@ public class TextDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         final Rect bounds = getBounds();
         final int count = canvas.save();
         setCanvasGravity(canvas);

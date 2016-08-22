@@ -4,6 +4,9 @@ import android.support.annotation.IntDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener {
 
     public static final int VERTICAL = 0, HORIZONTAL = 1;
@@ -59,6 +62,7 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
 
 
     @IntDef({VERTICAL, HORIZONTAL})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface TypePagination {
     }
 }

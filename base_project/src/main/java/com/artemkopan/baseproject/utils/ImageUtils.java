@@ -45,7 +45,6 @@ public class ImageUtils {
     }
 
     public static Bitmap rotateBitmap(String src, Bitmap bitmap) {
-        try {
             int orientation = getExifOrientation(src);
 
             if (orientation == 1) {
@@ -90,14 +89,9 @@ public class ImageUtils {
                 e.printStackTrace();
                 return bitmap;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
     }
 
-    private static int getExifOrientation(String src) throws IOException {
+    private static int getExifOrientation(String src)  {
         int orientation = 1;
 
         try {

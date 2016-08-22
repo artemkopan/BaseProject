@@ -16,7 +16,9 @@ import com.artemkopan.baseproject.fragment.BaseDialogFragment;
 import static butterknife.ButterKnife.findById;
 
 /**
- * Created by artem on 08.08.16.
+ * Created for BaseProject
+ * Author: Kopan Artem
+ * 22.08.2016
  */
 @SuppressWarnings("unused")
 public class MessageDialog extends BaseDialogFragment {

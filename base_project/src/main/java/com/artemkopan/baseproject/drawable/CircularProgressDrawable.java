@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.util.Property;
 import android.view.Gravity;
@@ -78,7 +79,7 @@ public class CircularProgressDrawable extends Drawable
 
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         setCanvasGravity(canvas);
         float startAngle = mCurrentGlobalAngle - mCurrentGlobalAngleOffset;
         float sweepAngle = mCurrentSweepAngle;

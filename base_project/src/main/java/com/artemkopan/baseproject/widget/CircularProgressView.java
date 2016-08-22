@@ -103,7 +103,7 @@ public class CircularProgressView extends View {
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(@NonNull Drawable who) {
         return who == mDrawable || super.verifyDrawable(who);
     }
 }

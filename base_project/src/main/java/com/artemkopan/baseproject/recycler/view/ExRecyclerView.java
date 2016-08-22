@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
@@ -174,7 +175,7 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(@NonNull Drawable who) {
         return who == mProgressDrawable || super.verifyDrawable(who);
     }
 
