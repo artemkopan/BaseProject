@@ -33,7 +33,7 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
 
     private OnDependentViewChangedListener mChangedListener;
     private int mEndViewId;
-    private int mStartWidth, mStartHeight, mEndWidth = NO_VALUE, mEndHeight = NO_VALUE;
+    private int mStartWidth, mStartHeight, mEndWidth = NO_VALUE, mEndHeight = NO_VALUE;etX
     private float mStartX = NO_VALUE, mStartY = NO_VALUE, mEndX = NO_VALUE, mEndY = NO_VALUE;
     private boolean mUseEndViewWidth, mUseEndViewHeight, mUseEndViewX, mUseEndViewY;
 
