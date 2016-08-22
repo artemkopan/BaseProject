@@ -2,6 +2,7 @@ package com.artemkopan.baseproject.widget.behavior;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.FloatRange;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
@@ -23,6 +24,7 @@ import com.artemkopan.baseproject.utils.ViewUtils;
  * <p><b>vpb_end_height</b> - set end height size;
  * <p><b>vpb_end_x</b> - set end X position;
  * <p><b>vpb_end_y</b> - set end Y position;
+ * <p><b>DON'T USE WITH</b> app:layout_anchor because {@link #layoutDependsOn} enter in infinity cycle
  */
 @SuppressWarnings("unused")
 public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
@@ -31,7 +33,7 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
 
     private OnDependentViewChangedListener mChangedListener;
     private int mEndViewId;
-    private int mStartWidth, mStartHeight, mEndWidth, mEndHeight;
+    private int mStartWidth, mStartHeight, mEndWidth = NO_VALUE, mEndHeight = NO_VALUE;
     private float mStartX = NO_VALUE, mStartY = NO_VALUE, mEndX = NO_VALUE, mEndY = NO_VALUE;
     private boolean mUseEndViewWidth, mUseEndViewHeight, mUseEndViewX, mUseEndViewY;
 
@@ -44,7 +46,7 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
         init(context, attrs);
     }
 
-    public static float calculateValue(float percentage, float startValue, float endValue) {
+    public static float calculateValue(@FloatRange float percentage, float startValue, float endValue) {
         return ((startValue - endValue) * (1 - percentage) + endValue);
     }
 
@@ -94,7 +96,7 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
         child.setX(calculateValue(percentage, mStartX, mEndX));
         child.setY(calculateValue(percentage, mStartY, mEndY));
 
-        Log.i("onDependentViewChanged: height " + params.height + " width " + params.width + " x " + child.getX() + " y " + child.getY());
+//        Log.i("onDependentViewChanged: height " + params.height + " width " + params.width + " x " + child.getX() + " y " + child.getY());
 
         if (mChangedListener != null) {
             mChangedListener.onDependentViewChanged(percentage);
@@ -105,7 +107,7 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
 
     private void initValues(CoordinatorLayout parent, View child) {
 
-        if (mEndViewId != NO_VALUE && mEndWidth == 0 && mEndHeight == 0) {
+        if (mEndViewId != NO_VALUE && (mEndWidth == NO_VALUE || mEndHeight == NO_VALUE)) {
             View anchorView = parent.findViewById(mEndViewId);
             if (anchorView != null) {
                 mEndWidth = mUseEndViewWidth ? anchorView.getWidth() : mEndWidth;
@@ -117,7 +119,7 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
             }
         }
 
-        Log.i("initValues: width " + mEndWidth + " height " + mEndHeight + " x " + mEndX + " y " + mEndY);
+//        Log.i("initValues: width " + mEndWidth + " height " + mEndHeight + " x " + mEndX + " y " + mEndY);
 
         if (mStartWidth == 0) {
             mStartWidth = child.getWidth();
@@ -135,7 +137,7 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
             mStartY = child.getY();
         }
 
-        Log.i("initValues2: width " + mStartWidth + " height " + mStartHeight + " x " + mStartX + " y " + mStartY);
+//        Log.i("initValues2: width " + mStartWidth + " height " + mStartHeight + " x " + mStartX + " y " + mStartY);
     }
 
     public interface OnDependentViewChangedListener {
