@@ -216,7 +216,7 @@ public class Router implements Anim, Build {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        String tag = mFragment.getClass().getSimpleName();
+        String tag = mFragment.getClass().getName();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             if (mSharedElements != null && mSharedElements.length > 0) {

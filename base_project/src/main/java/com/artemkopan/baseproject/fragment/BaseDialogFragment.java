@@ -33,7 +33,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     private boolean mShown = false;
 
     public void show(FragmentManager manager) {
-        show(manager, this.getClass().getSimpleName());
+        show(manager, this.getClass().getName());
     }
 
     @Override

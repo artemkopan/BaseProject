@@ -93,7 +93,7 @@ public class ExtraUtils {
      */
     public static PowerManager.WakeLock wakeLock(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, context.getClass().getSimpleName());
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, context.getClass().getName());
         wakeLock.acquire();
         return wakeLock;
     }
