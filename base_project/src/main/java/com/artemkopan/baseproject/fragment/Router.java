@@ -3,12 +3,13 @@ package com.artemkopan.baseproject.fragment;
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
-import android.support.transition.Fade;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.view.View;
 
 import com.artemkopan.baseproject.R;
@@ -203,7 +204,13 @@ public class Router implements Anim, Build {
         }
     }
 
-    private void startFragment(FragmentManager fragmentManager) {
+    @Override
+    public void startFragment(@NonNull FragmentManager fragmentManager) {
+        getTransaction(fragmentManager).commitNowAllowingStateLoss();
+    }
+
+    @Override
+    public FragmentTransaction getTransaction(@NonNull FragmentManager fragmentManager) {
         if (mFragment == null) {
             throw new RouterBuilderException("You must set fragment");
         }
@@ -232,11 +239,12 @@ public class Router implements Anim, Build {
                     fragmentTransaction.addSharedElement(sharedElement.first, sharedElement.second);
                 }
             }
-            if (mEnterTransition != null) mFragment.setEnterTransition(mEnterTransition);
-            if (mExitTransition != null) mFragment.setExitTransition(mExitTransition);
-            if (mReenterTransition != null) mFragment.setReenterTransition(mReenterTransition);
-            if (mReturnTransition != null) mFragment.setReturnTransition(mReturnTransition);
         }
+
+        if (mEnterTransition != null) mFragment.setEnterTransition(mEnterTransition);
+        if (mExitTransition != null) mFragment.setExitTransition(mExitTransition);
+        if (mReenterTransition != null) mFragment.setReenterTransition(mReenterTransition);
+        if (mReturnTransition != null) mFragment.setReturnTransition(mReturnTransition);
 
         if (mUseCustomAnim) {
             fragmentTransaction.setCustomAnimations(
@@ -263,7 +271,7 @@ public class Router implements Anim, Build {
             fragmentTransaction.addToBackStack(tag);
         }
 
-        fragmentTransaction.commitAllowingStateLoss();
+        return fragmentTransaction;
     }
 
     public enum Method {

@@ -2,7 +2,10 @@ package com.artemkopan.baseproject.fragment;
 
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -55,6 +58,10 @@ public interface IRouterBuilder {
         void start(AppCompatActivity activity);
 
         void startChildFragment(Fragment fragment, boolean useParentFragment);
+
+        void startFragment(@NonNull FragmentManager fragmentManager);
+
+        FragmentTransaction getTransaction(@NonNull FragmentManager fragmentManager);
     }
 
 }

@@ -36,6 +36,7 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
     private int mStartWidth, mStartHeight, mEndWidth = NO_VALUE, mEndHeight = NO_VALUE;
     private float mStartX = NO_VALUE, mStartY = NO_VALUE, mEndX = NO_VALUE, mEndY = NO_VALUE;
     private boolean mUseEndViewWidth, mUseEndViewHeight, mUseEndViewX, mUseEndViewY;
+    private boolean mEnable = true;
 
     public ViewPositionBehavior() {
         init(null, null);
@@ -74,6 +75,10 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
         mChangedListener = changedListener;
     }
 
+    public void setEnable(boolean enable) {
+        mEnable = enable;
+    }
+
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
         return dependency instanceof AppBarLayout;
@@ -81,6 +86,10 @@ public class ViewPositionBehavior extends CoordinatorLayout.Behavior<View> {
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
+
+        if(!mEnable){
+            return true;
+        }
 
         initValues(parent, child);
 
