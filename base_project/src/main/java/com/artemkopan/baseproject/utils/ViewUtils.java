@@ -3,11 +3,25 @@ package com.artemkopan.baseproject.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import butterknife.ButterKnife;
+
 
 public class ViewUtils {
+
+    /**
+     * ButterKnife action for enable view {@link View#setEnabled(boolean)} or disable;
+     */
+    public static final ButterKnife.Setter<View, Boolean> SET_ENABLE =
+            new ButterKnife.Setter<View, Boolean>() {
+                @Override
+                public void set(@NonNull View view, Boolean value, int index) {
+                    view.setEnabled(value);
+                }
+            };
 
     /**
      * Get activity from view

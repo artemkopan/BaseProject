@@ -111,9 +111,7 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     public void setProgressColor(@ColorInt int color) {
-        if (mProgressDrawable != null) {
-            mProgressDrawable.setColor(color);
-        }
+        mProgressDrawable.setColor(color);
     }
 
 
