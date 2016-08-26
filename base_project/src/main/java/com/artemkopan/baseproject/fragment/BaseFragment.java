@@ -136,7 +136,6 @@ public abstract class BaseFragment extends Fragment {
         if (getActivity() != null
                 && getActivity() instanceof AppCompatActivity
                 && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(show);
         }
     }

@@ -28,7 +28,11 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
 
     @Override
-    public abstract void onBindViewHolder(VH holder, int position);
+    public void onBindViewHolder(VH holder, int position) {
+        onBindViewHolder(holder, getItemByPos(position), position);
+    }
+
+    public abstract void onBindViewHolder(VH holder, M model, int position);
 
     @Nullable
     public M removeItem(Object model) {
@@ -80,11 +84,15 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         }
     }
 
+    @Nullable
     public M getItemByPos(int position) {
         if (mList == null) {
-            throw new NullPointerException("mList is null");
-        } else if (position >= mList.size() && position >= 0) {
-            throw new ArrayIndexOutOfBoundsException("position " + position + " mList size " + mList.size());
+            Log.e("getItemByPos: ", new NullPointerException("mList is null"));
+            return null;
+        } else if (position >= mList.size() || position < 0) {
+            Log.e("getItemByPos: ", new ArrayIndexOutOfBoundsException(
+                    "position " + position + " mList size " + mList.size()));
+            return null;
         }
 
         return mList.get(position);
