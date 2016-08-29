@@ -4,12 +4,15 @@ package com.artemkopan.baseproject.utils;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.artemkopan.baseproject.R;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -83,6 +86,17 @@ public class ExtraUtils {
      */
     public static int getWindowHeight(Context context) {
         return context.getResources().getDisplayMetrics().heightPixels;
+    }
+
+    /**
+     * Get toolbar height size
+     */
+    public static int getToolbarHeight(Context context) {
+        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
+                new int[]{R.attr.actionBarSize});
+        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+        return toolbarHeight;
     }
 
     /**

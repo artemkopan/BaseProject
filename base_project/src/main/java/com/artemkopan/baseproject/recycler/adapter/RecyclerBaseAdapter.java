@@ -3,9 +3,11 @@ package com.artemkopan.baseproject.recycler.adapter;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +18,7 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
 
     private static final String TAG = "RecyclerBaseAdapter";
     protected List<M> mList;
+    private OnItemClickListener<M> mOnItemClickListener;
 
     public RecyclerBaseAdapter() {
     }
@@ -41,6 +44,10 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
             return removeItem(index);
         else
             return null;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener<M> onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
     public M removeItem(int position) {
@@ -127,5 +134,11 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
 
     public boolean isEmpty() {
         return getItemCount() == 0;
+    }
+
+    protected void callOnItemClick(View view, int pos, M object, View... transactionViews) {
+        if (pos >= 0) {
+            mOnItemClickListener.onItemClickListener(view, pos, object, transactionViews);
+        }
     }
 }

@@ -206,7 +206,7 @@ public class Router implements Anim, Build {
 
     @Override
     public void startFragment(@NonNull FragmentManager fragmentManager) {
-        getTransaction(fragmentManager).commitNowAllowingStateLoss();
+        getTransaction(fragmentManager).commitAllowingStateLoss();
     }
 
     @Override

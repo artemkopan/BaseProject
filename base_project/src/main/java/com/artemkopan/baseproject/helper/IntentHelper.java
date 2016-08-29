@@ -10,11 +10,11 @@ import android.provider.Telephony;
 public class IntentHelper {
 
 
-    public static void intentSharingLink(Context context, String url, String description) {
+    public static void intentSharingText(Context context, String text, String title) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, url);
-        Intent chooserIntent = Intent.createChooser(shareIntent, description);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+        Intent chooserIntent = Intent.createChooser(shareIntent, title);
         chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(chooserIntent);
     }
