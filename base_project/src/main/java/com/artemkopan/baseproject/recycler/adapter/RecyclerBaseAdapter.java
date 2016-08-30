@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
     private static final String TAG = "RecyclerBaseAdapter";
@@ -40,10 +40,11 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     @Nullable
     public M removeItem(Object model) {
         int index = mList.indexOf(model);
-        if (index != -1)
+        if (index != -1) {
             return removeItem(index);
-        else
+        } else {
             return null;
+        }
     }
 
     public void setOnItemClickListener(OnItemClickListener<M> onItemClickListener) {
@@ -53,7 +54,7 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     public M removeItem(int position) {
         final M model = mList.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, getItemCount() - position);
+//        notifyItemRangeChanged(position, getItemCount() - position);  // TODO: 30.08.16 check this
         return model;
     }
 
@@ -123,6 +124,12 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         }
     }
 
+    /***
+     * Find item in list;
+     *
+     * @param object object which has been found;
+     * @return return object index in list; If item not found return -1;
+     */
     public int getItemIndex(Object object) {
         return mList != null ? mList.indexOf(object) : -1;
     }
