@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="base_info_items_not_found">Ничего не найдено</string>
+    <string name="base_info_loading">Загрузка. Пожалуйста подождите…</string>
+    <string name="base_info_try_again">Попробуйте снова…</string>
+
+
+</resources>

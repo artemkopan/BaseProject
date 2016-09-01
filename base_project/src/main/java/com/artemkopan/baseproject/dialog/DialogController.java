@@ -36,15 +36,18 @@ public class DialogController {
         }
     }
 
-    public void showProgressDialog(@Nullable Activity activity) {
-        showProgressDialog(activity, R.string.base_info_loading);
+    @Nullable
+    public ProgressDialog showProgressDialog(@Nullable Activity activity) {
+        return showProgressDialog(activity, R.string.base_info_loading);
     }
 
-    public void showProgressDialog(@Nullable Activity activity, @StringRes int messageRes) {
+    @Nullable
+    public ProgressDialog showProgressDialog(@Nullable Activity activity, @StringRes int messageRes) {
         if (activity == null) {
-            return;
+            return null;
         }
         showProgressDialog(activity, activity.getString(messageRes));
+        return mProgressDialog;
     }
 
     /**
@@ -54,19 +57,21 @@ public class DialogController {
      * @param activity current activity
      * @param message  message (optional);
      */
-    public void showProgressDialog(@Nullable Activity activity, String message) {
+    @Nullable
+    public ProgressDialog showProgressDialog(@Nullable Activity activity, String message) {
         if (activity == null) {
-            return;
+            return null;
         }
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(activity);
             mProgressDialog.setMessage(message);
             mProgressDialog.setCancelable(false);
         } else if (mProgressDialog.isShowing()) {
-            return;
+            return mProgressDialog;
         }
 
         mProgressDialog.show();
+        return mProgressDialog;
     }
 
     @Nullable
