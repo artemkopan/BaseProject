@@ -92,6 +92,7 @@ public abstract class BaseFragment extends Fragment {
      * @param fromActivity If need find toolbar in {@link AppCompatActivity}
      */
     protected void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
+
         if (fromActivity && getActivity() != null) {
             mToolbar = findById(getActivity(), toolbarId);
         } else if (!fromActivity && getView() != null) {
@@ -102,7 +103,10 @@ public abstract class BaseFragment extends Fragment {
                     "\nView: " + getView());
         }
 
-        if (mToolbar != null && homeDrawable > 0) {
+        if (mToolbar == null) {
+            Log.e("onToolbarInit: Can't find toolbar", new IllegalArgumentException());
+            return;
+        } else if (homeDrawable > 0) {
             mToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), homeDrawable));
         }
 

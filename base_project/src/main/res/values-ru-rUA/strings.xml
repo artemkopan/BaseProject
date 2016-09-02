@@ -5,6 +5,7 @@
     <string name="base_info_items_not_found">Ничего не найдено</string>
     <string name="base_info_loading">Загрузка. Пожалуйста подождите…</string>
     <string name="base_info_try_again">Попробуйте снова…</string>
+    <string name="base_error_internet">Пожалуйста, проверьте интернет соединение</string>
 
 
 </resources>
