@@ -1,5 +1,6 @@
 package com.artemkopan.baseproject.presenter;
 
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 
 /**
@@ -10,6 +11,6 @@ import android.support.annotation.UiThread;
 public interface MvpView {
 
     @UiThread
-    void showError(String error);
+    void showError(@Nullable Object tag, String error);
 
 }

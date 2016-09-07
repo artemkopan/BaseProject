@@ -8,6 +8,7 @@ import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +26,16 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 public class ExtraUtils {
+
+    /**
+     * Check current thread; If was not main then throw illegalState exception;
+     */
+    public static void checkUiThread() {
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            throw new IllegalStateException(
+                    "Must be called from the main thread. Was: " + Thread.currentThread());
+        }
+    }
 
     /**
      * Hide keyboard if view !=null

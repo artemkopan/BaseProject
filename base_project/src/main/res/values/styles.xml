@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="BaseAppTheme" parent="Theme.AppCompat">
-
-    </style>
-
-    <style name="BaseAppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="actionBarWidgetTheme">@null</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-    </style>
-
     <style name="DialogAnimationUpDown">
         <item name="android:windowEnterAnimation">@anim/dialog_up</item>
         <item name="android:windowExitAnimation">@anim/dialog_down</item>

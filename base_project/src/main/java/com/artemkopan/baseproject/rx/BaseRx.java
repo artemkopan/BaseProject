@@ -6,10 +6,10 @@ import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.ExtraUtils;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
