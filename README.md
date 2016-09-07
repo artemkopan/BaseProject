@@ -10,7 +10,7 @@ p.s. version see in Tags
 <b>App Settigns:</b>
 
 ```java 
-FragmentBuilder.setIdResDefault(R.id.fragment_container); 
+Router.setIdResDefault(R.id.fragment_container); 
 Log.enable(BuildConfig.DEBUG); 
 ```
 
