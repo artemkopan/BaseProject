@@ -88,6 +88,16 @@ public abstract class BaseFragment extends Fragment {
      * Toolbar init. Usually call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
      *
      * @param toolbarId    Res id your toolbar;
+     * @param fromActivity If need find toolbar in {@link AppCompatActivity}
+     */
+    protected void onToolbarInit(@IdRes int toolbarId, boolean fromActivity) {
+        onToolbarInit(toolbarId, 0, fromActivity);
+    }
+
+    /**
+     * Toolbar init. Usually call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     *
+     * @param toolbarId    Res id your toolbar;
      * @param homeDrawable Set home image resources ( - optional)
      * @param fromActivity If need find toolbar in {@link AppCompatActivity}
      */
