@@ -15,7 +15,7 @@ android {
     buildToolsVersion "24.0.2"
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 24
         vectorDrawables.useSupportLibrary = true
     }
@@ -33,7 +33,7 @@ android {
 publish {
     groupId = 'com.github.artemkopan'
     artifactId = 'baseproject'
-    publishVersion = '0.1.9'
+    publishVersion = '1.0.0'
     desc = 'A small project containing all base elemnt for start project (Activities, Fragment, Utils and other)'
     licences = ['Apache-2.0']
     website = 'https://github.com/artemkopan/BaseProject'
