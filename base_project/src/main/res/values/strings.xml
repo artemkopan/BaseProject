@@ -5,6 +5,5 @@
     <string name="base_info_try_again">Please try again…</string>
     <string name="base_error_internet">Please check your internet connection</string>
 
-    <string name="behavior_view_position">com.artemkopan.baseproject.widget.behavior.ViewPositionBehavior</string>
-    <string name="behavior_fab_scroll">com.artemkopan.baseproject.widget.behavior.FabScrollBehavior</string>
+
 </resources>

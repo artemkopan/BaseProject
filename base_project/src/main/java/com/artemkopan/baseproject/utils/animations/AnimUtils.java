@@ -3,11 +3,12 @@ package com.artemkopan.baseproject.utils.animations;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Build;
 import android.util.Property;
 import android.view.View;
 
@@ -20,16 +21,18 @@ public class AnimUtils {
     public static final int MIDDLE_DURATION = 400;
     public static final int SLOW_DURATION = 700;
 
-    public static final Property<FloatingActionButton, Integer> BACKGROUND_TINT_LIST =
-            new Property<FloatingActionButton, Integer>(Integer.class, "backgroundTint") {
+    public static final Property<View, Integer> BACKGROUND_TINT_LIST =
+            new Property<View, Integer>(Integer.class, "backgroundTint") {
 
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override
-                public void set(FloatingActionButton object, Integer value) {
+                public void set(View object, Integer value) {
                     object.setBackgroundTintList(ColorStateList.valueOf(value));
                 }
 
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override
-                public Integer get(FloatingActionButton object) {
+                public Integer get(View object) {
                     return object.getBackgroundTintList() != null ?
                             object.getBackgroundTintList().getDefaultColor() : Color.TRANSPARENT;
                 }

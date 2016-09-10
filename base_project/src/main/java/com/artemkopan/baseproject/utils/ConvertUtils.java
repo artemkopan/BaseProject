@@ -21,11 +21,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ConvertUtils {
 
     public static final Locale DEFAULT_LOCALE = Locale.getDefault();
@@ -56,11 +58,11 @@ public class ConvertUtils {
         if (events == null) {
             observable = Observable.empty();
         } else {
-            observable = Observable.create(new Observable.OnSubscribe<List<V>>() {
+            observable = Observable.create(new ObservableOnSubscribe<List<V>>() {
                 @Override
-                public void call(Subscriber<? super List<V>> subscriber) {
+                public void subscribe(ObservableEmitter<List<V>> subscriber) throws Exception {
                     subscriber.onNext(new ArrayList<>(events.values()));
-                    subscriber.onCompleted();
+                    subscriber.onComplete();
                 }
             });
         }
@@ -69,9 +71,9 @@ public class ConvertUtils {
 
 
     public static Observable<String> convertUriToRealPath(final Context context, final Uri fileUri) {
-        Observable<String> observable = Observable.create(new Observable.OnSubscribe<String>() {
+        return Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void call(Subscriber<? super String> subscriber) {
+            public void subscribe(ObservableEmitter<String> subscriber) throws Exception {
                 String realPath = null;
 
                 if (context != null && fileUri != null) {
@@ -93,12 +95,11 @@ public class ConvertUtils {
                     subscriber.onError(new IOException("We can't get real path from " + fileUri));
                 }
                 subscriber.onNext(realPath);
-                subscriber.onCompleted();
+                subscriber.onComplete();
             }
-        });
-        return observable.subscribeOn(Schedulers.io());
-    }
+        }).subscribeOn(Schedulers.io());
 
+    }
 
     @SuppressLint("NewApi")
     private static String getRealPathFromURI_API11to18(Context context, Uri contentUri) {
@@ -120,7 +121,7 @@ public class ConvertUtils {
     private static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        int column_index = 0;
+        int column_index;
         String result = "";
         if (cursor != null) {
             column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);

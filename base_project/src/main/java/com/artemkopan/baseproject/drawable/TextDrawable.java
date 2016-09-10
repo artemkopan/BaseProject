@@ -35,6 +35,7 @@ import android.view.Gravity;
  * {@link #setBounds(android.graphics.Rect) setBounds()} to provide the Drawable
  * size based on the Path constraints.
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class TextDrawable extends Drawable {
 
     /* Platform XML constants for typeface */

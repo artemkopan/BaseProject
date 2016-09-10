@@ -27,10 +27,10 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.subjects.PublishSubject;
 
 import static butterknife.ButterKnife.findById;
 
@@ -60,13 +60,13 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     @Override
     protected void onDestroy() {
+        mPublishSubject.onNext(Lifecycle.ON_DESTROY);
         if (mUnbinder != null) {
             mUnbinder.unbind();
         }
         if (mPresenter != null) {
             mPresenter.detachView();
         }
-        mPublishSubject.onNext(Lifecycle.ON_DESTROY);
         super.onDestroy();
     }
 
@@ -105,16 +105,15 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (ExtraUtils.postLollipop()) {
-            Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
+            Observable.timer(delay, timeUnit,AndroidSchedulers.mainThread())
                     .takeUntil(mPublishSubject)
-                    .subscribe(new Action1<Long>() {
+                    .subscribe(new Consumer<Long>() {
                         @Override
-                        public void call(Long aLong) {
+                        public void accept(Long aLong) throws Exception {
                             setStatusBarColor(color);
                         }
                     });
         }
-
     }
 
 

@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.widget.behavior;
+package com.artemkopan.base_design.behavior;
 
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;

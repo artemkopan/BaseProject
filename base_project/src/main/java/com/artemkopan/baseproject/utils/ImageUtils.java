@@ -10,6 +10,8 @@ import android.text.TextUtils;
 
 import com.artemkopan.baseproject.rx.BaseRx;
 
+import org.reactivestreams.Subscriber;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -17,8 +19,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import rx.Observable;
-import rx.Subscriber;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableTransformer;
+
 
 public class ImageUtils {
 
@@ -32,31 +37,31 @@ public class ImageUtils {
 
     public static Observable<Bitmap> openBitmapFromFile(final String imagePath,
                                                         final Bitmap.Config config) {
-        return Observable.create(new Observable.OnSubscribe<Bitmap>() {
+        return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
-            public void call(Subscriber<? super Bitmap> subscriber) {
+            public void subscribe(ObservableEmitter<Bitmap> e) throws Exception {
                 if (TextUtils.isEmpty(imagePath)) {
-                    subscriber.onError(
+                    e.onError(
                             new IllegalArgumentException("ImagePath is null or empty : " + imagePath));
                     return;
                 }
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = config;
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath, options);
-                subscriber.onNext(bitmap);
-                subscriber.onCompleted();
+                e.onNext(bitmap);
+                e.onComplete();
             }
-        }).compose(BaseRx.<Bitmap>applySchedulers());
+        });
     }
 
     public static Observable<Bitmap> resizeBitmapObservable(final Bitmap image,
                                                             final int maxWidth,
                                                             final int maxHeight) {
-        return Observable.create(new Observable.OnSubscribe<Bitmap>() {
+        return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
-            public void call(Subscriber<? super Bitmap> subscriber) {
+            public void subscribe(ObservableEmitter<Bitmap> subscriber) throws Exception {
                 subscriber.onNext(resizeBitmap(image, maxWidth, maxHeight));
-                subscriber.onCompleted();
+                subscriber.onComplete();
             }
         }).compose(BaseRx.<Bitmap>applySchedulers());
     }

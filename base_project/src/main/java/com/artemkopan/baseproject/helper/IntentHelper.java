@@ -80,7 +80,7 @@ public class IntentHelper {
 
     @SuppressWarnings("MissingPermission")
     @RequiresPermission(Manifest.permission.CALL_PHONE)
-    public static void intentCall(Context context, String phoneNumber) {
+    public static void intentCall(Context context, String phoneNumber) throws ActivityNotFoundException {
         if (TextUtils.isEmpty(phoneNumber)) {
             Log.e("intentCall: Phone number is null or empty");
             return;

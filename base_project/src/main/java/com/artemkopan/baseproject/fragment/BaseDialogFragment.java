@@ -23,7 +23,7 @@ import com.artemkopan.baseproject.rx.Lifecycle;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rx.subjects.PublishSubject;
+import io.reactivex.subjects.PublishSubject;
 
 
 public abstract class BaseDialogFragment extends DialogFragment {

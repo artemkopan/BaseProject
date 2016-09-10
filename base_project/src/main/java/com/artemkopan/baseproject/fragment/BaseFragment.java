@@ -18,22 +18,25 @@ import android.view.ViewGroup;
 
 import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.presenter.BasePresenter;
+import com.artemkopan.baseproject.presenter.MvpView;
 import com.artemkopan.baseproject.rx.Lifecycle;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rx.subjects.PublishSubject;
+import io.reactivex.subjects.PublishSubject;
 
 import static butterknife.ButterKnife.findById;
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView> extends Fragment implements MvpView {
 
     public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
 
     @Nullable
     protected Toolbar mToolbar;
+    protected P mPresenter;
     @SuppressWarnings("SpellCheckingInspection")
     private Unbinder mUnbinder;
 
@@ -50,8 +53,21 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (mPresenter != null) {
+            mPresenter.attachView((V) this);
+        }
+    }
+
+    @Override
     public void onDestroyView() {
-        mUnbinder.unbind();
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
+        if (mUnbinder != null) {
+            mUnbinder.unbind();
+        }
         super.onDestroyView();
     }
 
@@ -66,6 +82,7 @@ public abstract class BaseFragment extends Fragment {
         mPublishSubject.onNext(Lifecycle.ON_DESTROY);
         super.onDestroy();
     }
+
 
     /**
      * Call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} with auto inflate

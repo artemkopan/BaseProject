@@ -10,7 +10,6 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 
 import com.artemkopan.baseproject.R;
@@ -40,30 +39,19 @@ public class CircularProgressView extends View {
     }
 
     private void init(AttributeSet attrs) {
-        int color = Color.TRANSPARENT;
+        int color = Color.BLACK;
         int borderWidth = -1;
 
         if (attrs != null) {
             TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
             try {
                 color = array.getColor(R.styleable.CircularProgressView_cpv_progressColor, color);
-                borderWidth = array.getDimensionPixelSize(R.styleable.CircularProgressView_cpv_border_width, -1);
+                borderWidth = array.getDimensionPixelSize(
+                        R.styleable.CircularProgressView_cpv_border_width,
+                        getContext().getResources().getDimensionPixelSize(R.dimen.base_progress_border_width));
             } finally {
                 array.recycle();
             }
-        }
-
-        TypedValue typedValue = new TypedValue();
-
-        TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorPrimary});
-
-        try {
-            if (color == Color.TRANSPARENT)
-                color = a.getColor(0, 0);
-            if (borderWidth == -1)
-                borderWidth = 5;
-        } finally {
-            a.recycle();
         }
 
         mDrawable = new CircularProgressDrawable(color, borderWidth);
