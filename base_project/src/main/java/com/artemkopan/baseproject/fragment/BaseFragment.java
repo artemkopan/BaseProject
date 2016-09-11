@@ -54,7 +54,6 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         if (mPresenter != null) {
             mPresenter.attachView((V) this);
         }

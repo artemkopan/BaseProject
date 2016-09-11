@@ -13,10 +13,11 @@
         <attr name="erv_textSize" format="dimension"/>
         <attr name="erv_textColor" format="color"/>
         <attr name="erv_textDefault" format="string"/>
+        <attr name="erv_textPadding" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="SquareImageView">
-        <attr name="siv_by_height" format="boolean" />
+        <attr name="siv_by_height" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="ViewPositionBehavior">

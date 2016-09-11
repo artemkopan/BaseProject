@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.drawable.CircularProgressDrawable;
+import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
 
 public class CircularProgressView extends View {
@@ -62,6 +62,12 @@ public class CircularProgressView extends View {
     public void setProgressColor(@ColorInt int color) {
         if (mDrawable != null) {
             mDrawable.setColor(color);
+        }
+    }
+
+    public void setBorderWidth(int borderWidth) {
+        if (mDrawable != null) {
+            mDrawable.setStrokeWidth(borderWidth);
         }
     }
 

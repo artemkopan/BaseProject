@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.drawable;
+package com.artemkopan.baseproject.widget.drawable;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

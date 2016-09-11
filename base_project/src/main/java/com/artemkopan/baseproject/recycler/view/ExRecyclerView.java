@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -11,23 +12,28 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.ViewTreeObserver;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.drawable.CircularProgressDrawable;
-import com.artemkopan.baseproject.drawable.TextDrawable;
+import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
+import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener;
 
 
 public class ExRecyclerView extends RecyclerView {
 
     private static final String TAG = "ExRecyclerView";
-    private TextDrawable mTextDrawable;
+    private StaticLayout mTextLayout;
+    private TextPaint mTextPaint;
     private CircularProgressDrawable mProgressDrawable;
     private int mProgressSize;
+    private int mTextPadding;
     private boolean mDrawText, mDrawProgress;
     private OnRecyclerPaginationListener mPaginationListener;
 
@@ -42,8 +48,8 @@ public class ExRecyclerView extends RecyclerView {
     public ExRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        int borderWidth = 10, progressColor = -1;
-        int textSize = 14, textColor = Color.BLACK;
+        int borderWidth = -1, progressColor = -1;
+        int textSize = -1, textColor = Color.BLACK;
         String textDefault = null;
 
         if (attrs != null) {
@@ -58,6 +64,7 @@ public class ExRecyclerView extends RecyclerView {
                 textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize, textSize);
                 textColor = array.getColor(R.styleable.ExRecyclerView_erv_textColor, textColor);
                 textDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
+                mTextPadding = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textPadding, mTextPadding);
             } finally {
                 array.recycle();
             }
@@ -76,19 +83,26 @@ public class ExRecyclerView extends RecyclerView {
             }
         }
 
+        if (textSize == -1) {
+            textSize = getContext().getResources().getDimensionPixelSize(R.dimen.base_recycler_text_size);
+        }
+        if (mTextPadding == 0) {
+            mTextPadding = context.getResources().getDimensionPixelSize(R.dimen.base_recycler_text_padding);
+        }
+
         if (TextUtils.isEmpty(textDefault)) {
             textDefault = context.getString(R.string.base_info_items_not_found);
         }
 
-        mTextDrawable = new TextDrawable(getContext());
-        mTextDrawable.setTextAlign(Layout.Alignment.ALIGN_CENTER);
-        mTextDrawable.setGravity(Gravity.CENTER);
-        mTextDrawable.setTextSize(textSize);
-        mTextDrawable.setTextColor(textColor);
-        mTextDrawable.setText(textDefault);
+        mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        mTextPaint.setColor(textColor);
+        mTextPaint.setTextSize(textSize);
+
         mProgressDrawable = new CircularProgressDrawable(progressColor, borderWidth);
         mProgressDrawable.setGravity(Gravity.CENTER);
         mProgressDrawable.setCallback(this);
+
+        setText(textDefault);
     }
 
     @Override
@@ -114,7 +128,6 @@ public class ExRecyclerView extends RecyclerView {
         mProgressDrawable.setColor(color);
     }
 
-
     public void enablePagination() {
         if (mPaginationListener != null) {
             mPaginationListener.enablePagionation();
@@ -131,12 +144,35 @@ public class ExRecyclerView extends RecyclerView {
         setText(getContext().getString(textRes, arguments));
     }
 
+    public void setTextPadding(int textPadding) {
+        mTextPadding = textPadding;
+    }
+
     public void setText(@StringRes int textRes) {
         setText(getContext().getString(textRes));
     }
 
-    public void setText(String text) {
-        mTextDrawable.setText(text);
+    public void setText(final String text) {
+        Log.i("setText: " + getWidth());
+        if (getWidth() <= 0) {
+            getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    getViewTreeObserver().removeOnPreDrawListener(this);
+                    setText(text);
+                    return false;
+                }
+            });
+        } else {
+            mTextLayout = new StaticLayout(
+                    text,
+                    mTextPaint,
+                    getWidth() - mTextPadding * 2,
+                    Layout.Alignment.ALIGN_CENTER,
+                    1,
+                    0,
+                    true);
+        }
     }
 
     public void showText() {
@@ -167,8 +203,16 @@ public class ExRecyclerView extends RecyclerView {
         if (mDrawProgress) {
             mProgressDrawable.draw(c);
         }
-        if (mDrawText) {
-            mTextDrawable.draw(c);
+        if (mDrawText && mTextLayout != null) {
+            c.save();
+
+            c.translate(
+                    (c.getWidth() / 2) - (mTextLayout.getWidth() / 2),
+                    (c.getHeight() / 2) - ((mTextLayout.getHeight() / 2)));
+
+            mTextLayout.draw(c);
+
+            c.restore();
         }
     }
 
