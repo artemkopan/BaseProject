@@ -3,7 +3,7 @@
 <b>Dependency:</b>
 
 ```java
-compile 'com.github.artemkopan:baseproject:x.y.z'
+compile 'com.github.artemkopan:base-project:x.y.z'
 ```
 p.s. version see in Tags
 
