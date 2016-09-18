@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:erv_textColor="@color/colorAccent"
+        app:erv_progressSize="100dp"
         app:erv_textSize="14sp"/>
 
 </LinearLayout>

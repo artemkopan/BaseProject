@@ -3,12 +3,13 @@
 
     <declare-styleable name="CircularProgressView">
         <attr name="cpv_progressColor" format="color"/>
-        <attr name="cpv_border_width" format="dimension"/>/>
+        <attr name="cpv_border_width" format="dimension"/>
+        <attr name="cpv_height_accent" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="ExRecyclerView">
         <attr name="erv_progressColor" format="color"/>
-        <attr name="erv_progressBorderWidth" format="dimension"/>/>
+        <attr name="erv_progressBorderWidth" format="dimension"/>
         <attr name="erv_progressSize" format="dimension"/>
         <attr name="erv_textSize" format="dimension"/>
         <attr name="erv_textColor" format="color"/>
@@ -20,12 +21,5 @@
         <attr name="siv_by_height" format="boolean"/>
     </declare-styleable>
 
-    <declare-styleable name="ViewPositionBehavior">
-        <attr name="vpb_end_view" format="integer"/>
-        <attr name="vpb_end_width" format="dimension"/>
-        <attr name="vpb_end_height" format="dimension"/>
-        <attr name="vpb_end_x" format="dimension"/>
-        <attr name="vpb_end_y" format="dimension"/>
-    </declare-styleable>
 
 </resources>

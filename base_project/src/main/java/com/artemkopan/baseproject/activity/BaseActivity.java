@@ -1,5 +1,6 @@
 package com.artemkopan.baseproject.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -8,13 +9,16 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 
 import com.artemkopan.baseproject.fragment.BaseFragment;
 import com.artemkopan.baseproject.helper.Log;
@@ -34,7 +38,6 @@ import io.reactivex.subjects.PublishSubject;
 
 import static butterknife.ButterKnife.findById;
 
-
 public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView> extends AppCompatActivity implements MvpView {
 
     static {
@@ -45,7 +48,8 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     @SuppressWarnings("SpellCheckingInspection")
     protected Unbinder mUnbinder;
-    protected Toolbar mToolbar;
+    protected Toolbar  mToolbar;
+
     protected P mPresenter;
 
     public void bindButterKnife() {
@@ -64,6 +68,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         if (mUnbinder != null) {
             mUnbinder.unbind();
         }
+
         if (mPresenter != null) {
             mPresenter.detachView();
         }
@@ -80,7 +85,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         FragmentManager fragmentManager = getSupportFragmentManager();
         int backStackCount = fragmentManager.getBackStackEntryCount() - 1;
         if (backStackCount >= 0) {
-            FragmentManager.BackStackEntry backEntry =
+            BackStackEntry backEntry =
                     fragmentManager.getBackStackEntryAt(backStackCount);
             String str = backEntry.getName();
 
@@ -98,14 +103,14 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     public void setStatusBarColor(@ColorInt int color) {
         if (ExtraUtils.postLollipop()) {
             Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(color);
         }
     }
 
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (ExtraUtils.postLollipop()) {
-            Observable.timer(delay, timeUnit,AndroidSchedulers.mainThread())
+            Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
                     .takeUntil(mPublishSubject)
                     .subscribe(new Consumer<Long>() {
                         @Override

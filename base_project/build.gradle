@@ -32,7 +32,7 @@ android {
 publish {
     groupId = 'com.github.artemkopan'
     artifactId = 'base-project'
-    publishVersion = '1.0.1'
+    publishVersion = '1.0.2'
     desc = 'A small project containing all base elemnt for start project (Activities, Fragment, Utils and other)'
     licences = ['Apache-2.0']
     website = 'https://github.com/artemkopan/BaseProject'
@@ -40,8 +40,8 @@ publish {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:24.+"
-    compile "com.android.support:recyclerview-v7:24.+"
+    compile "com.android.support:appcompat-v7:24.2.1"
+    compile "com.android.support:recyclerview-v7:24.2.1"
 
     compile "com.jakewharton:butterknife:8.4.0"
 

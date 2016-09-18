@@ -17,7 +17,9 @@ import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
 
 public class CircularProgressView extends View {
+
     private CircularProgressDrawable mDrawable;
+    private boolean mHeightAccent = false;
 
     public CircularProgressView(Context context) {
         this(context, null, 0);
@@ -33,7 +35,8 @@ public class CircularProgressView extends View {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CircularProgressView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CircularProgressView(Context context, AttributeSet attrs, int defStyleAttr,
+                                int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
@@ -43,12 +46,16 @@ public class CircularProgressView extends View {
         int borderWidth = -1;
 
         if (attrs != null) {
-            TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
+            TypedArray array = getContext().obtainStyledAttributes(attrs,
+                    R.styleable.CircularProgressView);
             try {
                 color = array.getColor(R.styleable.CircularProgressView_cpv_progressColor, color);
                 borderWidth = array.getDimensionPixelSize(
                         R.styleable.CircularProgressView_cpv_border_width,
-                        getContext().getResources().getDimensionPixelSize(R.dimen.base_progress_border_width));
+                        getContext().getResources()
+                                    .getDimensionPixelSize(R.dimen.base_progress_border_width));
+                mHeightAccent = array.getBoolean(R.styleable.CircularProgressView_cpv_height_accent,
+                        mHeightAccent);
             } finally {
                 array.recycle();
             }
@@ -87,7 +94,11 @@ public class CircularProgressView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mDrawable.setBounds(0, 0, w, h);
+        if (mHeightAccent) {
+            mDrawable.setBounds(0, 0, h, h);
+        } else {
+            mDrawable.setBounds(0, 0, w, w);
+        }
     }
 
     @Override

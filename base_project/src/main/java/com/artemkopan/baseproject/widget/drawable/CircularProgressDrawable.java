@@ -35,7 +35,6 @@ public class CircularProgressDrawable extends Drawable
     private ObjectAnimator mObjectAnimatorSweep;
     private ObjectAnimator mObjectAnimatorAngle;
     private boolean mModeAppearing;
-    private int mGravity = -1;
     private float mCurrentGlobalAngleOffset;
     private float mCurrentGlobalAngle;
     private float mCurrentSweepAngle;
@@ -82,7 +81,8 @@ public class CircularProgressDrawable extends Drawable
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        setCanvasGravity(canvas);
+
+//        setCanvasGravity(canvas);
         float startAngle = mCurrentGlobalAngle - mCurrentGlobalAngleOffset;
         float sweepAngle = mCurrentSweepAngle;
         if (!mModeAppearing) {
@@ -92,6 +92,7 @@ public class CircularProgressDrawable extends Drawable
             sweepAngle += MIN_SWEEP_ANGLE;
         }
         canvas.drawArc(fBounds, startAngle, sweepAngle, false, mPaint);
+
     }
 
     @Override
@@ -99,9 +100,6 @@ public class CircularProgressDrawable extends Drawable
         mPaint.setAlpha(alpha);
     }
 
-    public void setGravity(int gravity) {
-        mGravity = gravity;
-    }
 
     public void setColor(@ColorInt int color) {
         mPaint.setColor(color);
@@ -147,7 +145,8 @@ public class CircularProgressDrawable extends Drawable
         mObjectAnimatorAngle.setRepeatMode(ValueAnimator.RESTART);
         mObjectAnimatorAngle.setRepeatCount(ValueAnimator.INFINITE);
 
-        mObjectAnimatorSweep = ObjectAnimator.ofFloat(this, mSweepProperty, 360f - MIN_SWEEP_ANGLE * 2);
+        mObjectAnimatorSweep = ObjectAnimator.ofFloat(this, mSweepProperty,
+                360f - MIN_SWEEP_ANGLE * 2);
         mObjectAnimatorSweep.setInterpolator(SWEEP_INTERPOLATOR);
         mObjectAnimatorSweep.setDuration(SWEEP_ANIMATOR_DURATION);
         mObjectAnimatorSweep.setRepeatMode(ValueAnimator.RESTART);
@@ -203,23 +202,6 @@ public class CircularProgressDrawable extends Drawable
     public void setCurrentSweepAngle(float currentSweepAngle) {
         mCurrentSweepAngle = currentSweepAngle;
         invalidateSelf();
-    }
-
-    private void setCanvasGravity(Canvas canvas) {
-        int dx, dy;
-        switch (mGravity) {
-            case Gravity.CENTER:
-                dx = canvas.getWidth() / 2 - getIntrinsicWidth() / 2;
-                dy = canvas.getHeight() / 2 - getIntrinsicHeight() / 2;
-                break;
-            case GravityCompat.END:
-                dx = canvas.getWidth() - getIntrinsicWidth();
-                dy = canvas.getHeight() / 2 - getIntrinsicHeight() / 2;
-                break;
-            default:
-                return;
-        }
-        canvas.translate(dx, dy);
     }
 
     @Override

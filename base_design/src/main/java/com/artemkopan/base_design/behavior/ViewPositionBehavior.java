@@ -8,7 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.artemkopan.baseproject.R;
+import com.artemkopan.base_design.R;
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.utils.ViewUtils;
 

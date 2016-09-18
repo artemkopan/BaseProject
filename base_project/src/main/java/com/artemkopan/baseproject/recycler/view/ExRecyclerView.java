@@ -28,14 +28,14 @@ import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListene
 
 public class ExRecyclerView extends RecyclerView {
 
-    private static final String TAG = "ExRecyclerView";
     private StaticLayout mTextLayout;
     private TextPaint mTextPaint;
     private CircularProgressDrawable mProgressDrawable;
     private int mProgressSize;
-    private int mTextPadding;
+    private int mTextPadding = -1;
     private boolean mDrawText, mDrawProgress;
     private OnRecyclerPaginationListener mPaginationListener;
+
 
     public ExRecyclerView(Context context) {
         this(context, null, 0);
@@ -55,27 +55,35 @@ public class ExRecyclerView extends RecyclerView {
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.ExRecyclerView);
             try {
-                mProgressSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_progressSize,
+                mProgressSize = array.getDimensionPixelSize(
+                        R.styleable.ExRecyclerView_erv_progressSize,
                         context.getResources().getDimensionPixelSize(R.dimen.base_progress_size));
-                borderWidth = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_progressBorderWidth,
-                        context.getResources().getDimensionPixelSize(R.dimen.base_progress_border_width));
+                borderWidth = array.getDimensionPixelSize(
+                        R.styleable.ExRecyclerView_erv_progressBorderWidth,
+                        context.getResources()
+                               .getDimensionPixelSize(R.dimen.base_progress_border_width));
                 progressColor = array.getColor(R.styleable.ExRecyclerView_erv_progressColor, -1);
 
-                textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize, textSize);
+                textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize,
+                        textSize);
                 textColor = array.getColor(R.styleable.ExRecyclerView_erv_textColor, textColor);
                 textDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
-                mTextPadding = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textPadding, mTextPadding);
+                mTextPadding = array.getDimensionPixelSize(
+                        R.styleable.ExRecyclerView_erv_textPadding, mTextPadding);
             } finally {
                 array.recycle();
             }
         } else {
-            mProgressSize = context.getResources().getDimensionPixelSize(R.dimen.base_progress_size);
-            borderWidth = context.getResources().getDimensionPixelSize(R.dimen.base_progress_border_width);
+            mProgressSize = context.getResources()
+                                   .getDimensionPixelSize(R.dimen.base_progress_size);
+            borderWidth = context.getResources()
+                                 .getDimensionPixelSize(R.dimen.base_progress_border_width);
         }
 
         if (progressColor == -1) {
             TypedValue typedValue = new TypedValue();
-            TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorPrimary});
+            TypedArray a = getContext().obtainStyledAttributes(typedValue.data,
+                    new int[]{R.attr.colorPrimary});
             try {
                 progressColor = a.getColor(0, 0);
             } finally {
@@ -84,10 +92,12 @@ public class ExRecyclerView extends RecyclerView {
         }
 
         if (textSize == -1) {
-            textSize = getContext().getResources().getDimensionPixelSize(R.dimen.base_recycler_text_size);
+            textSize = getContext().getResources()
+                                   .getDimensionPixelSize(R.dimen.base_recycler_text_size);
         }
-        if (mTextPadding == 0) {
-            mTextPadding = context.getResources().getDimensionPixelSize(R.dimen.base_recycler_text_padding);
+        if (mTextPadding == -1) {
+            mTextPadding = context.getResources()
+                                  .getDimensionPixelSize(R.dimen.base_recycler_text_padding);
         }
 
         if (TextUtils.isEmpty(textDefault)) {
@@ -99,7 +109,6 @@ public class ExRecyclerView extends RecyclerView {
         mTextPaint.setTextSize(textSize);
 
         mProgressDrawable = new CircularProgressDrawable(progressColor, borderWidth);
-        mProgressDrawable.setGravity(Gravity.CENTER);
         mProgressDrawable.setCallback(this);
 
         setText(textDefault);
@@ -108,7 +117,9 @@ public class ExRecyclerView extends RecyclerView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mProgressDrawable.setBounds(0, 0, mProgressSize, mProgressSize);
+        mProgressDrawable.setBounds(
+                w / 2 - mProgressSize / 2, h / 2 - mProgressSize / 2,
+                w / 2 + mProgressSize / 2, h / 2 + mProgressSize / 2);
     }
 
     public void addPaginationListener(OnRecyclerPaginationListener scrollListener) {
@@ -159,6 +170,10 @@ public class ExRecyclerView extends RecyclerView {
                 @Override
                 public boolean onPreDraw() {
                     getViewTreeObserver().removeOnPreDrawListener(this);
+                    if (getWidth() <= 0) {
+                        Log.e("onPreDraw: width must be set > 0");
+                        return false;
+                    }
                     setText(text);
                     return false;
                 }

@@ -7,7 +7,7 @@ buildscript {
     }
 }
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+//apply plugin: 'com.novoda.bintray-release'
 
 
 android {
@@ -31,11 +31,11 @@ android {
     }
 }
 
-
+//
 //publish {
 //    groupId = 'com.github.artemkopan'
 //    artifactId = 'base-design'
-//    publishVersion = '0.0.1'
+//    publishVersion = '0.0.2'
 //    desc = 'A small project containing all base elemnt for start project (Activities, Fragment, Utils and other)'
 //    licences = ['Apache-2.0']
 //    website = 'https://github.com/artemkopan/BaseProject'
