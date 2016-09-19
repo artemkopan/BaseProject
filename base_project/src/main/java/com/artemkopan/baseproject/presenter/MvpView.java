@@ -13,4 +13,10 @@ public interface MvpView {
     @UiThread
     void showError(@Nullable Object tag, String error);
 
+    @UiThread
+    void showProgress(@Nullable Object tag);
+
+    @UiThread
+    void hideProgress(@Nullable Object tag);
+
 }

@@ -81,6 +81,16 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     }
 
     @Override
+    public void showProgress(@Nullable Object tag) {
+
+    }
+
+    @Override
+    public void hideProgress(@Nullable Object tag) {
+
+    }
+
+    @Override
     public void onBackPressed() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         int backStackCount = fragmentManager.getBackStackEntryCount() - 1;

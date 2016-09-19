@@ -30,7 +30,8 @@ import io.reactivex.subjects.PublishSubject;
 
 import static butterknife.ButterKnife.findById;
 
-public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView> extends Fragment implements MvpView {
+public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView> extends Fragment
+        implements MvpView {
 
     public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
 
@@ -42,7 +43,8 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         if (onCreateInflateView() > 0) {
             View view = inflater.inflate(onCreateInflateView(), container, false);
             mUnbinder = ButterKnife.bind(this, view);
@@ -82,6 +84,20 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
         super.onDestroy();
     }
 
+    @Override
+    public void showError(@Nullable Object tag, String error) {
+
+    }
+
+    @Override
+    public void showProgress(@Nullable Object tag) {
+
+    }
+
+    @Override
+    public void hideProgress(@Nullable Object tag) {
+
+    }
 
     /**
      * Call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} with auto inflate
@@ -117,7 +133,8 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
      * @param homeDrawable Set home image resources ( - optional)
      * @param fromActivity If need find toolbar in {@link AppCompatActivity}
      */
-    protected void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
+    protected void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable,
+                                 boolean fromActivity) {
 
         if (fromActivity && getActivity() != null) {
             mToolbar = findById(getActivity(), toolbarId);
@@ -166,7 +183,8 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
         if (getActivity() != null
                 && getActivity() instanceof AppCompatActivity
                 && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(show);
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                                               .setDisplayHomeAsUpEnabled(show);
         }
     }
 
