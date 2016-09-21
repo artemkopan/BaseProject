@@ -34,7 +34,7 @@ public class AnimUtils {
                 @Override
                 public Integer get(View object) {
                     return object.getBackgroundTintList() != null ?
-                            object.getBackgroundTintList().getDefaultColor() : Color.TRANSPARENT;
+                           object.getBackgroundTintList().getDefaultColor() : Color.TRANSPARENT;
                 }
             };
 
@@ -82,8 +82,10 @@ public class AnimUtils {
                                                              int backgroundStartColor,
                                                              int backgroundEndColor) {
 
-        PropertyValuesHolder textColor = PropertyValuesHolder.ofInt("textColor", textStartColor, textEndColor);
-        PropertyValuesHolder backgroundColor = PropertyValuesHolder.ofInt("backgroundColor", backgroundStartColor, backgroundEndColor);
+        PropertyValuesHolder textColor = PropertyValuesHolder.ofInt("textColor", textStartColor,
+                textEndColor);
+        PropertyValuesHolder backgroundColor = PropertyValuesHolder.ofInt("backgroundColor",
+                backgroundStartColor, backgroundEndColor);
 
         ArgbEvaluator evaluator = new ArgbEvaluator();
 
@@ -132,14 +134,16 @@ public class AnimUtils {
      * @param boundary     If you want boundary (recommend for circle view)
      */
     public static void setupRipple(View view, boolean setClickable, boolean boundary) {
+        if (view == null) return;
+
         if (setClickable) {
             view.setClickable(true);
         }
 
         int[] attrs = new int[]{
                 boundary ?
-                        R.attr.selectableItemBackgroundBorderless :
-                        R.attr.selectableItemBackground};
+                R.attr.selectableItemBackgroundBorderless :
+                R.attr.selectableItemBackground};
 
         TypedArray typedArray = view.getContext().obtainStyledAttributes(attrs);
         try {

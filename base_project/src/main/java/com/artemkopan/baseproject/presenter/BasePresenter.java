@@ -23,43 +23,43 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
     }
 
     @Nullable
-    protected T getMvpView() {
+    public T getMvpView() {
         return mMvpView;
     }
 
-    protected void onShowProgress() {
+    public void onShowProgress() {
         onShowProgress(null);
     }
 
-    protected void onShowProgress(Object tag) {
+    public void onShowProgress(Object tag) {
         if (mMvpView != null) {
             mMvpView.showProgress(tag);
         }
     }
 
-    protected void onHideProgress() {
+    public void onHideProgress() {
         onHideProgress(null);
     }
 
-    protected void onHideProgress(Object tag) {
+    public void onHideProgress(Object tag) {
         if (mMvpView != null) {
             mMvpView.hideProgress(tag);
         }
     }
 
-    protected void onShowError(Throwable throwable) {
+    public void onShowError(Throwable throwable) {
         onShowError(null, throwable.getMessage());
     }
 
-    protected void onShowError(String message) {
+    public void onShowError(String message) {
         onShowError(null, message);
     }
 
-    protected void onShowError(Object tag, Throwable throwable) {
+    public void onShowError(Object tag, Throwable throwable) {
         onShowError(tag, throwable.getMessage());
     }
 
-    protected void onShowError(Object tag, String message) {
+    public void onShowError(Object tag, String message) {
         if (mMvpView != null) {
             mMvpView.hideProgress(null);
             mMvpView.showError(tag, message);

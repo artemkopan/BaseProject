@@ -44,6 +44,10 @@ public class AdapterDelegatesManager<T> {
     SparseArrayCompat<AdapterDelegate<T>> delegates = new SparseArrayCompat();
     private AdapterDelegate<T> fallbackDelegate;
 
+    public SparseArrayCompat<AdapterDelegate<T>> getDelegates() {
+        return delegates;
+    }
+
     /**
      * Adds an {@link AdapterDelegate}. Internally calls {@link #addDelegate(AdapterDelegate,
      * boolean)} with false as parameter.
