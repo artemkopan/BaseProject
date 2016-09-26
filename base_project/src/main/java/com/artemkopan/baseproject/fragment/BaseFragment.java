@@ -184,7 +184,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
                 && getActivity() instanceof AppCompatActivity
                 && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar()
-                                               .setDisplayHomeAsUpEnabled(show);
+                    .setDisplayHomeAsUpEnabled(show);
         }
     }
 

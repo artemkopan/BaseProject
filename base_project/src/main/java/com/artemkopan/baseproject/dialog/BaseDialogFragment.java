@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.fragment;
+package com.artemkopan.baseproject.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,6 +19,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.presenter.BasePresenter;
+import com.artemkopan.baseproject.presenter.MvpView;
 import com.artemkopan.baseproject.rx.Lifecycle;
 
 import butterknife.ButterKnife;
@@ -26,10 +28,12 @@ import butterknife.Unbinder;
 import io.reactivex.subjects.PublishSubject;
 
 
-public abstract class BaseDialogFragment extends DialogFragment {
+public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView>
+        extends DialogFragment implements MvpView {
 
     public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
     protected Unbinder mUnbinder;
+    protected P mPresenter;
     private boolean mShown = false;
 
     public void show(FragmentManager manager) {
@@ -67,6 +71,23 @@ public abstract class BaseDialogFragment extends DialogFragment {
      */
     public abstract int onCreateInflateView();
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if (mPresenter != null) {
+            mPresenter.attachView((V) this);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
+        if (mUnbinder != null) {
+            mUnbinder.unbind();
+        }
+        super.onDestroyView();
+    }
 
     @Override
     public void onStop() {
@@ -77,9 +98,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onDestroy() {
         mPublishSubject.onNext(Lifecycle.ON_DESTROY);
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
-        }
         super.onDestroy();
     }
 
@@ -143,4 +161,18 @@ public abstract class BaseDialogFragment extends DialogFragment {
         }
     }
 
+    @Override
+    public void showError(@Nullable Object tag, String error) {
+
+    }
+
+    @Override
+    public void showProgress(@Nullable Object tag) {
+
+    }
+
+    @Override
+    public void hideProgress(@Nullable Object tag) {
+
+    }
 }

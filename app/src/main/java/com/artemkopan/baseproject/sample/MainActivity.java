@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.recycler.view.ExRecyclerView;
 import com.artemkopan.baseproject.rx.BaseRx;
 
@@ -13,7 +14,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private ExRecyclerView recyclerView;
 

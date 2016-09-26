@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.activity.BaseActivity;
-import com.artemkopan.baseproject.fragment.BaseDialogFragment;
 import com.artemkopan.baseproject.fragment.BaseFragment;
 
 @SuppressWarnings({"WeakerAccess", "unused"})

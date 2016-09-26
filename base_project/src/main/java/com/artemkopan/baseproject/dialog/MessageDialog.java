@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.fragment.BaseDialogFragment;
 
 import static butterknife.ButterKnife.findById;
 
