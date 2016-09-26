@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -17,24 +18,26 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.ViewTreeObserver;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener;
+import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
 
 public class ExRecyclerView extends RecyclerView {
 
+    private static final int NO_VALUE = -1;
+
     private StaticLayout mTextLayout;
     private TextPaint mTextPaint;
     private CircularProgressDrawable mProgressDrawable;
-    private int mProgressSize;
-    private int mTextPadding = -1;
-    private boolean mDrawText, mDrawProgress;
+    private Drawable mBackgroundDrawable;
     private OnRecyclerPaginationListener mPaginationListener;
+    private int mProgressSize = NO_VALUE;
+    private int mTextPadding = NO_VALUE;
+    private boolean mDrawText, mDrawProgress;
 
 
     public ExRecyclerView(Context context) {
@@ -48,8 +51,8 @@ public class ExRecyclerView extends RecyclerView {
     public ExRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        int borderWidth = -1, progressColor = -1;
-        int textSize = -1, textColor = Color.BLACK;
+        int borderWidth = NO_VALUE, progressColor = NO_VALUE;
+        int textSize = NO_VALUE, textColor = Color.BLACK;
         String textDefault = null;
 
         if (attrs != null) {
@@ -61,8 +64,9 @@ public class ExRecyclerView extends RecyclerView {
                 borderWidth = array.getDimensionPixelSize(
                         R.styleable.ExRecyclerView_erv_progressBorderWidth,
                         context.getResources()
-                               .getDimensionPixelSize(R.dimen.base_progress_border_width));
-                progressColor = array.getColor(R.styleable.ExRecyclerView_erv_progressColor, -1);
+                                .getDimensionPixelSize(R.dimen.base_progress_border_width));
+                progressColor = array.getColor(R.styleable.ExRecyclerView_erv_progressColor,
+                        NO_VALUE);
 
                 textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize,
                         textSize);
@@ -70,34 +74,34 @@ public class ExRecyclerView extends RecyclerView {
                 textDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
                 mTextPadding = array.getDimensionPixelSize(
                         R.styleable.ExRecyclerView_erv_textPadding, mTextPadding);
+
+                mBackgroundDrawable = array.getDrawable(
+                        R.styleable.ExRecyclerView_erv_backgroundDrawable);
             } finally {
                 array.recycle();
             }
         } else {
             mProgressSize = context.getResources()
-                                   .getDimensionPixelSize(R.dimen.base_progress_size);
+                    .getDimensionPixelSize(R.dimen.base_progress_size);
             borderWidth = context.getResources()
-                                 .getDimensionPixelSize(R.dimen.base_progress_border_width);
+                    .getDimensionPixelSize(R.dimen.base_progress_border_width);
         }
 
-        if (progressColor == -1) {
-            TypedValue typedValue = new TypedValue();
-            TypedArray a = getContext().obtainStyledAttributes(typedValue.data,
-                    new int[]{R.attr.colorPrimary});
-            try {
-                progressColor = a.getColor(0, 0);
-            } finally {
-                a.recycle();
-            }
+        if (progressColor == NO_VALUE) {
+            progressColor = getColorPrimary();
         }
 
-        if (textSize == -1) {
+        if (textSize == NO_VALUE) {
             textSize = getContext().getResources()
-                                   .getDimensionPixelSize(R.dimen.base_recycler_text_size);
+                    .getDimensionPixelSize(R.dimen.base_recycler_text_size);
         }
-        if (mTextPadding == -1) {
+        if (mTextPadding == NO_VALUE) {
             mTextPadding = context.getResources()
-                                  .getDimensionPixelSize(R.dimen.base_recycler_text_padding);
+                    .getDimensionPixelSize(R.dimen.base_recycler_text_padding);
+        }
+
+        if (mBackgroundDrawable == null) {
+            mBackgroundDrawable = new ColorDrawable(getThemeBackgroundColor());
         }
 
         if (TextUtils.isEmpty(textDefault)) {
@@ -117,6 +121,7 @@ public class ExRecyclerView extends RecyclerView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        mBackgroundDrawable.setBounds(0, 0, w, h);
         mProgressDrawable.setBounds(
                 w / 2 - mProgressSize / 2, h / 2 - mProgressSize / 2,
                 w / 2 + mProgressSize / 2, h / 2 + mProgressSize / 2);
@@ -141,7 +146,7 @@ public class ExRecyclerView extends RecyclerView {
 
     public void enablePagination() {
         if (mPaginationListener != null) {
-            mPaginationListener.enablePagionation();
+            mPaginationListener.enablePagination();
         }
     }
 
@@ -164,7 +169,6 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     public void setText(final String text) {
-        Log.i("setText: " + getWidth());
         if (getWidth() <= 0) {
             getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
@@ -192,42 +196,59 @@ public class ExRecyclerView extends RecyclerView {
 
     public void showText() {
         mDrawText = true;
-        hideProgress();
+        mDrawProgress = false;
+        postInvalidate();
     }
 
     public void hideText() {
         mDrawText = false;
-        invalidate();
+        postInvalidate();
     }
 
     public void showProgress() {
         mDrawProgress = true;
+        mDrawText = false;
         mProgressDrawable.start();
-        hideText();
+        postInvalidate();
     }
 
     public void hideProgress() {
         mDrawProgress = false;
         mProgressDrawable.stop();
-        invalidate();
+        postInvalidate();
+    }
+
+    public void hideAll() {
+        mDrawProgress = false;
+        mDrawText = false;
+        postInvalidate();
     }
 
     @Override
     public void draw(Canvas c) {
         super.draw(c);
-        if (mDrawProgress) {
-            mProgressDrawable.draw(c);
-        }
-        if (mDrawText && mTextLayout != null) {
-            c.save();
 
+        if ((mDrawProgress || mDrawText)
+                && getAdapter() != null && getAdapter().getItemCount() > 0) {
+
+            final int restore = c.save();
+            mBackgroundDrawable.draw(c);
+            c.restoreToCount(restore);
+        }
+
+        if (mDrawProgress) {
+            final int restore = c.save();
+            mProgressDrawable.draw(c);
+            c.restoreToCount(restore);
+        }
+
+        if (mDrawText && mTextLayout != null) {
+            final int restore = c.save();
             c.translate(
                     (c.getWidth() / 2) - (mTextLayout.getWidth() / 2),
                     (c.getHeight() / 2) - ((mTextLayout.getHeight() / 2)));
-
             mTextLayout.draw(c);
-
-            c.restore();
+            c.restoreToCount(restore);
         }
     }
 
@@ -245,5 +266,32 @@ public class ExRecyclerView extends RecyclerView {
         }
         return super.canScrollVertically(direction);
 
+    }
+
+    private int getThemeBackgroundColor() {
+        TypedValue a = new TypedValue();
+        getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true);
+        if (a.type >= TypedValue.TYPE_FIRST_COLOR_INT && a.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            // windowBackground is a color
+            return a.data;
+        } else {
+            return NO_VALUE;
+        }
+    }
+
+    private int getColorPrimary() {
+        TypedValue typedValue = new TypedValue();
+        TypedArray a = getContext().obtainStyledAttributes(
+                typedValue.data, new int[]{R.attr.colorPrimary});
+
+        int progressColor;
+
+        try {
+            progressColor = a.getColor(0, Color.BLACK);
+        } finally {
+            a.recycle();
+        }
+
+        return progressColor;
     }
 }

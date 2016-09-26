@@ -6,11 +6,13 @@ import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.ExtraUtils;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
@@ -41,10 +43,27 @@ public class BaseRx {
         return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(Observable<T> tObservable) throws Exception {
-                return tObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                return tObservable.subscribeOn(Schedulers.io()).observeOn(
+                        AndroidSchedulers.mainThread());
             }
         };
     }
+
+    public static <T> ObservableTransformer<T, T> delayObserver(final int millis) {
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<T> tObservable) throws Exception {
+                return tObservable.zipWith(Observable.timer(millis, TimeUnit.MILLISECONDS),
+                        new BiFunction<T, Long, T>() {
+                            @Override
+                            public T apply(T t, Long aLong) throws Exception {
+                                return t;
+                            }
+                        });
+            }
+        };
+    }
+
 
     public <T> ObservableTransformer<T, T> applyLifecycle() {
         return new ObservableTransformer<T, T>() {

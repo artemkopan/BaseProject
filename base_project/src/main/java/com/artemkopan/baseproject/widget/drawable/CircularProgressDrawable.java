@@ -17,9 +17,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.util.Property;
 import android.view.Gravity;
+import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+
+import com.artemkopan.baseproject.helper.Log;
+
+import java.util.Arrays;
 
 @SuppressWarnings("WeakerAccess")
 public class CircularProgressDrawable extends Drawable
@@ -81,10 +86,9 @@ public class CircularProgressDrawable extends Drawable
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-
-//        setCanvasGravity(canvas);
         float startAngle = mCurrentGlobalAngle - mCurrentGlobalAngleOffset;
         float sweepAngle = mCurrentSweepAngle;
+
         if (!mModeAppearing) {
             startAngle = startAngle + sweepAngle;
             sweepAngle = 360 - sweepAngle - MIN_SWEEP_ANGLE;
@@ -92,7 +96,6 @@ public class CircularProgressDrawable extends Drawable
             sweepAngle += MIN_SWEEP_ANGLE;
         }
         canvas.drawArc(fBounds, startAngle, sweepAngle, false, mPaint);
-
     }
 
     @Override
@@ -167,7 +170,6 @@ public class CircularProgressDrawable extends Drawable
         mRunning = true;
         mObjectAnimatorAngle.start();
         mObjectAnimatorSweep.start();
-        invalidateSelf();
     }
 
     @Override
@@ -178,7 +180,6 @@ public class CircularProgressDrawable extends Drawable
         mRunning = false;
         mObjectAnimatorAngle.cancel();
         mObjectAnimatorSweep.cancel();
-        invalidateSelf();
     }
 
     @Override

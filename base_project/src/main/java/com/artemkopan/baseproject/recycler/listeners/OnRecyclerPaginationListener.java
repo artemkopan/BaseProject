@@ -44,7 +44,7 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
         }
     }
 
-    public void enablePagionation() {
+    public void enablePagination() {
         loading = true;
     }
 

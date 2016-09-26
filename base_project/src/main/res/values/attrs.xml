@@ -8,6 +8,7 @@
     </declare-styleable>
 
     <declare-styleable name="ExRecyclerView">
+        <attr name="erv_backgroundDrawable" format="reference"/>
         <attr name="erv_progressColor" format="color"/>
         <attr name="erv_progressBorderWidth" format="dimension"/>
         <attr name="erv_progressSize" format="dimension"/>

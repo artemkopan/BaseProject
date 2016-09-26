@@ -1,9 +1,6 @@
 gradle.properties
 
 ext {
-    COMPILE_SDK_VERSION = 23
-    MIN_SDK_VERSION = 15
 
     SUPPORT_LIBRARY_VERSION = "24.+"
-    BUTTERKNIFE_VERSION = '8.2.1'
 }

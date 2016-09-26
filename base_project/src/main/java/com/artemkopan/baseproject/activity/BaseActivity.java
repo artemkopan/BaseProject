@@ -1,6 +1,7 @@
 package com.artemkopan.baseproject.activity;
 
-import android.app.Activity;
+import static butterknife.ButterKnife.findById;
+
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -14,10 +15,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.view.MenuItem;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
 import com.artemkopan.baseproject.fragment.BaseFragment;
@@ -36,9 +35,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
-import static butterknife.ButterKnife.findById;
-
-public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView> extends AppCompatActivity implements MvpView {
+public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView> extends
+        AppCompatActivity implements MvpView {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -48,9 +46,9 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     @SuppressWarnings("SpellCheckingInspection")
     protected Unbinder mUnbinder;
-    protected Toolbar  mToolbar;
-
+    protected Toolbar mToolbar;
     protected P mPresenter;
+    private boolean mShouldFinish = false;
 
     public void bindButterKnife() {
         mUnbinder = ButterKnife.bind(this);
@@ -59,7 +57,18 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     @Override
     protected void onStop() {
         mPublishSubject.onNext(Lifecycle.ON_STOP);
+        if (mShouldFinish) {
+            supportFinishAfterTransition();
+        }
         super.onStop();
+    }
+
+    /**
+     * This method need for finish activity after transition without bug.
+     * {@link #supportFinishAfterTransition()} work incorrect
+     */
+    public void shouldFinishActivity() {
+        mShouldFinish = true;
     }
 
     @Override
@@ -181,7 +190,9 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     }
 
     /**
-     * If you want enable home button. You can listen event in {@link #onOptionsItemSelected(MenuItem)} with item id {@link android.R.id#home}
+     * If you want enable home button. You can listen event in
+     * {@link #onOptionsItemSelected(MenuItem)}
+     * with item id {@link android.R.id#home}
      */
     protected void onToolbarHomeBtn(boolean show) {
         if (getSupportActionBar() != null) {
