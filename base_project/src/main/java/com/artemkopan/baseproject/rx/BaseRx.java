@@ -19,6 +19,8 @@ import io.reactivex.subjects.PublishSubject;
 
 public class BaseRx {
 
+    public static final Object TRIGGER = new Object();
+
     protected final PublishSubject<Lifecycle> mRxLifecycle;
 
     public BaseRx(PublishSubject<Lifecycle> rxLifecycle) {
