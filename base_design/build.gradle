@@ -8,6 +8,7 @@ buildscript {
 }
 apply plugin: 'com.android.library'
 //apply plugin: 'com.novoda.bintray-release'
+apply from: '../config.gradle'
 
 
 android {
@@ -45,5 +46,5 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':base_project')
-    compile 'com.android.support:design:24.+'
+    compile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
 }
