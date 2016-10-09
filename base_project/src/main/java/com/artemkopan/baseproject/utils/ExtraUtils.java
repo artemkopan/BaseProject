@@ -38,6 +38,16 @@ public class ExtraUtils {
     }
 
     /**
+     * Check current thread; If it is main thread then throw illegalState exception;
+     */
+    public static void checkBackgroundThread() {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            throw new IllegalStateException(
+                    "Must be called from the background thread. Was: " + Thread.currentThread());
+        }
+    }
+
+    /**
      * Hide keyboard if view !=null
      *
      * @param view current focused view
@@ -74,7 +84,8 @@ public class ExtraUtils {
      * @return if internet (WIFI or MOBILE) is connected return true;
      */
     public static boolean checkInternetConnection(Context context) {
-        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
@@ -118,7 +129,8 @@ public class ExtraUtils {
      */
     public static PowerManager.WakeLock wakeLock(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, context.getClass().getName());
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                context.getClass().getName());
         wakeLock.acquire();
         return wakeLock;
     }

@@ -10,6 +10,8 @@ import android.os.Build;
 import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
 
+import com.artemkopan.baseproject.utils.StringUtils;
+
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class IntentHelper {
@@ -24,7 +26,7 @@ public class IntentHelper {
         context.startActivity(chooserIntent);
     }
 
-    public static void intentSendSMS(Context context, String smsBody) throws ActivityNotFoundException{
+    public static void intentSendSMS(Context context, String smsBody) throws ActivityNotFoundException {
         intentSendSMS(context, "", smsBody);
     }
 
@@ -36,7 +38,8 @@ public class IntentHelper {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent it = new Intent(Intent.ACTION_SENDTO,
-                    TextUtils.isEmpty(phoneNumbers) ? null : Uri.parse("sms:" + phoneNumbers));
+                                   TextUtils.isEmpty(phoneNumbers) ? null : Uri.parse(
+                                           "sms:" + phoneNumbers));
 
             it.putExtra("sms_body", smsBody);
             it.setFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -87,6 +90,15 @@ public class IntentHelper {
         }
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void sendEmail(Context context, String subject, String body, String... emails) throws ActivityNotFoundException {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.putExtra(Intent.EXTRA_EMAIL, emails);
+        if (!StringUtils.isEmpty(subject)) intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        if (!StringUtils.isEmpty(body)) intent.putExtra(Intent.EXTRA_TEXT, body);
+        intent.setData(Uri.parse("mailto:"));
         context.startActivity(intent);
     }
 }

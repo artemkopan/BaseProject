@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.utils.StringUtils;
 
 import static butterknife.ButterKnife.findById;
 
@@ -26,6 +27,8 @@ public class MessageDialog extends BaseDialogFragment {
     private static final String KEY_DESCRIPTION = "DESCRIPTION";
 
     private Runnable mOnDismissAction;
+    private TextView mTitleTxt;
+    private TextView mDescriptionTxt;
 
     public static MessageDialog newInstance(String title, String description) {
         Bundle args = new Bundle();
@@ -50,10 +53,17 @@ public class MessageDialog extends BaseDialogFragment {
         String title = getArguments().getString(KEY_TITLE);
         String description = getArguments().getString(KEY_DESCRIPTION);
 
-        TextView titleView = findById(view, R.id.base_dialog_message_title);
-        titleView.setText(title);
-        TextView descriptionView = findById(view, R.id.base_dialog_message_description);
-        descriptionView.setText(description);
+        mTitleTxt = findById(view, R.id.base_dialog_message_title);
+        mDescriptionTxt = findById(view, R.id.base_dialog_message_description);
+
+        mTitleTxt.setText(title);
+
+        if (StringUtils.isEmpty(description)) {
+            mDescriptionTxt.setVisibility(View.GONE);
+        } else {
+            mDescriptionTxt.setVisibility(View.VISIBLE);
+            mDescriptionTxt.setText(description);
+        }
 
         findById(view, R.id.base_dialog_message_close).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +73,14 @@ public class MessageDialog extends BaseDialogFragment {
         });
 
         return view;
+    }
+
+    public TextView getTitleTxt() {
+        return mTitleTxt;
+    }
+
+    public TextView getDescriptionTxt() {
+        return mDescriptionTxt;
     }
 
     @Override

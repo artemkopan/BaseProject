@@ -23,4 +23,10 @@ public class StringUtils {
     public static boolean isValidEmail(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches();
     }
+
+    public static boolean isEmpty(CharSequence value) {
+        return TextUtils.isEmpty(value) || TextUtils.getTrimmedLength(value) == 0;
+    }
+
+
 }

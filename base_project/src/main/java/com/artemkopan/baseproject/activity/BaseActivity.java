@@ -1,7 +1,5 @@
 package com.artemkopan.baseproject.activity;
 
-import static butterknife.ButterKnife.findById;
-
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -34,6 +32,8 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
+
+import static butterknife.ButterKnife.findById;
 
 public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView> extends
         AppCompatActivity implements MvpView {

@@ -7,11 +7,11 @@ import android.graphics.Matrix;
 import android.os.Build;
 import android.support.annotation.IntRange;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.artemkopan.baseproject.rx.BaseRx;
 
-import org.reactivestreams.Subscriber;
-
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -22,27 +22,46 @@ import java.lang.reflect.Method;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableTransformer;
 
 
 public class ImageUtils {
 
 
     public static void saveBitmapToJPEG(Bitmap bmp, String filePath,
-                                        @IntRange(from = 0, to = 100) int quality) throws IOException {
+            @IntRange(from = 0, to = 100) int quality) throws IOException {
         FileOutputStream out = new FileOutputStream(filePath);
         bmp.compress(Bitmap.CompressFormat.JPEG, quality, out); // bmp is your Bitmap instance
         out.close();
     }
 
+    public static Observable<String> convertBitmapToBase64(final Bitmap bitmap,
+            final Bitmap.CompressFormat format,
+            @IntRange(from = 0, to = 100) final int quality) {
+
+        return Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(format, quality, baos); //bm is the bitmap object
+                byte[] b = baos.toByteArray();
+                baos.close();
+                bitmap.recycle();
+                e.onNext("data:image/jpeg;base64," + Base64.encodeToString(b, Base64.DEFAULT));
+                e.onComplete();
+            }
+        });
+    }
+
+
     public static Observable<Bitmap> openBitmapFromFile(final String imagePath,
-                                                        final Bitmap.Config config) {
+            final Bitmap.Config config) {
         return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(ObservableEmitter<Bitmap> e) throws Exception {
                 if (TextUtils.isEmpty(imagePath)) {
                     e.onError(
-                            new IllegalArgumentException("ImagePath is null or empty : " + imagePath));
+                            new IllegalArgumentException(
+                                    "ImagePath is null or empty : " + imagePath));
                     return;
                 }
                 BitmapFactory.Options options = new BitmapFactory.Options();
@@ -55,8 +74,8 @@ public class ImageUtils {
     }
 
     public static Observable<Bitmap> resizeBitmapObservable(final Bitmap image,
-                                                            final int maxWidth,
-                                                            final int maxHeight) {
+            final int maxWidth,
+            final int maxHeight) {
         return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(ObservableEmitter<Bitmap> subscriber) throws Exception {
@@ -127,7 +146,8 @@ public class ImageUtils {
         }
 
         try {
-            Bitmap oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            Bitmap oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                    bitmap.getHeight(), matrix, true);
             bitmap.recycle();
             return oriented;
         } catch (OutOfMemoryError e) {
@@ -149,7 +169,8 @@ public class ImageUtils {
                 Class<?> exifClass = Class.forName("android.media.ExifInterface");
                 Constructor<?> exifConstructor = exifClass.getConstructor(String.class);
                 Object exifInstance = exifConstructor.newInstance(src);
-                Method getAttributeInt = exifClass.getMethod("getAttributeInt", String.class, int.class);
+                Method getAttributeInt = exifClass.getMethod("getAttributeInt", String.class,
+                        int.class);
                 Field tagOrientationField = exifClass.getField("TAG_ORIENTATION");
                 String tagOrientation = (String) tagOrientationField.get(null);
                 orientation = (Integer) getAttributeInt.invoke(exifInstance, tagOrientation, 1);
@@ -174,4 +195,5 @@ public class ImageUtils {
 
         return orientation;
     }
+
 }

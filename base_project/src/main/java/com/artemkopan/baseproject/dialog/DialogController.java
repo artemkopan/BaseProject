@@ -11,6 +11,7 @@ import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.fragment.BaseFragment;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
+@Deprecated
 public class DialogController {
 
     private ProgressDialog mProgressDialog;

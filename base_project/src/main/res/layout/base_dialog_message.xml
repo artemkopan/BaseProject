@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/dialog_background"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/dialog_background"
+              android:orientation="vertical">
 
 
     <android.support.v7.widget.AppCompatImageView
@@ -19,13 +20,13 @@
         android:clickable="true"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        app:srcCompat="@drawable/ic_cancel" />
+        app:srcCompat="@drawable/ic_cancel"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        app:srcCompat="@drawable/ic_warning" />
+        app:srcCompat="@drawable/ic_warning"/>
 
     <TextView
         android:id="@+id/base_dialog_message_title"
@@ -38,20 +39,25 @@
         android:paddingRight="10dp"
         android:paddingStart="10dp"
         android:textColor="@android:color/black"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        tools:text="Testasdokaksodasokdoaskodkaoskdoaksodkoaskdoaksopdkaospdkaskookadso"/>
 
 
     <TextView
         android:id="@+id/base_dialog_message_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:paddingEnd="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingStart="10dp"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        tools:text="Testasdokaksodasokdoaskodkaoskdoaksodkoaskdoaksopdkaospdkaskookadso"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"/>
 
 </LinearLayout>
