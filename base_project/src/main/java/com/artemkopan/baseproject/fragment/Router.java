@@ -35,7 +35,6 @@ import static com.artemkopan.baseproject.fragment.IRouterBuilder.Build;
 @SuppressWarnings("WeakerAccess")
 public class Router implements Anim, Build {
 
-    public static final int ANIM_ALPHA = 1, ANIM_SLIDE = 2;
     @IdRes
     private static int sIdResDefault;
     @IdRes
@@ -96,17 +95,23 @@ public class Router implements Anim, Build {
     }
 
     @Override
-    public Anim setDefaultAnim(@ANIM_DEFAULT int defaultAnim) {
+    public Anim setDefaultAnim(@AnimDefault int defaultAnim) {
         switch (defaultAnim) {
-            case ANIM_ALPHA:
+            case AnimDefault.ANIM_ALPHA:
                 mPopEnter = mEnter = R.anim.fragment_alpha_enter;
                 mPopExit = mExit = R.anim.fragment_alpha_exit;
                 break;
-            case ANIM_SLIDE:
+            case AnimDefault.ANIM_SLIDE:
                 mPopEnter = R.anim.fragment_pop_enter;
                 mEnter = R.anim.fragment_enter;
                 mPopExit = R.anim.fragment_pop_exit;
                 mExit = R.anim.fragment_exit;
+                break;
+            case AnimDefault.ANIM_BOTTOM_TOP:
+                mPopEnter = R.anim.fragment_pop_bottom_top;
+                mEnter = R.anim.fragment_bottom_top;
+                mPopExit = R.anim.fragment_pop_top_bottom;
+                mExit = R.anim.fragment_top_bottom;
                 break;
         }
         return this;
@@ -278,9 +283,12 @@ public class Router implements Anim, Build {
         ADD, REPLACE, SWITCH
     }
 
-    @IntDef({ANIM_ALPHA, ANIM_SLIDE})
+    @IntDef({AnimDefault.ANIM_ALPHA, AnimDefault.ANIM_SLIDE, AnimDefault.ANIM_BOTTOM_TOP})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface ANIM_DEFAULT {
+    public @interface AnimDefault {
+        int ANIM_ALPHA = 1;
+        int ANIM_SLIDE = 2;
+        int ANIM_BOTTOM_TOP = 3;
     }
 
     public class RouterBuilderException extends RuntimeException {

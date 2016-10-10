@@ -10,6 +10,8 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.artemkopan.baseproject.fragment.Router.AnimDefault;
+
 
 @SuppressWarnings("ALL")
 public interface IRouterBuilder {
@@ -23,7 +25,7 @@ public interface IRouterBuilder {
 
         Anim setPopExitAnim(@AnimRes int idRes);
 
-        Anim setDefaultAnim(@Router.ANIM_DEFAULT int defaultAnim);
+        Anim setDefaultAnim(@AnimDefault int defaultAnim);
 
         Anim setSharedEnterTransition(Object object);
 
