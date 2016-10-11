@@ -33,7 +33,7 @@ import static butterknife.ButterKnife.findById;
 public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView> extends Fragment
         implements MvpView {
 
-    public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
+    public PublishSubject<Lifecycle> mLifecycleSubject = PublishSubject.create();
 
     @Nullable
     protected Toolbar mToolbar;
@@ -74,13 +74,13 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
 
     @Override
     public void onStop() {
-        mPublishSubject.onNext(Lifecycle.ON_STOP);
+        mLifecycleSubject.onNext(Lifecycle.ON_STOP);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        mPublishSubject.onNext(Lifecycle.ON_DESTROY);
+        mLifecycleSubject.onNext(Lifecycle.ON_DESTROY);
         super.onDestroy();
     }
 

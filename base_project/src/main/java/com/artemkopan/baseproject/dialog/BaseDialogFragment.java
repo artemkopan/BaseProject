@@ -31,7 +31,7 @@ import io.reactivex.subjects.PublishSubject;
 public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView>
         extends DialogFragment implements MvpView {
 
-    public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
+    public PublishSubject<Lifecycle> mLifecycleSubject = PublishSubject.create();
     protected Unbinder mUnbinder;
     protected P mPresenter;
     private boolean mShown = false;
@@ -91,13 +91,13 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
 
     @Override
     public void onStop() {
-        mPublishSubject.onNext(Lifecycle.ON_STOP);
+        mLifecycleSubject.onNext(Lifecycle.ON_STOP);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        mPublishSubject.onNext(Lifecycle.ON_DESTROY);
+        mLifecycleSubject.onNext(Lifecycle.ON_DESTROY);
         super.onDestroy();
     }
 

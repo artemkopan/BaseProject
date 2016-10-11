@@ -6,6 +6,7 @@ import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.dialog.DialogProvider;
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.recycler.view.ExRecyclerView;
+import com.artemkopan.baseproject.sample.ui.activity.Test2Activity;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -32,17 +33,22 @@ public class Test extends BaseActivity {
         mDialogProvider.showProgressDialog(this, new Runnable() {
             @Override
             public void run() {
-                Log.d("run() called");
+                Test2Activity.startActivity(Test.this);
             }
         });
 
         mCompositeDisposable.add(
                 testObservable("Composite")
-                        .takeUntil(mPublishSubject).subscribe());
+                        .takeUntil(mLifecycleSubject).subscribe());
 
         testObservable("Tale Until")
-                .takeUntil(mPublishSubject).subscribe();
+                .takeUntil(mLifecycleSubject).subscribe();
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override

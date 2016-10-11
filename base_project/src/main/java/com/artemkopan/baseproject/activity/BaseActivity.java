@@ -42,7 +42,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
+    public PublishSubject<Lifecycle> mLifecycleSubject = PublishSubject.create();
 
     @SuppressWarnings("SpellCheckingInspection")
     protected Unbinder mUnbinder;
@@ -56,7 +56,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     @Override
     protected void onStop() {
-        mPublishSubject.onNext(Lifecycle.ON_STOP);
+        mLifecycleSubject.onNext(Lifecycle.ON_STOP);
         if (mShouldFinish) {
             supportFinishAfterTransition();
         }
@@ -73,7 +73,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     @Override
     protected void onDestroy() {
-        mPublishSubject.onNext(Lifecycle.ON_DESTROY);
+        mLifecycleSubject.onNext(Lifecycle.ON_DESTROY);
         if (mUnbinder != null) {
             mUnbinder.unbind();
         }
@@ -130,7 +130,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (ExtraUtils.postLollipop()) {
             Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
-                    .takeUntil(mPublishSubject)
+                    .takeUntil(mLifecycleSubject)
                     .subscribe(new Consumer<Long>() {
                         @Override
                         public void accept(Long aLong) throws Exception {
