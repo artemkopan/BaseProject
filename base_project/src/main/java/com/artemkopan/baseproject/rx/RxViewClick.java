@@ -28,20 +28,23 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
         mView = view;
     }
 
-    public static Observable<View> create(View view) {
-        return create(view, TIME_DELAY);
+    public static Observable<View> create(View view, PublishSubject<Lifecycle> mLifeCycle) {
+        return create(view, mLifeCycle, TIME_DELAY);
     }
 
-    public static Observable<View> create(View view, int milliseconds) {
+    public static Observable<View> create(View view, PublishSubject<Lifecycle> mLifeCycle, int milliseconds) {
         if (view == null) return Observable.empty();
 
         return Observable.create(new RxViewClick(view))
+                .takeUntil(mLifeCycle)
                 .throttleFirst(milliseconds, TimeUnit.MILLISECONDS);
     }
 
-    public static PublishSubject<View> create(Consumer<View> onNext) {
+    public static PublishSubject<View> create(Consumer<View> onNext, PublishSubject<Lifecycle> mLifeCycle) {
         PublishSubject<View> publishSubject = PublishSubject.create();
-        publishSubject.throttleFirst(TIME_DELAY, TimeUnit.MILLISECONDS)
+        publishSubject
+                .throttleFirst(TIME_DELAY, TimeUnit.MILLISECONDS)
+                .takeUntil(mLifeCycle)
                 .subscribe(onNext);
         return publishSubject;
     }
