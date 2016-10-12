@@ -21,10 +21,10 @@ public class BaseRx {
 
     public static final Object TRIGGER = new Object();
 
-    protected final PublishSubject<Lifecycle> mRxLifecycle;
+    protected final PublishSubject<Object> mDestroySubject;
 
-    public BaseRx(PublishSubject<Lifecycle> rxLifecycle) {
-        mRxLifecycle = rxLifecycle;
+    public BaseRx(PublishSubject<Object> destroySubject) {
+        mDestroySubject = destroySubject;
     }
 
     public static <T> ObservableTransformer<T, T> checkInternetConnection(final Context context) {
@@ -71,7 +71,7 @@ public class BaseRx {
         return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(Observable<T> tObservable) throws Exception {
-                return tObservable.takeUntil(mRxLifecycle);
+                return tObservable.takeUntil(mDestroySubject);
             }
         };
     }

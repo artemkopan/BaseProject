@@ -21,7 +21,7 @@ import android.view.WindowManager;
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.presenter.BasePresenter;
 import com.artemkopan.baseproject.presenter.MvpView;
-import com.artemkopan.baseproject.rx.Lifecycle;
+import com.artemkopan.baseproject.rx.BaseRx;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -31,7 +31,7 @@ import io.reactivex.subjects.PublishSubject;
 public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView>
         extends DialogFragment implements MvpView {
 
-    public PublishSubject<Lifecycle> mLifecycleSubject = PublishSubject.create();
+    public PublishSubject<Object> mDestroySubject = PublishSubject.create();
     protected Unbinder mUnbinder;
     protected P mPresenter;
     private boolean mShown = false;
@@ -90,14 +90,8 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     }
 
     @Override
-    public void onStop() {
-        mLifecycleSubject.onNext(Lifecycle.ON_STOP);
-        super.onStop();
-    }
-
-    @Override
     public void onDestroy() {
-        mLifecycleSubject.onNext(Lifecycle.ON_DESTROY);
+        mDestroySubject.onNext(BaseRx.TRIGGER);
         super.onDestroy();
     }
 

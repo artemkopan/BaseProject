@@ -3,6 +3,7 @@ package com.artemkopan.baseproject.rx;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -22,29 +23,30 @@ import io.reactivex.subjects.PublishSubject;
 public class RxViewClick implements ObservableOnSubscribe<View> {
 
     private static final int TIME_DELAY = 700;
-    private final View mView;
+
+    private WeakReference<View> mViewWeak;
 
     public RxViewClick(View view) {
-        mView = view;
+        mViewWeak = new WeakReference<>(view);
     }
 
-    public static Observable<View> create(View view, PublishSubject<Lifecycle> mLifeCycle) {
-        return create(view, mLifeCycle, TIME_DELAY);
+    public static Observable<View> create(View view, PublishSubject<Object> mDestroySubject) {
+        return create(view, mDestroySubject, TIME_DELAY);
     }
 
-    public static Observable<View> create(View view, PublishSubject<Lifecycle> mLifeCycle, int milliseconds) {
+    public static Observable<View> create(View view, PublishSubject<Object> mDestroySubject, int milliseconds) {
         if (view == null) return Observable.empty();
 
         return Observable.create(new RxViewClick(view))
-                .takeUntil(mLifeCycle)
+                .takeUntil(mDestroySubject)
                 .throttleFirst(milliseconds, TimeUnit.MILLISECONDS);
     }
 
-    public static PublishSubject<View> create(Consumer<View> onNext, PublishSubject<Lifecycle> mLifeCycle) {
+    public static PublishSubject<View> create(Consumer<View> onNext, PublishSubject<Object> mDestroySubject) {
         PublishSubject<View> publishSubject = PublishSubject.create();
         publishSubject
                 .throttleFirst(TIME_DELAY, TimeUnit.MILLISECONDS)
-                .takeUntil(mLifeCycle)
+                .takeUntil(mDestroySubject)
                 .subscribe(onNext);
         return publishSubject;
     }
@@ -54,7 +56,7 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
 
 //        ExtraUtils.checkUiThread();
 
-        View.OnClickListener listener = new OnClickListener() {
+        final View.OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!subscriber.isDisposed()) {
@@ -63,12 +65,16 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
             }
         };
 
-        mView.setOnClickListener(listener);
+        if (mViewWeak.get() != null) {
+            mViewWeak.get().setOnClickListener(listener);
+        }
 
         subscriber.setDisposable(new MainThreadDisposable() {
             @Override
             protected void onDispose() {
-                mView.setOnClickListener(null);
+                if (mViewWeak.get() != null) {
+                    mViewWeak.get().setOnClickListener(null);
+                }
             }
         });
     }
