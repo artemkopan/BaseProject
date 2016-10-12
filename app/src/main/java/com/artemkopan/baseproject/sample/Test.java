@@ -1,12 +1,12 @@
 package com.artemkopan.baseproject.sample;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.dialog.DialogProvider;
 import com.artemkopan.baseproject.helper.Log;
-import com.artemkopan.baseproject.recycler.view.ExRecyclerView;
-import com.artemkopan.baseproject.sample.ui.activity.Test2Activity;
+import com.artemkopan.baseproject.widget.ProgressButtonView;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -20,29 +20,32 @@ public class Test extends BaseActivity {
 
     CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
+    private ProgressButtonView mProgressButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        ExRecyclerView list = (ExRecyclerView) findViewById(R.id.list);
+        mProgressButton = (ProgressButtonView) findViewById(R.id.progress_btn);
 
-        list.showProgress();
+//        ExRecyclerView list = (ExRecyclerView) findViewById(R.id.list);
+//
+//        list.showProgress();
 
-        mDialogProvider.showProgressDialog(this, new Runnable() {
+        /*mDialogProvider.showProgressDialog(this, new Runnable() {
             @Override
             public void run() {
                 Test2Activity.startActivity(Test.this);
             }
         });
-
+*/
         mCompositeDisposable.add(
                 testObservable("Composite")
-                        .takeUntil(mLifecycleSubject).subscribe());
+                        .takeUntil(mDestroySubject).subscribe());
 
         testObservable("Tale Until")
-                .takeUntil(mLifecycleSubject).subscribe();
+                .takeUntil(mDestroySubject).subscribe();
 
     }
 
@@ -70,5 +73,9 @@ public class Test extends BaseActivity {
                 });
             }
         });
+    }
+
+    public void switchProgress(View view) {
+        mProgressButton.showProgress(!mProgressButton.isShowProgress());
     }
 }

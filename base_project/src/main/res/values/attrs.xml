@@ -18,6 +18,13 @@
         <attr name="erv_textPadding" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="ProgressButtonView">
+        <attr name="pbv_progressColor" format="color"/>
+        <attr name="pbv_progressSize" format="dimension"/>
+        <attr name="pbv_progressBorderWidth" format="dimension"/>
+        <attr name="pbv_progressPadding" format="dimension"/>
+    </declare-styleable>
+
     <declare-styleable name="SquareImageView">
         <attr name="siv_by_height" format="boolean"/>
     </declare-styleable>

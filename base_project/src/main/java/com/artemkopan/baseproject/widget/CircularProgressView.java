@@ -36,7 +36,7 @@ public class CircularProgressView extends View {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public CircularProgressView(Context context, AttributeSet attrs, int defStyleAttr,
-                                int defStyleRes) {
+            int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
@@ -53,7 +53,7 @@ public class CircularProgressView extends View {
                 borderWidth = array.getDimensionPixelSize(
                         R.styleable.CircularProgressView_cpv_border_width,
                         getContext().getResources()
-                                    .getDimensionPixelSize(R.dimen.base_progress_border_width));
+                                .getDimensionPixelSize(R.dimen.base_progress_border_width));
                 mHeightAccent = array.getBoolean(R.styleable.CircularProgressView_cpv_height_accent,
                         mHeightAccent);
             } finally {
@@ -63,7 +63,10 @@ public class CircularProgressView extends View {
 
         mDrawable = new CircularProgressDrawable(color, borderWidth);
         mDrawable.setCallback(this);
-        mDrawable.start();
+
+        if (getVisibility() == VISIBLE) {
+            mDrawable.start();
+        }
     }
 
     public void setProgressColor(@ColorInt int color) {
