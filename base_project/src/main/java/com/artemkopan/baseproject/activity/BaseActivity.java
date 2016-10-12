@@ -21,7 +21,7 @@ import com.artemkopan.baseproject.fragment.BaseFragment;
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.presenter.BasePresenter;
 import com.artemkopan.baseproject.presenter.MvpView;
-import com.artemkopan.baseproject.rx.Lifecycle;
+import com.artemkopan.baseproject.rx.BaseRx;
 import com.artemkopan.baseproject.utils.ExtraUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -42,7 +42,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    public PublishSubject<Lifecycle> mPublishSubject = PublishSubject.create();
+    public PublishSubject<Object> mDestroySubject = PublishSubject.create();
 
     @SuppressWarnings("SpellCheckingInspection")
     protected Unbinder mUnbinder;
@@ -56,7 +56,6 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     @Override
     protected void onStop() {
-        mPublishSubject.onNext(Lifecycle.ON_STOP);
         if (mShouldFinish) {
             supportFinishAfterTransition();
         }
@@ -73,7 +72,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     @Override
     protected void onDestroy() {
-        mPublishSubject.onNext(Lifecycle.ON_DESTROY);
+        mDestroySubject.onNext(BaseRx.TRIGGER);
         if (mUnbinder != null) {
             mUnbinder.unbind();
         }
@@ -130,7 +129,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (ExtraUtils.postLollipop()) {
             Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
-                    .takeUntil(mPublishSubject)
+                    .takeUntil(mDestroySubject)
                     .subscribe(new Consumer<Long>() {
                         @Override
                         public void accept(Long aLong) throws Exception {

@@ -78,7 +78,7 @@ public class ProgressDialog extends BaseDialogFragment {
         }
 
         //noinspection unchecked
-        RxViewClick.create(mCancelBtn).takeUntil(mPublishSubject).subscribe(new Consumer<View>() {
+        RxViewClick.create(mCancelBtn, mDestroySubject).subscribe(new Consumer<View>() {
             @Override
             public void accept(View view) throws Exception {
                 if (mCancelAction != null) {
