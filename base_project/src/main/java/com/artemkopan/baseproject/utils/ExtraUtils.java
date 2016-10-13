@@ -19,6 +19,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -130,7 +131,7 @@ public class ExtraUtils {
     public static PowerManager.WakeLock wakeLock(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                context.getClass().getName());
+                                                                  context.getClass().getName());
         wakeLock.acquire();
         return wakeLock;
     }
@@ -163,7 +164,8 @@ public class ExtraUtils {
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      */
-    public static SSLContext getUnsafeSSL(TrustManager[] trustAllCerts) throws NoSuchAlgorithmException, KeyManagementException {
+    public static SSLContext getUnsafeSSL(
+            TrustManager[] trustAllCerts) throws NoSuchAlgorithmException, KeyManagementException {
         final SSLContext sslContext = SSLContext.getInstance("SSL");
         sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
         // Create an ssl socket factory with our all-trusting manager
@@ -178,11 +180,13 @@ public class ExtraUtils {
         return new TrustManager[]{
                 new X509TrustManager() {
                     @Override
-                    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    public void checkClientTrusted(X509Certificate[] chain,
+                                                   String authType) throws CertificateException {
                     }
 
                     @Override
-                    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    public void checkServerTrusted(X509Certificate[] chain,
+                                                   String authType) throws CertificateException {
                     }
 
                     @Override
@@ -193,6 +197,22 @@ public class ExtraUtils {
         };
     }
 
+
+    /**
+     * @return if true then RTL;
+     */
+    public static boolean isRTL() {
+        return isRTL(Locale.getDefault());
+    }
+
+    /**
+     * Check current locale for RTL
+     */
+    public static boolean isRTL(Locale locale) {
+        final int directionality = Character.getDirectionality(locale.getDisplayName().charAt(0));
+        return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
+                directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
+    }
 
     public static boolean postLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
