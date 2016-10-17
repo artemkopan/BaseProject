@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.artemkopan.baseproject.activity.BaseActivity;
@@ -44,7 +45,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState) {
         if (onCreateInflateView() > 0) {
             View view = inflater.inflate(onCreateInflateView(), container, false);
             mUnbinder = ButterKnife.bind(this, view);
@@ -128,7 +129,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
      * @param fromActivity If need find toolbar in {@link AppCompatActivity}
      */
     protected void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable,
-                                 boolean fromActivity) {
+            boolean fromActivity) {
 
         if (fromActivity && getActivity() != null) {
             mToolbar = findById(getActivity(), toolbarId);
@@ -141,8 +142,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
         }
 
         if (mToolbar == null) {
-            Log.e("onToolbarInit: Can't find toolbar", new IllegalArgumentException());
-            return;
+            throw new IllegalArgumentException("Can't find toolbar id");
         } else if (homeDrawable > 0) {
             mToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), homeDrawable));
         }
@@ -167,6 +167,16 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
     protected void onToolbarSetTitle(String title) {
         if (mToolbar != null) {
             mToolbar.setTitle(title);
+        }
+    }
+
+    /**
+     * Click listener for toolbar navigation item; Or you can use {@link #onToolbarHomeBtn(boolean)}
+     * P.S. if you use {@link #onToolbarHomeBtn(boolean)} clicked was call in parent activity
+     */
+    protected void onToolbarNavigationClickListener(OnClickListener onClickListener) {
+        if (mToolbar != null) {
+            mToolbar.setNavigationOnClickListener(onClickListener);
         }
     }
 

@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Function;
 
 
 public class ImageUtils {
@@ -32,6 +33,21 @@ public class ImageUtils {
         FileOutputStream out = new FileOutputStream(filePath);
         bmp.compress(Bitmap.CompressFormat.JPEG, quality, out); // bmp is your Bitmap instance
         out.close();
+    }
+
+    public static Observable<String> convertBitmapToBase64(final String path,
+            Bitmap.Config config, final Bitmap.CompressFormat format,
+            @IntRange(from = 0, to = 100) final int quality, final int width, final int height) {
+
+        return openBitmapFromFile(path, config)
+                .flatMap(new Function<Bitmap, Observable<String>>() {
+                    @Override
+                    public Observable<String> apply(Bitmap bitmap) throws Exception {
+                        ExtraUtils.checkBackgroundThread();
+                        return convertBitmapToBase64(resizeBitmap(rotateBitmap(path, bitmap), width, height),
+                                format, quality);
+                    }
+                });
     }
 
     public static Observable<String> convertBitmapToBase64(final Bitmap bitmap,
@@ -67,6 +83,12 @@ public class ImageUtils {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = config;
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath, options);
+
+                if (bitmap == null) {
+                    e.onError(new IOException("Can't load this bitmap"));
+                    return;
+                }
+
                 e.onNext(bitmap);
                 e.onComplete();
             }
