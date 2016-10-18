@@ -46,15 +46,17 @@ public class MessageDialog extends BaseDialogFragment {
                 WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.base_dialog_message, container, false);
-        String title = getArguments().getString(KEY_TITLE);
-        String description = getArguments().getString(KEY_DESCRIPTION);
-
         mTitleTxt = findById(view, R.id.base_dialog_message_title);
         mDescriptionTxt = findById(view, R.id.base_dialog_message_description);
+
+        String title = getArguments().getString(KEY_TITLE);
+        String description = getArguments().getString(KEY_DESCRIPTION);
 
         mTitleTxt.setText(title);
 
@@ -75,12 +77,18 @@ public class MessageDialog extends BaseDialogFragment {
         return view;
     }
 
-    public TextView getTitleTxt() {
-        return mTitleTxt;
+    public void setTitle(String title) {
+        getArguments().putString(KEY_TITLE, title);
+        if (mTitleTxt != null) {
+            mTitleTxt.setText(title);
+        }
     }
 
-    public TextView getDescriptionTxt() {
-        return mDescriptionTxt;
+    public void setDescription(String description) {
+        getArguments().putString(KEY_DESCRIPTION, description);
+        if (mDescriptionTxt != null) {
+            mDescriptionTxt.setText(description);
+        }
     }
 
     @Override

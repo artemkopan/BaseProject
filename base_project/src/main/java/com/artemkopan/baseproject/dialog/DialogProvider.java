@@ -38,7 +38,6 @@ public class DialogProvider {
         mProgressDialog.show(activity.getSupportFragmentManager());
     }
 
-    @Nullable
     public void showMessageDialog(@Nullable FragmentActivity activity, String title) {
         if (activity == null) {
             Log.d("Activity is null!");
@@ -47,12 +46,10 @@ public class DialogProvider {
         showMessageDialog(activity, title, activity.getString(R.string.base_info_try_again));
     }
 
-    @Nullable
     public void showMessageDialog(@Nullable FragmentActivity activity, @StringRes int titleRes) {
         showMessageDialog(activity, titleRes, R.string.base_info_try_again);
     }
 
-    @Nullable
     public void showMessageDialog(@Nullable FragmentActivity activity, @StringRes int titleRes, @StringRes int descriptionRes) {
         if (activity == null) {
             Log.d("Activity is null!");
@@ -68,7 +65,6 @@ public class DialogProvider {
      * @param activity current CompatActivity
      * @return Dialog fragment; If Activity is null then return null!
      */
-    @Nullable
     public void showMessageDialog(@Nullable FragmentActivity activity, String title, String description) {
         if (activity == null) {
             Log.d("Activity is null!");
@@ -76,8 +72,8 @@ public class DialogProvider {
         }
 
         if (mMessageDialog != null && mMessageDialog.isShowing()) {
-            mMessageDialog.getTitleTxt().setText(title);
-            mMessageDialog.getDescriptionTxt().setText(description);
+            mMessageDialog.setTitle(title);
+            mMessageDialog.setDescription(description);
         } else {
             mMessageDialog = MessageDialog.newInstance(title, description);
             mMessageDialog.show(activity.getSupportFragmentManager());
