@@ -50,12 +50,14 @@ public class DialogProvider {
         showMessageDialog(activity, titleRes, R.string.base_info_try_again);
     }
 
-    public void showMessageDialog(@Nullable FragmentActivity activity, @StringRes int titleRes, @StringRes int descriptionRes) {
+    public void showMessageDialog(@Nullable FragmentActivity activity, @StringRes int titleRes,
+                                  @StringRes int descriptionRes) {
         if (activity == null) {
             Log.d("Activity is null!");
             return;
         }
-        showMessageDialog(activity, activity.getString(titleRes), activity.getString(descriptionRes));
+        showMessageDialog(activity, titleRes > 0 ? activity.getString(titleRes) : null,
+                          descriptionRes > 0 ? activity.getString(descriptionRes) : null);
     }
 
     /**

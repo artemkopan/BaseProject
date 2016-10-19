@@ -34,7 +34,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     public PublishSubject<Object> mDestroySubject = PublishSubject.create();
     protected Unbinder mUnbinder;
     protected P mPresenter;
-    private boolean mShown = false;
+    private boolean mShown = false;  //// TODO: 19.10.16 add save instance
 
     public void show(FragmentManager manager) {
         show(manager, this.getClass().getName());
