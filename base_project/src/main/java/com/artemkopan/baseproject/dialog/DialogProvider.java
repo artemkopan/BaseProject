@@ -5,7 +5,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
-import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.helper.Log;
 
 /**
@@ -43,11 +42,11 @@ public class DialogProvider {
             Log.d("Activity is null!");
             return;
         }
-        showMessageDialog(activity, title, activity.getString(R.string.base_info_try_again));
+        showMessageDialog(activity, title, null);
     }
 
     public void showMessageDialog(@Nullable FragmentActivity activity, @StringRes int titleRes) {
-        showMessageDialog(activity, titleRes, R.string.base_info_try_again);
+        showMessageDialog(activity, titleRes, 0);
     }
 
     public void showMessageDialog(@Nullable FragmentActivity activity, @StringRes int titleRes,

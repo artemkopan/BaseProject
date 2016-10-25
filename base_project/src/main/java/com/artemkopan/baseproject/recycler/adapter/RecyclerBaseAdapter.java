@@ -14,7 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<VH> {
 
     private static final String TAG = "RecyclerBaseAdapter";
     protected List<M> mList;
@@ -111,9 +112,17 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     }
 
     public void setList(List<M> list) {
-        this.mList = null;
+        setList(list, true);
+    }
+
+    public void setList(List<M> list, boolean notify) {
+        if (mList != null && !mList.isEmpty()) {
+            mList.clear();
+        }
         this.mList = list;
-        notifyDataSetChanged();
+        if (notify) {
+            notifyDataSetChanged();
+        }
     }
 
     public void createList(boolean dropIfExist) {

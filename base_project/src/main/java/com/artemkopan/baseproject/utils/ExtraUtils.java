@@ -10,6 +10,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.support.v4.text.TextUtilsCompat;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -202,16 +204,8 @@ public class ExtraUtils {
      * @return if true then RTL;
      */
     public static boolean isRTL() {
-        return isRTL(Locale.getDefault());
-    }
-
-    /**
-     * Check current locale for RTL
-     */
-    public static boolean isRTL(Locale locale) {
-        final int directionality = Character.getDirectionality(locale.getDisplayName().charAt(0));
-        return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
-                directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
+        return TextUtilsCompat.getLayoutDirectionFromLocale(
+                Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
     }
 
     public static boolean postLollipop() {

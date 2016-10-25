@@ -28,5 +28,23 @@ public class StringUtils {
         return TextUtils.isEmpty(value) || TextUtils.getTrimmedLength(value) == 0;
     }
 
+    public static CharSequence getTrimmed(CharSequence s) {
+        if (s == null) return null;
+
+        int len = s.length();
+
+        int start = 0;
+        while (start < len && s.charAt(start) <= ' ') {
+            start++;
+        }
+
+        int end = len;
+        while (end > start && s.charAt(end - 1) <= ' ') {
+            end--;
+        }
+
+        return s.subSequence(start, end);
+    }
+
 
 }

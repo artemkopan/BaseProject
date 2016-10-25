@@ -5,6 +5,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
@@ -196,7 +197,7 @@ public class Router implements Anim, Build {
     }
 
     @Override
-    public void start(AppCompatActivity activity) {
+    public void start(FragmentActivity activity) {
         startFragment(activity.getSupportFragmentManager());
     }
 
