@@ -3,7 +3,6 @@ package com.artemkopan.baseproject.dialog;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 
 import com.artemkopan.baseproject.helper.Log;
 
@@ -17,7 +16,7 @@ public class DialogProvider {
     private ProgressDialog mProgressDialog;
     private MessageDialog mMessageDialog;
 
-    public void showProgressDialog(AppCompatActivity activity, String description, Runnable actionRunnable) {
+    public void showProgressDialog(FragmentActivity activity, String description, Runnable actionRunnable) {
         if (activity == null) {
             Log.d("Activity is null!");
             return;
@@ -27,7 +26,7 @@ public class DialogProvider {
         mProgressDialog.show(activity.getSupportFragmentManager());
     }
 
-    public void showProgressDialog(AppCompatActivity activity, Runnable actionRunnable) {
+    public void showProgressDialog(FragmentActivity activity, Runnable actionRunnable) {
         if (activity == null) {
             Log.d("Activity is null!");
             return;

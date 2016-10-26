@@ -64,7 +64,8 @@ public class ProgressDialog extends BaseDialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.base_dialog_progress, container, false);
 
         mProgressView = (CircularProgressView) view.findViewById(R.id.progress_view);
@@ -77,16 +78,20 @@ public class ProgressDialog extends BaseDialogFragment {
             mDescriptionTxt.setText(mDescription);
         }
 
-        //noinspection unchecked
-        RxViewClick.create(mCancelBtn, mDestroySubject).subscribe(new Consumer<View>() {
-            @Override
-            public void accept(View view) throws Exception {
-                if (mCancelAction != null) {
-                    mCancelAction.run();
+        if (mCancelAction == null) {
+            mCancelBtn.setVisibility(View.GONE);
+        } else {
+            //noinspection unchecked
+            RxViewClick.create(mCancelBtn, mDestroySubject).subscribe(new Consumer<View>() {
+                @Override
+                public void accept(View view) throws Exception {
+                    if (mCancelAction != null) {
+                        mCancelAction.run();
+                    }
+                    dismiss();
                 }
-                dismiss();
-            }
-        });
+            });
+        }
 
         return view;
     }

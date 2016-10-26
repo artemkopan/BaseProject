@@ -2,6 +2,8 @@ package com.artemkopan.baseproject.presenter;
 
 import android.support.annotation.Nullable;
 
+import io.reactivex.subjects.PublishSubject;
+
 /**
  * Base class that implements the Presenter interface and provides a base implementation for
  * attachView() and detachView(). It also handles keeping a reference to the mvpView that
@@ -9,6 +11,8 @@ import android.support.annotation.Nullable;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
+
+    protected PublishSubject<Object> mDestroyLoad = PublishSubject.create();
 
     @Nullable private T mMvpView;
 
