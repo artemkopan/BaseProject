@@ -2,6 +2,11 @@ package com.artemkopan.baseproject.presenter;
 
 import android.support.annotation.Nullable;
 
+import com.artemkopan.baseproject.rx.BaseRx;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -39,6 +44,19 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
         if (mMvpView != null) {
             mMvpView.showProgress(tag);
         }
+    }
+
+    public void onCancelLoad() {
+        mDestroyLoad.onNext(BaseRx.TRIGGER);
+    }
+
+    public  <V> ObservableTransformer<V, V> onCancelTransform() {
+        return new ObservableTransformer<V, V>() {
+            @Override
+            public ObservableSource<V> apply(Observable<V> tObservable) {
+                return tObservable.takeUntil(mDestroyLoad);
+            }
+        };
     }
 
     public void onHideProgress() {

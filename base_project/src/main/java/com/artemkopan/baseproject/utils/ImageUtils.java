@@ -23,6 +23,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class ImageUtils {
@@ -47,7 +48,8 @@ public class ImageUtils {
                         return convertBitmapToBase64(resizeBitmap(rotateBitmap(path, bitmap), width, height),
                                 format, quality);
                     }
-                });
+                })
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<String> convertBitmapToBase64(final Bitmap bitmap,

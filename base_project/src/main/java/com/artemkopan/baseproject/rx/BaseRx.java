@@ -30,7 +30,7 @@ public class BaseRx {
     public static <T> ObservableTransformer<T, T> checkInternetConnection(final Context context) {
         return new ObservableTransformer<T, T>() {
             @Override
-            public ObservableSource<T> apply(Observable<T> tObservable) throws Exception {
+            public ObservableSource<T> apply(Observable<T> tObservable) {
                 if (!ExtraUtils.checkInternetConnection(context)) {
                     return Observable.error(
                             new IOException(context.getString(R.string.base_error_internet)));
@@ -44,7 +44,7 @@ public class BaseRx {
     public static <T> ObservableTransformer<T, T> applySchedulers() {
         return new ObservableTransformer<T, T>() {
             @Override
-            public ObservableSource<T> apply(Observable<T> tObservable) throws Exception {
+            public ObservableSource<T> apply(Observable<T> tObservable) {
                 return tObservable.subscribeOn(Schedulers.io()).observeOn(
                         AndroidSchedulers.mainThread());
             }
@@ -54,7 +54,7 @@ public class BaseRx {
     public static <T> ObservableTransformer<T, T> delayObserver(final int millis) {
         return new ObservableTransformer<T, T>() {
             @Override
-            public ObservableSource<T> apply(Observable<T> tObservable) throws Exception {
+            public ObservableSource<T> apply(Observable<T> tObservable) {
                 return tObservable.zipWith(Observable.timer(millis, TimeUnit.MILLISECONDS),
                         new BiFunction<T, Long, T>() {
                             @Override
@@ -70,7 +70,7 @@ public class BaseRx {
     public <T> ObservableTransformer<T, T> applyLifecycle() {
         return new ObservableTransformer<T, T>() {
             @Override
-            public ObservableSource<T> apply(Observable<T> tObservable) throws Exception {
+            public ObservableSource<T> apply(Observable<T> tObservable) {
                 return tObservable.takeUntil(mDestroySubject);
             }
         };
