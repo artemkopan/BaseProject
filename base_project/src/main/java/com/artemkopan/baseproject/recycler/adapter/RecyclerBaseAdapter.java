@@ -153,7 +153,7 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     }
 
     protected void callOnItemClick(View view, int pos, M object, View... transactionViews) {
-        if (pos >= 0) {
+        if (mOnItemClickListener != null && pos >= 0) {
             mOnItemClickListener.onItemClickListener(view, pos, object, transactionViews);
         }
     }
