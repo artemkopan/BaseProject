@@ -103,18 +103,21 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         FragmentManager fragmentManager = getSupportFragmentManager();
         int backStackCount = fragmentManager.getBackStackEntryCount() - 1;
         if (backStackCount >= 0) {
-            BackStackEntry backEntry =
-                    fragmentManager.getBackStackEntryAt(backStackCount);
+            BackStackEntry backEntry = fragmentManager.getBackStackEntryAt(backStackCount);
             String str = backEntry.getName();
 
             Fragment fragment = fragmentManager.findFragmentByTag(str);
 
-            if (fragment != null && fragment instanceof BaseFragment) {
-                if (!((BaseFragment) fragment).onBackPressed()) {
-                    return;
-                }
+            if (fragment != null
+                    && fragment instanceof BaseFragment
+                    && !((BaseFragment) fragment).onBackPressed()) {
+                return;
+            } else {
+                getSupportFragmentManager().popBackStackImmediate();
+                return;
             }
         }
+
         super.onBackPressed();
     }
 
