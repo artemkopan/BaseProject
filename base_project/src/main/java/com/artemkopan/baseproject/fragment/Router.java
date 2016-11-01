@@ -9,11 +9,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
 import android.view.View;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.utils.animations.DetailsTransition;
 
 import java.lang.annotation.Retention;
@@ -220,12 +220,19 @@ public class Router implements Anim, Build {
         if (mFragment == null) {
             throw new RouterBuilderException("You must set fragment");
         }
-        if (mIdRes <= 0 && sIdResDefault <= 0) {
+        if (mMethod != Method.ADD && mIdRes <= 0 && sIdResDefault <= 0) {
             throw new RouterBuilderException("Your fragment container id myst be >= 0.\n\n" +
-                    "You can call in Application onCreate() Router.setIdResDefault()\n");
+                                                     "You can call in Application onCreate() Router.setIdResDefault()\n");
+        }
+        int idRes;
+
+        if (mMethod == Method.ADD) {
+            idRes = mIdRes > 0 ? mIdRes : android.R.id.content;
+        } else {
+            idRes = mIdRes > 0 ? mIdRes : sIdResDefault;
         }
 
-        int idRes = mIdRes > 0 ? mIdRes : sIdResDefault;
+        Log.i("start fragment| method: " + mMethod.name() + " id: " + idRes);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -262,7 +269,11 @@ public class Router implements Anim, Build {
 
         switch (mMethod) {
             case ADD:
-                fragmentTransaction.add(idRes, mFragment, tag);
+                if (idRes > 0) {
+                    fragmentTransaction.add(idRes, mFragment, tag);
+                } else {
+                    fragmentTransaction.add(mFragment, tag);
+                }
                 break;
             case REPLACE:
                 fragmentTransaction.replace(idRes, mFragment, tag);
