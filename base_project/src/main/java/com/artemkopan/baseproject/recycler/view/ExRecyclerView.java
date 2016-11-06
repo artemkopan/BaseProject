@@ -66,10 +66,10 @@ public class ExRecyclerView extends RecyclerView {
                         context.getResources()
                                 .getDimensionPixelSize(R.dimen.base_progress_border_width));
                 progressColor = array.getColor(R.styleable.ExRecyclerView_erv_progressColor,
-                        NO_VALUE);
+                                               NO_VALUE);
 
                 textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize,
-                        textSize);
+                                                       textSize);
                 textColor = array.getColor(R.styleable.ExRecyclerView_erv_textColor, textColor);
                 textDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
                 mTextPadding = array.getDimensionPixelSize(
