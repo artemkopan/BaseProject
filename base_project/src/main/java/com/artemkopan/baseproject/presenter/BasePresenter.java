@@ -2,6 +2,7 @@ package com.artemkopan.baseproject.presenter;
 
 import android.support.annotation.Nullable;
 
+import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.rx.BaseRx;
 
 import io.reactivex.Observable;
@@ -50,7 +51,7 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
         mDestroyLoad.onNext(BaseRx.TRIGGER);
     }
 
-    public  <V> ObservableTransformer<V, V> onCancelTransform() {
+    public <V> ObservableTransformer<V, V> onCancelTransform() {
         return new ObservableTransformer<V, V>() {
             @Override
             public ObservableSource<V> apply(Observable<V> tObservable) {
@@ -75,10 +76,12 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
 
     public void onShowError(String message) {
         onShowError(null, message);
+        Log.e("onShowError: " + message);
     }
 
     public void onShowError(Object tag, Throwable throwable) {
         onShowError(tag, throwable.getMessage());
+        Log.e("onShowError: ", throwable);
     }
 
     public void onShowError(Object tag, String message) {
