@@ -17,6 +17,7 @@ import com.artemkopan.baseproject.R;
 
 public class AnimUtils {
 
+    public static final int VERY_FAST_DURATION = 150;
     public static final int FAST_DURATION = 200;
     public static final int MIDDLE_DURATION = 400;
     public static final int SLOW_DURATION = 700;

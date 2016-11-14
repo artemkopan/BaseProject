@@ -14,17 +14,10 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
-import android.support.v4.view.GravityCompat;
 import android.util.Property;
-import android.view.Gravity;
-import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-
-import com.artemkopan.baseproject.helper.Log;
-
-import java.util.Arrays;
 
 @SuppressWarnings("WeakerAccess")
 public class CircularProgressDrawable extends Drawable
@@ -103,6 +96,10 @@ public class CircularProgressDrawable extends Drawable
         mPaint.setAlpha(alpha);
     }
 
+    @Override
+    public int getAlpha() {
+        return mPaint.getAlpha();
+    }
 
     public void setColor(@ColorInt int color) {
         mPaint.setColor(color);

@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.support.annotation.FloatRange;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
@@ -210,5 +211,16 @@ public class ExtraUtils {
 
     public static boolean postLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    /**
+     * Calculate some value from start to end;
+     *
+     * @param percentage Current percent from 0 to 1;
+     */
+    public static float calculateValue(@FloatRange(from = 0, to = 1) float percentage,
+                                       float startValue,
+                                       float endValue) {
+        return ((startValue - endValue) * (1 - percentage) + endValue);
     }
 }
