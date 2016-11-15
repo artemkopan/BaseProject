@@ -169,6 +169,7 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     public void setText(final String text) {
+        Log.i("setText: " + text);
         if (getWidth() <= 0) {
             getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
@@ -181,22 +182,26 @@ public class ExRecyclerView extends RecyclerView {
                     postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            setText(text);
+                            createTextLayout(text);
                         }
                     }, 100);
                     return false;
                 }
             });
         } else {
-            mTextLayout = new StaticLayout(
-                    text,
-                    mTextPaint,
-                    getWidth() - mTextPadding * 2,
-                    Layout.Alignment.ALIGN_CENTER,
-                    1,
-                    0,
-                    true);
+            createTextLayout(text);
         }
+    }
+
+    private void createTextLayout(String text) {
+        mTextLayout = new StaticLayout(
+                text,
+                mTextPaint,
+                getWidth() - mTextPadding * 2,
+                Layout.Alignment.ALIGN_CENTER,
+                1,
+                0,
+                true);
     }
 
     public void showText() {
