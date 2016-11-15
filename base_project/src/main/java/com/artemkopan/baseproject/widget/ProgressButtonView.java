@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -94,7 +95,6 @@ public class ProgressButtonView extends AppCompatButton {
                 w / 2 + sizeHalfProgress, h / 2 + sizeHalfProgress);
 
         mProgressBounds = mProgressDrawable.getBounds();
-
     }
 
     public void showProgress(boolean show) {
@@ -103,6 +103,7 @@ public class ProgressButtonView extends AppCompatButton {
         if (mAnimator == null) {
             mAnimator = ObjectAnimator.ofFloat(this, mBackgroundProperty, 0, 1);
             mAnimator.setDuration(AnimUtils.VERY_FAST_DURATION);
+            mAnimator.setInterpolator(PathInterpolatorCompat.create(0.4f, 0, 0.2f, 1));
             mAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -115,9 +116,10 @@ public class ProgressButtonView extends AppCompatButton {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     mProgressDrawable.setAlpha(0);
-                    if (mShowProgress && getBackground() != null) {
+                    if (mBackgroundBounds == null && getBackground() != null) {
                         mBackgroundBounds = new Rect(getBackground().getBounds());
-                    } else if (!mShowProgress) {
+                    }
+                    if (!mShowProgress) {
                         mProgressDrawable.stop();
                     }
                 }
@@ -125,7 +127,21 @@ public class ProgressButtonView extends AppCompatButton {
         }
 
         setEnabled(!show);
-        mAnimator.start();
+
+        if (mProgressBounds == null || getBackground() == null) {
+            if (mShowProgress) {
+                mProgressDrawable.setAlpha(255);
+                mProgressDrawable.start();
+            } else {
+                mProgressDrawable.setAlpha(0);
+                mProgressDrawable.stop();
+            }
+            if (getBackground() != null) {
+                getBackground().setAlpha(mShowProgress ? 0 : 255);
+            }
+        } else {
+            mAnimator.start();
+        }
     }
 
     public boolean isShowProgress() {
@@ -160,6 +176,9 @@ public class ProgressButtonView extends AppCompatButton {
             from = mProgressBounds;
             alpha = (int) ExtraUtils.calculateValue(percentage, 0, 255);
         }
+
+        if (from == null || to == null || getBackground() == null) return;
+
         getBackground().setAlpha(alpha);
         getBackground().setBounds((int) ExtraUtils.calculateValue(percentage, from.left, to.left),
                                   (int) ExtraUtils.calculateValue(percentage, from.top, to.top),

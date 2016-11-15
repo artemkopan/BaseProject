@@ -178,7 +178,12 @@ public class ExRecyclerView extends RecyclerView {
                         Log.e("onPreDraw: width must be set > 0");
                         return false;
                     }
-                    setText(text);
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setText(text);
+                        }
+                    }, 100);
                     return false;
                 }
             });
