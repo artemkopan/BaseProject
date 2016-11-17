@@ -160,7 +160,16 @@ public class ErrorEditText extends TextInputEditText {
             textInputLayout.setError(errorMessage);
         }
 
-        if (mErrorAnimator != null && mError) {
+        if (mError) {
+            showErrorAction();
+        }
+    }
+
+    /**
+     * Show Error animation and vibrate;
+     */
+    public void showErrorAction() {
+        if (mErrorAnimator != null) {
             startAnimation(mErrorAnimator);
             VibrationHelper.vibrate(getContext(), 10);
         }

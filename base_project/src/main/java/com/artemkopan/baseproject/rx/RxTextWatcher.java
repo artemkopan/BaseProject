@@ -22,12 +22,12 @@ public class RxTextWatcher implements ObservableOnSubscribe<CharSequence> {
 
     final TextView view;
 
-    public static Observable<CharSequence> create(TextView view, PublishSubject<Object> mDestroySubject) {
-        return Observable.create(new RxTextWatcher(view)).takeUntil(mDestroySubject);
-    }
-
     RxTextWatcher(TextView view) {
         this.view = view;
+    }
+
+    public static Observable<CharSequence> create(TextView view, PublishSubject<Object> mDestroySubject) {
+        return Observable.create(new RxTextWatcher(view)).takeUntil(mDestroySubject);
     }
 
     @Override

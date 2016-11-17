@@ -28,6 +28,14 @@ public class StringUtils {
         return TextUtils.isEmpty(value) || TextUtils.getTrimmedLength(value) == 0;
     }
 
+    /**
+     * Get null string if parameter is null or empty or trimmed length == 0;
+     * @return Return trimmed string if value not empty
+     */
+    public static String nullIfEmpty(CharSequence value) {
+        return isEmpty(value) ? null : value.toString().trim();
+    }
+
     public static CharSequence getTrimmed(CharSequence s) {
         if (s == null) return null;
 

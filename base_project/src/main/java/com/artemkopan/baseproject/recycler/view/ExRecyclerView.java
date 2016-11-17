@@ -25,6 +25,12 @@ import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener;
 import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+
 
 public class ExRecyclerView extends RecyclerView {
 
@@ -35,6 +41,8 @@ public class ExRecyclerView extends RecyclerView {
     private CircularProgressDrawable mProgressDrawable;
     private Drawable mBackgroundDrawable;
     private OnRecyclerPaginationListener mPaginationListener;
+    private Disposable mErrorTimer;
+
     private int mProgressSize = NO_VALUE;
     private int mTextPadding = NO_VALUE;
     private boolean mDrawText, mDrawProgress;
@@ -208,6 +216,16 @@ public class ExRecyclerView extends RecyclerView {
         mDrawText = true;
         mDrawProgress = false;
         postInvalidate();
+
+        if (getAdapter() != null && getAdapter().getItemCount() != 0) {
+            if (mErrorTimer != null) mErrorTimer.dispose();
+            mErrorTimer = Observable.timer(1_500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
+                @Override
+                public void accept(Long aLong) throws Exception {
+                    hideText();
+                }
+            });
+        }
     }
 
     public void hideText() {
