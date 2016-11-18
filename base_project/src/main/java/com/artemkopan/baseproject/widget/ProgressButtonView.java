@@ -170,20 +170,20 @@ public class ProgressButtonView extends AppCompatButton {
         if (mShowProgress) {
             from = mBackgroundBounds;
             to = mProgressBounds;
-            alpha = (int) ExtraUtils.calculateValue(percentage, 255, 0);
+            alpha = (int) ExtraUtils.currentValue(percentage, 255, 0);
         } else {
             to = mBackgroundBounds;
             from = mProgressBounds;
-            alpha = (int) ExtraUtils.calculateValue(percentage, 0, 255);
+            alpha = (int) ExtraUtils.currentValue(percentage, 0, 255);
         }
 
         if (from == null || to == null || getBackground() == null) return;
 
         getBackground().setAlpha(alpha);
-        getBackground().setBounds((int) ExtraUtils.calculateValue(percentage, from.left, to.left),
-                                  (int) ExtraUtils.calculateValue(percentage, from.top, to.top),
-                                  (int) ExtraUtils.calculateValue(percentage, from.right, to.right),
-                                  (int) ExtraUtils.calculateValue(percentage, from.bottom, to.bottom));
+        getBackground().setBounds((int) ExtraUtils.currentValue(percentage, from.left, to.left),
+                                  (int) ExtraUtils.currentValue(percentage, from.top, to.top),
+                                  (int) ExtraUtils.currentValue(percentage, from.right, to.right),
+                                  (int) ExtraUtils.currentValue(percentage, from.bottom, to.bottom));
     }
 
 }

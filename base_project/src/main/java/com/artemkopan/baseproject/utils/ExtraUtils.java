@@ -145,7 +145,9 @@ public class ExtraUtils {
      * @param wakeLock acuired wakelock
      */
     public static void wakeUnlock(PowerManager.WakeLock wakeLock) {
-        wakeLock.release();
+        if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release();
+        }
     }
 
 
@@ -218,9 +220,9 @@ public class ExtraUtils {
      *
      * @param percentage Current percent from 0 to 1;
      */
-    public static float calculateValue(@FloatRange(from = 0, to = 1) float percentage,
-                                       float startValue,
-                                       float endValue) {
+    public static float currentValue(@FloatRange(from = 0, to = 1) float percentage,
+                                     float startValue,
+                                     float endValue) {
         return ((startValue - endValue) * (1 - percentage) + endValue);
     }
 }
