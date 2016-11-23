@@ -42,7 +42,7 @@ public class ExRecyclerView extends RecyclerView {
     private Drawable mBackgroundDrawable;
     private OnRecyclerPaginationListener mPaginationListener;
     private Disposable mErrorTimer;
-
+    private String mTextDefault;
     private int mProgressSize = NO_VALUE;
     private int mTextPadding = NO_VALUE;
     private boolean mDrawText, mDrawProgress;
@@ -61,7 +61,6 @@ public class ExRecyclerView extends RecyclerView {
 
         int borderWidth = NO_VALUE, progressColor = NO_VALUE;
         int textSize = NO_VALUE, textColor = Color.BLACK;
-        String textDefault = null;
 
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.ExRecyclerView);
@@ -79,7 +78,7 @@ public class ExRecyclerView extends RecyclerView {
                 textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize,
                                                        textSize);
                 textColor = array.getColor(R.styleable.ExRecyclerView_erv_textColor, textColor);
-                textDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
+                mTextDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
                 mTextPadding = array.getDimensionPixelSize(
                         R.styleable.ExRecyclerView_erv_textPadding, mTextPadding);
 
@@ -112,8 +111,8 @@ public class ExRecyclerView extends RecyclerView {
             mBackgroundDrawable = new ColorDrawable(getThemeBackgroundColor());
         }
 
-        if (TextUtils.isEmpty(textDefault)) {
-            textDefault = context.getString(R.string.base_info_items_not_found);
+        if (TextUtils.isEmpty(mTextDefault)) {
+            mTextDefault = context.getString(R.string.base_info_items_not_found);
         }
 
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -122,8 +121,6 @@ public class ExRecyclerView extends RecyclerView {
 
         mProgressDrawable = new CircularProgressDrawable(progressColor, borderWidth);
         mProgressDrawable.setCallback(this);
-
-        setText(textDefault);
     }
 
     @Override
@@ -213,6 +210,10 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     public void showText() {
+        if (mTextLayout == null) {
+            setText(mTextDefault);
+        }
+
         mDrawText = true;
         mDrawProgress = false;
         postInvalidate();
