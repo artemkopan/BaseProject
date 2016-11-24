@@ -1,6 +1,9 @@
 package com.artemkopan.baseproject.utils;
 
 
+import android.content.Context;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Patterns;
 
@@ -37,7 +40,7 @@ public class StringUtils {
         return isEmpty(value) ? null : value.toString().trim();
     }
 
-    public static CharSequence getTrimmed(CharSequence s) {
+    public static CharSequence trim(CharSequence s) {
         if (s == null) return null;
 
         int len = s.length();
@@ -54,6 +57,15 @@ public class StringUtils {
 
         return s.subSequence(start, end);
     }
+
+
+    public static String getHexColorFromRes(Context context, @ColorRes int colorRes,
+                                            boolean excludeTransparent) {
+        return '#' + (excludeTransparent
+                      ? Integer.toHexString(ContextCompat.getColor(context, colorRes) & 0x00ffffff)
+                      : Integer.toHexString(ContextCompat.getColor(context, colorRes)));
+    }
+
 
     // Capitalizing
     //-----------------------------------------------------------------------
