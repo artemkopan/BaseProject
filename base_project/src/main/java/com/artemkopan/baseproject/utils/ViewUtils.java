@@ -6,6 +6,7 @@ import android.content.ContextWrapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import butterknife.ButterKnife;
 
@@ -53,10 +54,9 @@ public class ViewUtils {
      * @return Relative X value;
      */
     public static float getRelativeX(View view, @Nullable View parentView) {
-        if (view.getParent() == (parentView == null ? view.getRootView() : parentView))
+        if (view.getParent() == (parentView == null ? view.getRootView() : parentView)) {
             return view.getX();
-        else
-            return view.getX() + getRelativeX((View) view.getParent(), parentView);
+        } else { return view.getX() + getRelativeX((View) view.getParent(), parentView); }
     }
 
     /**
@@ -67,10 +67,9 @@ public class ViewUtils {
      * @return Relative Y value;
      */
     public static float getRelativeY(View view, @Nullable View parentView) {
-        if (view.getParent() == (parentView == null ? view.getRootView() : parentView))
+        if (view.getParent() == (parentView == null ? view.getRootView() : parentView)) {
             return view.getY();
-        else
-            return view.getY() + getRelativeY((View) view.getParent(), parentView);
+        } else { return view.getY() + getRelativeY((View) view.getParent(), parentView); }
     }
 
     /**
@@ -87,5 +86,31 @@ public class ViewUtils {
     public static float getCenterViewYPos(View view) {
         int height = view.getHeight();
         return view.getY() + (height > 0 ? height / 2 : 0);
+    }
+
+
+    /**
+     * Check view size, if {@link View#getWidth()} or {@link View#getHeight()} > 0, then return true;
+     */
+    public static boolean checkSize(View view) {
+        return view.getWidth() > 0 || view.getHeight() > 0;
+    }
+
+    /**
+     * View on pre draw call
+     */
+    public static void preDrawListener(final View view, @NonNull final Runnable onPreDraw) {
+        if (view.getViewTreeObserver().isAlive()) {
+            view.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    if (view.getViewTreeObserver().isAlive()) {
+                        view.getViewTreeObserver().removeOnPreDrawListener(this);
+                        onPreDraw.run();
+                    }
+                    return true;
+                }
+            });
+        }
     }
 }

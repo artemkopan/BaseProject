@@ -21,6 +21,7 @@ import static butterknife.ButterKnife.findById;
  * 22.08.2016
  */
 @SuppressWarnings("unused")
+@Deprecated
 public class MessageDialog extends BaseDialogFragment {
 
     private static final String KEY_TITLE = "TITLE";

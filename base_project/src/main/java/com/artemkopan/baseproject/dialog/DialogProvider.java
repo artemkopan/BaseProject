@@ -3,8 +3,11 @@ package com.artemkopan.baseproject.dialog;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
+import android.view.View.OnClickListener;
 
+import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.utils.RunnableValue;
 
 /**
  * Created for medimee
@@ -13,49 +16,57 @@ import com.artemkopan.baseproject.helper.Log;
 
 public class DialogProvider {
 
-    private ProgressDialog mProgressDialog;
-    private MessageDialog mMessageDialog;
+    private InfoDialog mInfoDialog;
 
-    public void showProgressDialog(FragmentActivity activity, String description, Runnable actionRunnable) {
+    public void showProgressDialog(FragmentActivity activity, final OnClickListener actionClick) {
         if (activity == null) {
             Log.d("Activity is null!");
             return;
         }
-        mProgressDialog = ProgressDialog.newInstance(description, actionRunnable);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show(activity.getSupportFragmentManager());
+        showProgressDialog(activity,
+                           activity.getString(R.string.base_info_loading),
+                           activity.getString(R.string.cancel),
+                           actionClick);
     }
 
-    public void showProgressDialog(FragmentActivity activity, Runnable actionRunnable) {
+
+    public void showProgressDialog(FragmentActivity activity,
+                                   final String description,
+                                   final String action,
+                                   final OnClickListener actionClick) {
         if (activity == null) {
             Log.d("Activity is null!");
             return;
         }
-        mProgressDialog = ProgressDialog.newInstance(actionRunnable);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show(activity.getSupportFragmentManager());
+        if (dialogInactive()) {
+            mInfoDialog = InfoDialog.newInstance(new RunnableValue<InfoDialog>() {
+                @Override
+                public void run(InfoDialog dialog) {
+                    mInfoDialog.showProgress();
+                    mInfoDialog.setDescription(description);
+                    mInfoDialog.setAction(action, actionClick);
+                }
+            });
+            mInfoDialog.show(activity.getSupportFragmentManager());
+        } else {
+            mInfoDialog.showProgress();
+            mInfoDialog.setDescription(description);
+            mInfoDialog.setAction(action, actionClick);
+        }
+        mInfoDialog.setCancelable(false);
     }
+
 
     public void showMessageDialog(@Nullable FragmentActivity activity, String title) {
-        if (activity == null) {
-            Log.d("Activity is null!");
-            return;
-        }
-        showMessageDialog(activity, title, null);
+        showMessageDialog(activity, title, null, null);
     }
 
     public void showMessageDialog(@Nullable FragmentActivity activity, @StringRes int titleRes) {
-        showMessageDialog(activity, titleRes, 0);
-    }
-
-    public void showMessageDialog(@Nullable FragmentActivity activity, @StringRes int titleRes,
-                                  @StringRes int descriptionRes) {
         if (activity == null) {
             Log.d("Activity is null!");
             return;
         }
-        showMessageDialog(activity, titleRes > 0 ? activity.getString(titleRes) : null,
-                          descriptionRes > 0 ? activity.getString(descriptionRes) : null);
+        showMessageDialog(activity, activity.getString(titleRes), null, null);
     }
 
     /**
@@ -65,40 +76,41 @@ public class DialogProvider {
      * @param activity current CompatActivity
      * @return Dialog fragment; If Activity is null then return null!
      */
-    public void showMessageDialog(@Nullable FragmentActivity activity, String title, String description) {
+    public void showMessageDialog(@Nullable FragmentActivity activity,
+                                  final String description,
+                                  final String action,
+                                  final OnClickListener onClickListener) {
         if (activity == null) {
             Log.d("Activity is null!");
             return;
         }
 
-        if (mMessageDialog != null && mMessageDialog.isShowing()) {
-            mMessageDialog.setTitle(title);
-            mMessageDialog.setDescription(description);
+        if (dialogInactive()) {
+            mInfoDialog = InfoDialog.newInstance(new RunnableValue<InfoDialog>() {
+                @Override
+                public void run(InfoDialog dialog) {
+                    mInfoDialog.showMessage();
+                    mInfoDialog.setDescription(description);
+                    mInfoDialog.setAction(action, onClickListener);
+                }
+            });
+            mInfoDialog.show(activity.getSupportFragmentManager());
         } else {
-            mMessageDialog = MessageDialog.newInstance(title, description);
-            mMessageDialog.show(activity.getSupportFragmentManager());
+            mInfoDialog.showMessage();
+            mInfoDialog.setDescription(description);
+            mInfoDialog.setAction(action, onClickListener);
+        }
+        mInfoDialog.setCancelable(true);
+    }
+
+    public void dismissDialog() {
+        if (!dialogInactive()) {
+            mInfoDialog.dismiss();
+            mInfoDialog = null;
         }
     }
 
-    public void dismissMessageDialog() {
-        if (mMessageDialog != null) {
-            mMessageDialog.dismiss();
-            mMessageDialog = null;
-        }
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-    }
-
-    public ProgressDialog getProgressDialog() {
-        return mProgressDialog;
-    }
-
-    public MessageDialog getMessageDialog() {
-        return mMessageDialog;
+    private boolean dialogInactive() {
+        return mInfoDialog == null || !mInfoDialog.isShowing();
     }
 }

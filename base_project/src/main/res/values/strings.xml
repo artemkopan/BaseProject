@@ -4,7 +4,8 @@
     <string name="base_info_loading">Loading. Please wait…</string>
     <string name="base_info_try_again">Please try again…</string>
     <string name="base_error_internet">Please check your internet connection</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
+    <string name="try_again">Try Again</string>
 
 
 </resources>

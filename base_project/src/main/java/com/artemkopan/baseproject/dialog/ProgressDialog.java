@@ -20,7 +20,7 @@ import io.reactivex.functions.Consumer;
  * Created for BaseProject
  * by Kopan Artem on 09.10.2016.
  */
-
+@Deprecated
 public class ProgressDialog extends BaseDialogFragment {
 
 

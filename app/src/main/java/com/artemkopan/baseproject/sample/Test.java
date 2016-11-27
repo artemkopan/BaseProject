@@ -2,17 +2,22 @@ package com.artemkopan.baseproject.sample;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.dialog.DialogProvider;
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.widget.ProgressButtonView;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.MainThreadDisposable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 public class Test extends BaseActivity {
 
@@ -77,5 +82,40 @@ public class Test extends BaseActivity {
 
     public void switchProgress(View view) {
         mProgressButton.showProgress(!mProgressButton.isShowProgress());
+    }
+
+
+    public void openDialog(View view) {
+
+        mDialogProvider.showProgressDialog(this, new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mDialogProvider.showProgressDialog(Test.this, "asdas", "sadasd", new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDialogProvider.dismissDialog();
+
+                        Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                                .subscribe(new Consumer<Long>() {
+                                    @Override
+                                    public void accept(Long aLong) throws Exception {
+                                        mDialogProvider.showMessageDialog(Test.this, ",l,,l;", "1230=-12",
+                                                                          new OnClickListener() {
+                                                                              @Override
+                                                                              public void onClick(View v) {
+                                                                                  openDialog(null);
+                                                                              }
+                                                                          });
+                                    }
+                                });
+
+                    }
+                });
+
+
+            }
+        });
+
     }
 }
