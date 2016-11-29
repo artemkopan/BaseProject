@@ -18,7 +18,7 @@ import io.reactivex.subjects.PublishSubject;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
 
-    protected PublishSubject<Object> mCancelLoad = PublishSubject.create();
+    protected PublishSubject<Object> mCancelSubject = PublishSubject.create();
 
     @Nullable private T mMvpView;
 
@@ -48,14 +48,14 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
     }
 
     public void onCancelLoad() {
-        mCancelLoad.onNext(BaseRx.TRIGGER);
+        mCancelSubject.onNext(BaseRx.TRIGGER);
     }
 
     public <V> ObservableTransformer<V, V> onCancelTransform() {
         return new ObservableTransformer<V, V>() {
             @Override
             public ObservableSource<V> apply(Observable<V> tObservable) {
-                return tObservable.takeUntil(mCancelLoad);
+                return tObservable.takeUntil(mCancelSubject);
             }
         };
     }

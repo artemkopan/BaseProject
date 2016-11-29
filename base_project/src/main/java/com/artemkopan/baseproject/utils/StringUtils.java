@@ -9,7 +9,7 @@ import android.util.Patterns;
 
 import java.io.UnsupportedEncodingException;
 
-public class StringUtils {
+public final class StringUtils {
 
     public static String digitsOnly(String str) {
         return str.replaceAll("\\D+", "");

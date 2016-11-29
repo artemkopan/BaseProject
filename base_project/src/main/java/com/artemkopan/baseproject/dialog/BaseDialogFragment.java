@@ -1,7 +1,6 @@
 package com.artemkopan.baseproject.dialog;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -31,10 +30,10 @@ import io.reactivex.subjects.PublishSubject;
 public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView>
         extends DialogFragment implements MvpView {
 
+    private static final String KEY_IS_SHOWN = "IS_SHOWN";
     public PublishSubject<Object> mDestroySubject = PublishSubject.create();
     protected Unbinder mUnbinder;
     protected P mPresenter;
-    private boolean mShown = false;  //// TODO: 19.10.16 add save instance
 
     public void show(FragmentManager manager) {
         show(manager, this.getClass().getName());
@@ -48,13 +47,13 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
         FragmentTransaction transactionFragment = manager.beginTransaction();
         transactionFragment.add(this, tag);
         transactionFragment.commitAllowingStateLoss();
-
-        mShown = true;
     }
+
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         if (onCreateInflateView() > 0) {
             View view = inflater.inflate(onCreateInflateView(), container, false);
             mUnbinder = ButterKnife.bind(this, view);
@@ -93,12 +92,6 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     public void onDestroy() {
         mDestroySubject.onNext(BaseRx.TRIGGER);
         super.onDestroy();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        mShown = false;
-        super.onDismiss(dialog);
     }
 
     @NonNull
@@ -142,7 +135,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     }
 
     public boolean isShowing() {
-        return mShown;
+        return getDialog() != null && getDialog().isShowing();
     }
 
     @Override

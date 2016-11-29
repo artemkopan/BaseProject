@@ -29,7 +29,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-public class ExtraUtils {
+public final class ExtraUtils {
 
     /**
      * Check current thread; If was not main then throw illegalState exception;

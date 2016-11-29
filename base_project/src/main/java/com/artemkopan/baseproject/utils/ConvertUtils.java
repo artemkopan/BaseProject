@@ -28,7 +28,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class ConvertUtils {
+public final class ConvertUtils {
 
     public static final Locale DEFAULT_LOCALE = Locale.getDefault();
 

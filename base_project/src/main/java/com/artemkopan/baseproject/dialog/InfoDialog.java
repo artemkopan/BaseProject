@@ -8,7 +8,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.utils.RunnableValue;
 import com.artemkopan.baseproject.widget.ExTextSwitcher;
 
 /**
@@ -20,13 +19,18 @@ public class InfoDialog extends BaseDialogFragment {
 
     private static final String KEY_DESCRIPTION = "DESCRIPTION";
     private static final String KEY_ACTION = "ACTION";
+    private static final String KEY_PROGRESS = "PROGRESS";
     private View progressView;
     private ExTextSwitcher descriptionTxt, actionBtn;
-    private RunnableValue<InfoDialog> fragmentReady;
+    private OnClickListener actionClickListener;
 
-    public static InfoDialog newInstance(RunnableValue<InfoDialog> fragmentReady) {
+    public static InfoDialog newInstance(String description, String action, boolean showProgress) {
         InfoDialog fragment = new InfoDialog();
-        fragment.fragmentReady = fragmentReady;
+        Bundle args = new Bundle();
+        args.putString(KEY_DESCRIPTION, description);
+        args.putString(KEY_ACTION, action);
+        args.putBoolean(KEY_PROGRESS, showProgress);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -41,8 +45,13 @@ public class InfoDialog extends BaseDialogFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-            descriptionTxt.setText(savedInstanceState.getString(KEY_DESCRIPTION));
-            actionBtn.setText(savedInstanceState.getString(KEY_ACTION));
+            setDescription(savedInstanceState.getString(KEY_DESCRIPTION));
+            setAction(savedInstanceState.getString(KEY_ACTION), null);
+            if (savedInstanceState.getBoolean(KEY_PROGRESS)) {
+                showProgress();
+            } else {
+                showMessage();
+            }
         }
     }
 
@@ -57,8 +66,14 @@ public class InfoDialog extends BaseDialogFragment {
         progressView = view.findViewById(R.id.progress_view);
         descriptionTxt = (ExTextSwitcher) view.findViewById(R.id.description_txt);
         actionBtn = (ExTextSwitcher) view.findViewById(R.id.action_btn);
-
-        if (fragmentReady != null) fragmentReady.run(this);
+        Bundle args = getArguments();
+        if (args.getBoolean(KEY_PROGRESS, true)) {
+            showProgress();
+        } else {
+            showMessage();
+        }
+        setDescription(args.getString(KEY_DESCRIPTION));
+        setAction(args.getString(KEY_ACTION), actionClickListener);
     }
 
     public void showProgress() {
@@ -75,17 +90,26 @@ public class InfoDialog extends BaseDialogFragment {
     }
 
     public InfoDialog setAction(String value, OnClickListener onActionClick) {
-        actionBtn.setVisibility(onActionClick == null ? View.GONE : View.VISIBLE);
-        actionBtn.setOnClickListener(onActionClick);
         actionBtn.setText(value, true);
+        setActionClick(onActionClick);
         return this;
     }
 
+
+    public InfoDialog setActionClick(OnClickListener onActionClick) {
+        actionClickListener = onActionClick;
+        if (actionBtn != null) {
+            actionBtn.setVisibility(onActionClick == null ? View.GONE : View.VISIBLE);
+            actionBtn.setOnClickListener(onActionClick);
+        }
+        return this;
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_DESCRIPTION, descriptionTxt.getText().toString());
         outState.putString(KEY_ACTION, actionBtn.getText().toString());
+        outState.putBoolean(KEY_PROGRESS, getArguments().getBoolean(KEY_PROGRESS, true));
     }
 }

@@ -15,7 +15,7 @@ import android.view.View;
 import com.artemkopan.baseproject.R;
 
 
-public class AnimUtils {
+public final class AnimUtils {
 
     public static final int VERY_FAST_DURATION = 150;
     public static final int FAST_DURATION = 200;

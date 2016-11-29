@@ -1,11 +1,5 @@
 package com.artemkopan.baseproject.rx;
 
-import android.content.Context;
-
-import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.utils.ExtraUtils;
-
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -27,19 +21,6 @@ public class BaseRx {
         mDestroySubject = destroySubject;
     }
 
-    public static <T> ObservableTransformer<T, T> checkInternetConnection(final Context context) {
-        return new ObservableTransformer<T, T>() {
-            @Override
-            public ObservableSource<T> apply(Observable<T> tObservable) {
-                if (!ExtraUtils.checkInternetConnection(context)) {
-                    return Observable.error(
-                            new IOException(context.getString(R.string.base_error_internet)));
-                } else {
-                    return tObservable;
-                }
-            }
-        };
-    }
 
     public static <T> ObservableTransformer<T, T> applySchedulers() {
         return new ObservableTransformer<T, T>() {

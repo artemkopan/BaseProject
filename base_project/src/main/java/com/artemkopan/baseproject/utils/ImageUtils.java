@@ -26,7 +26,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class ImageUtils {
+public final class ImageUtils {
 
 
     public static void saveBitmapToJPEG(Bitmap bmp, String filePath,

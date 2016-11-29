@@ -193,25 +193,25 @@ public class Router implements Anim, Build {
 
     @Override
     public void start(Fragment fragment) {
-        startFragment(fragment.getFragmentManager());
+        start(fragment.getFragmentManager());
     }
 
     @Override
     public void start(FragmentActivity activity) {
-        startFragment(activity.getSupportFragmentManager());
+        start(activity.getSupportFragmentManager());
     }
 
     @Override
     public void startChildFragment(Fragment fragment, boolean useParentFragment) {
         if (useParentFragment) {
-            startFragment(fragment.getParentFragment().getChildFragmentManager());
+            start(fragment.getParentFragment().getChildFragmentManager());
         } else {
-            startFragment(fragment.getChildFragmentManager());
+            start(fragment.getChildFragmentManager());
         }
     }
 
     @Override
-    public void startFragment(@NonNull FragmentManager fragmentManager) {
+    public void start(@NonNull FragmentManager fragmentManager) {
         getTransaction(fragmentManager).commitAllowingStateLoss();
     }
 

@@ -11,7 +11,7 @@ import android.view.ViewTreeObserver.OnPreDrawListener;
 import butterknife.ButterKnife;
 
 
-public class ViewUtils {
+public final class ViewUtils {
 
     /**
      * ButterKnife action for enable view {@link View#setEnabled(boolean)} or disable;

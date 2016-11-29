@@ -61,7 +61,7 @@ public interface IRouterBuilder {
 
         void startChildFragment(Fragment fragment, boolean useParentFragment);
 
-        void startFragment(@NonNull FragmentManager fragmentManager);
+        void start(@NonNull FragmentManager fragmentManager);
 
         FragmentTransaction getTransaction(@NonNull FragmentManager fragmentManager);
     }

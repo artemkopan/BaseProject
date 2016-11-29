@@ -7,7 +7,7 @@ import java.util.Collection;
  * 18.11.16
  */
 
-public class CollectionUtils {
+public final  class CollectionUtils {
 
     /**
      * Check your collections on null and {@link Collection#isEmpty()}
