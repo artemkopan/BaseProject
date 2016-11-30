@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.util.Patterns;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public final class StringUtils {
 
@@ -221,4 +223,21 @@ public final class StringUtils {
         }
         return false;
     }
+
+
+    /**
+     * Format time: hh:mm:ss. If withSeconds == false hh:mm
+     */
+    public static String formatTime(long currentTime, boolean withSeconds) {
+        return withSeconds
+               ? String.format(Locale.US, "%02d:%02d:%02d",
+                               TimeUnit.SECONDS.toHours(currentTime),
+                               TimeUnit.SECONDS.toMinutes(currentTime) % TimeUnit.HOURS.toMinutes(1),
+                               TimeUnit.SECONDS.toSeconds(currentTime) % TimeUnit.MINUTES.toSeconds(1))
+               : String.format(Locale.US, "%02d:%02d",
+                               TimeUnit.SECONDS.toHours(currentTime),
+                               TimeUnit.SECONDS.toMinutes(currentTime) % TimeUnit.HOURS.toMinutes(1));
+    }
+
+
 }

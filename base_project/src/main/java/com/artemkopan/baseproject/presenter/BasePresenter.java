@@ -2,7 +2,6 @@ package com.artemkopan.baseproject.presenter;
 
 import android.support.annotation.Nullable;
 
-import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.rx.BaseRx;
 
 import io.reactivex.Observable;
@@ -76,18 +75,24 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
 
     public void onShowError(String message) {
         onShowError(null, message);
-        Log.e("onShowError: " + message);
     }
 
     public void onShowError(Object tag, Throwable throwable) {
         onShowError(tag, throwable.getMessage());
-        Log.e("onShowError: ", throwable);
     }
 
-    public void onShowError(Object tag, String message) {
+    public void onShowError(Object errorTag, String message) {
+        onShowError(errorTag, null, message);
+    }
+
+    public void onShowError(Object errorTag, Object progressTag, Throwable throwable) {
+        onShowError(errorTag, progressTag, throwable.getMessage());
+    }
+
+    public void onShowError(Object errorTag, Object progressTag, String message) {
         if (mMvpView != null) {
             mMvpView.hideProgress(null);
-            mMvpView.showError(tag, message);
+            mMvpView.showError(errorTag, message);
         }
     }
 
