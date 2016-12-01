@@ -91,7 +91,7 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
 
     public void onShowError(Object errorTag, Object progressTag, String message) {
         if (mMvpView != null) {
-            mMvpView.hideProgress(null);
+            mMvpView.hideProgress(progressTag);
             mMvpView.showError(errorTag, message);
         }
     }

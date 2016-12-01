@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.widget.ExTextSwitcher;
@@ -21,7 +22,8 @@ public class InfoDialog extends BaseDialogFragment {
     private static final String KEY_ACTION = "ACTION";
     private static final String KEY_PROGRESS = "PROGRESS";
     private View progressView;
-    private ExTextSwitcher descriptionTxt, actionBtn;
+    private TextView descriptionTxt;
+    private ExTextSwitcher actionBtn;
     private OnClickListener actionClickListener;
 
     public static InfoDialog newInstance(String description, String action, boolean showProgress) {
@@ -64,7 +66,7 @@ public class InfoDialog extends BaseDialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressView = view.findViewById(R.id.progress_view);
-        descriptionTxt = (ExTextSwitcher) view.findViewById(R.id.description_txt);
+        descriptionTxt = (TextView) view.findViewById(R.id.description_txt);
         actionBtn = (ExTextSwitcher) view.findViewById(R.id.action_btn);
         Bundle args = getArguments();
         if (args.getBoolean(KEY_PROGRESS, true)) {
@@ -85,7 +87,7 @@ public class InfoDialog extends BaseDialogFragment {
     }
 
     public InfoDialog setDescription(String value) {
-        descriptionTxt.setText(value, true);
+        descriptionTxt.setText(value);
         return this;
     }
 

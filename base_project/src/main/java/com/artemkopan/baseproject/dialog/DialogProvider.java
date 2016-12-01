@@ -21,6 +21,10 @@ public class DialogProvider {
     private InfoDialog mInfoDialog;
     private AtomicBoolean mDismissCall = new AtomicBoolean(false);
 
+    public InfoDialog showProgressDialog(FragmentActivity activity) {
+        return showProgressDialog(activity, null);
+    }
+
     public InfoDialog showProgressDialog(FragmentActivity activity, final OnClickListener actionClick) {
         if (activityIsNull(activity)) {
             return mInfoDialog;
@@ -57,9 +61,9 @@ public class DialogProvider {
             mInfoDialog = InfoDialog.newInstance(description, action, true).setActionClick(actionClick);
             mInfoDialog.show(activity.getSupportFragmentManager());
         } else {
-            mInfoDialog.showProgress();
             mInfoDialog.setDescription(description);
             mInfoDialog.setAction(action, actionClick);
+            mInfoDialog.showProgress();
         }
         mInfoDialog.setCancelable(false);
         return mInfoDialog;
@@ -98,9 +102,9 @@ public class DialogProvider {
             mInfoDialog = InfoDialog.newInstance(description, action, false).setActionClick(actionClick);
             mInfoDialog.show(activity.getSupportFragmentManager());
         } else {
-            mInfoDialog.showMessage();
             mInfoDialog.setDescription(description);
             mInfoDialog.setAction(action, actionClick);
+            mInfoDialog.showMessage();
         }
         mInfoDialog.setCancelable(true);
         return mInfoDialog;

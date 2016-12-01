@@ -30,7 +30,7 @@ public class ExTextSwitcher extends TextSwitcher {
             super.setText(text);
             return;
         }
-        if (!TextUtils.equals(text, ((TextView) getNextView()).getText())) {
+        if (!TextUtils.equals(text, getText())) {
             super.setText(text);
         }
     }
