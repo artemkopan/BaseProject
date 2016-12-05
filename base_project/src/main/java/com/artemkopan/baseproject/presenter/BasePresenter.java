@@ -17,8 +17,6 @@ import io.reactivex.subjects.PublishSubject;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
 
-    protected PublishSubject<Object> mCancelSubject = PublishSubject.create();
-
     @Nullable private T mMvpView;
 
     @Override
@@ -45,20 +43,6 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
             mMvpView.showProgress(tag);
         }
     }
-
-    public void onCancelLoad() {
-        mCancelSubject.onNext(BaseRx.TRIGGER);
-    }
-
-    public <V> ObservableTransformer<V, V> onCancelTransform() {
-        return new ObservableTransformer<V, V>() {
-            @Override
-            public ObservableSource<V> apply(Observable<V> tObservable) {
-                return tObservable.takeUntil(mCancelSubject);
-            }
-        };
-    }
-
     public void onHideProgress() {
         onHideProgress(null);
     }
