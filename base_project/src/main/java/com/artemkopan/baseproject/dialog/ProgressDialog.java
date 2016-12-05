@@ -88,7 +88,7 @@ public class ProgressDialog extends BaseDialogFragment {
                     if (mCancelAction != null) {
                         mCancelAction.run();
                     }
-                    dismiss();
+                    dismissAllowingStateLoss();
                 }
             });
         }

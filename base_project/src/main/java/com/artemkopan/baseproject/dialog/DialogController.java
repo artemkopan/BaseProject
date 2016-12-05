@@ -24,7 +24,7 @@ public class DialogController {
 
     public void dismissMessageDialog() {
         if (mMessageDialog != null) {
-            mMessageDialog.dismiss();
+            mMessageDialog.dismissAllowingStateLoss();
             mMessageDialog = null;
         }
     }

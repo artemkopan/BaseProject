@@ -113,7 +113,7 @@ public class DialogProvider {
     public void dismissDialog() {
         mDismissCall.set(true);
         if (!dialogInactive()) {
-            mInfoDialog.dismiss();
+            mInfoDialog.dismissAllowingStateLoss();
         }
     }
 
