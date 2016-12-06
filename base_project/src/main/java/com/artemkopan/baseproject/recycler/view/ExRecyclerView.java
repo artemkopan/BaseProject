@@ -18,11 +18,11 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.ViewTreeObserver;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener;
+import com.artemkopan.baseproject.utils.ViewUtils;
 import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
 import java.util.concurrent.TimeUnit;
@@ -161,61 +161,41 @@ public class ExRecyclerView extends RecyclerView {
         }
     }
 
-    public void setText(@StringRes int textRes, Object... arguments) {
-        setText(getContext().getString(textRes, arguments));
-    }
-
     public void setTextPadding(int textPadding) {
         mTextPadding = textPadding;
     }
 
-    public void setText(@StringRes int textRes) {
-        setText(getContext().getString(textRes));
+
+    public void showText(@StringRes int textRes, Object... arguments) {
+        showText(getContext().getString(textRes, arguments));
     }
 
-    public void setText(final String text) {
-        Log.i("setText: " + text);
-        if (getWidth() <= 0) {
-            getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+    public void showText(@StringRes int textRes) {
+        showText(getContext().getString(textRes));
+    }
+
+    public void showText(final String text) {
+        if (ViewUtils.checkSize(this)) {
+            createTextLayout(text);
+            Log.w("showText: Recycler not init yet");
+        } else {
+            ViewUtils.preDrawListener(this, new Runnable() {
                 @Override
-                public boolean onPreDraw() {
-                    getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (getWidth() <= 0) {
-                        Log.e("onPreDraw: width must be set > 0");
-                        return false;
+                public void run() {
+                    if (!ViewUtils.checkSize(ExRecyclerView.this)) {
+                        Log.e("showText: show text forbidden, because width or height == 0");
+                        return;
                     }
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            createTextLayout(text);
-                        }
-                    }, 100);
-                    return false;
+                    createTextLayout(text);
+                    showText(text);
                 }
             });
-        } else {
-            createTextLayout(text);
-        }
-    }
-
-    private void createTextLayout(String text) {
-        mTextLayout = new StaticLayout(
-                text,
-                mTextPaint,
-                getWidth() - mTextPadding * 2,
-                Layout.Alignment.ALIGN_CENTER,
-                1,
-                0,
-                true);
-    }
-
-    public void showText() {
-        if (mTextLayout == null) {
-            setText(mTextDefault);
+            return;
         }
 
         mDrawText = true;
         mDrawProgress = false;
+
         postInvalidate();
 
         if (getAdapter() != null && getAdapter().getItemCount() != 0) {
@@ -251,6 +231,20 @@ public class ExRecyclerView extends RecyclerView {
         mDrawProgress = false;
         mDrawText = false;
         postInvalidate();
+    }
+
+    /**
+     * Create StaticLayout {@link StaticLayout}
+     */
+    private void createTextLayout(CharSequence text) {
+        mTextLayout = new StaticLayout(
+                text,
+                mTextPaint,
+                getWidth() - mTextPadding * 2,
+                Layout.Alignment.ALIGN_CENTER,
+                1,
+                0,
+                true);
     }
 
     @Override

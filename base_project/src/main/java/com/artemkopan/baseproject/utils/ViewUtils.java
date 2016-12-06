@@ -113,4 +113,15 @@ public final class ViewUtils {
             });
         }
     }
+
+    /**
+     * Firstly check view size. If size (w ro h) <= 0, then call preDraw.
+     */
+    public static void viewSizeInflated(View view, @NonNull Runnable ready) {
+        if (checkSize(view)) {
+            ready.run();
+        } else {
+            preDrawListener(view, ready);
+        }
+    }
 }

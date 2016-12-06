@@ -16,7 +16,9 @@ import android.util.AttributeSet;
 import android.util.Property;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.utils.ExtraUtils;
+import com.artemkopan.baseproject.utils.ViewUtils;
 import com.artemkopan.baseproject.utils.animations.AnimUtils;
 import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
@@ -83,21 +85,34 @@ public class ProgressButtonView extends AppCompatButton {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (changed) {
+            int w = getWidth(), h = getHeight();
 
-        if (mProgressSize == 0) mProgressSize = w > h ? h : w;
+            if (mProgressSize == 0) mProgressSize = w > h ? h : w;
 
-        int sizeHalfProgress = (mProgressSize - mProgressPadding) / 2;
+            int sizeHalfProgress = (mProgressSize - mProgressPadding) / 2;
 
-        mProgressDrawable.setBounds(
-                w / 2 - sizeHalfProgress, h / 2 - sizeHalfProgress,
-                w / 2 + sizeHalfProgress, h / 2 + sizeHalfProgress);
+            mProgressDrawable.setBounds(
+                    w / 2 - sizeHalfProgress, h / 2 - sizeHalfProgress,
+                    w / 2 + sizeHalfProgress, h / 2 + sizeHalfProgress);
 
-        mProgressBounds = mProgressDrawable.getBounds();
+            mProgressBounds = mProgressDrawable.getBounds();
+        }
     }
 
     public void showProgress(boolean show) {
+        Log.d("showProgress: is show " + show);
+
+        if (!ViewUtils.checkSize(this)) {
+            mShowProgress = false;
+            postInvalidate();
+            Log.w("showProgress: Width or Height == 0");
+            return;
+        } else if (show == mShowProgress) {
+            return;
+        }
+
         mShowProgress = show;
 
         if (mAnimator == null) {

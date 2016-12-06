@@ -25,6 +25,14 @@
         <attr name="pbv_progressPadding" format="dimension"/>
     </declare-styleable>
 
+
+    <declare-styleable name="AspectHelper">
+        <attr name="aspect_width" format="integer"/>
+        <attr name="aspect_height" format="integer"/>
+        <attr name="aspect_by_height" format="boolean"/>
+    </declare-styleable>
+
+
     <declare-styleable name="SquareImageView">
         <attr name="siv_by_height" format="boolean"/>
     </declare-styleable>

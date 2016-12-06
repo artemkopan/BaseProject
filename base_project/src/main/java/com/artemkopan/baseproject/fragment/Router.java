@@ -232,7 +232,7 @@ public class Router implements Anim, Build {
             idRes = mIdRes > 0 ? mIdRes : sIdResDefault;
         }
 
-        Log.i("start fragment| method: " + mMethod.name() + " id: " + idRes);
+        Log.i("start fragment | method: " + mMethod.name() + " id: " + idRes);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 

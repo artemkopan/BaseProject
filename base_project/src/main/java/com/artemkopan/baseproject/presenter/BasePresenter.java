@@ -2,13 +2,6 @@ package com.artemkopan.baseproject.presenter;
 
 import android.support.annotation.Nullable;
 
-import com.artemkopan.baseproject.rx.BaseRx;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.ObservableTransformer;
-import io.reactivex.subjects.PublishSubject;
-
 /**
  * Base class that implements the Presenter interface and provides a base implementation for
  * attachView() and detachView(). It also handles keeping a reference to the mvpView that
@@ -43,6 +36,7 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
             mMvpView.showProgress(tag);
         }
     }
+
     public void onHideProgress() {
         onHideProgress(null);
     }
@@ -61,21 +55,12 @@ public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
         onShowError(null, message);
     }
 
-    public void onShowError(Object tag, Throwable throwable) {
-        onShowError(tag, throwable.getMessage());
+    public void onShowError(Object errorTag, Throwable throwable) {
+        onShowError(errorTag, throwable.getMessage());
     }
 
     public void onShowError(Object errorTag, String message) {
-        onShowError(errorTag, null, message);
-    }
-
-    public void onShowError(Object errorTag, Object progressTag, Throwable throwable) {
-        onShowError(errorTag, progressTag, throwable.getMessage());
-    }
-
-    public void onShowError(Object errorTag, Object progressTag, String message) {
         if (mMvpView != null) {
-            mMvpView.hideProgress(progressTag);
             mMvpView.showError(errorTag, message);
         }
     }

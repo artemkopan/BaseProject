@@ -24,19 +24,19 @@
         android:id="@+id/description_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/base_dialog_24"
         android:layout_marginEnd="@dimen/base_dialog_24"
         android:layout_marginLeft="@dimen/base_dialog_24"
         android:layout_marginRight="@dimen/base_dialog_24"
         android:layout_marginStart="@dimen/base_dialog_24"
-        android:layout_marginTop="@dimen/base_dialog_24"
         android:layout_toEndOf="@+id/progress_view"
         android:layout_toRightOf="@+id/progress_view"
         android:gravity="center_vertical"
         android:minHeight="@dimen/base_progress_size"
+        android:paddingBottom="@dimen/base_dialog_24"
+        android:paddingTop="@dimen/base_dialog_24"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        tools:text="Loading"/>
+        tools:text="Loading asdoaskodkaospkdoaskodkasodkaosdkodsaodsaodsa"/>
 
     <com.artemkopan.baseproject.widget.ExTextSwitcher
         android:id="@+id/action_btn"
