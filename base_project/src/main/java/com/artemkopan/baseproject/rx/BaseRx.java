@@ -1,7 +1,5 @@
 package com.artemkopan.baseproject.rx;
 
-import java.util.concurrent.TimeUnit;
-
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
@@ -9,6 +7,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
+import java.util.concurrent.TimeUnit;
 
 
 public class BaseRx {
@@ -21,6 +20,9 @@ public class BaseRx {
         mDestroySubject = destroySubject;
     }
 
+    public PublishSubject<Object> getDestroySubject() {
+        return mDestroySubject;
+    }
 
     public static <T> ObservableTransformer<T, T> applySchedulers() {
         return new ObservableTransformer<T, T>() {
