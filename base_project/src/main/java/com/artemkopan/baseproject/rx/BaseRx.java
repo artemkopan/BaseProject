@@ -1,5 +1,11 @@
 package com.artemkopan.baseproject.rx;
 
+import org.reactivestreams.Publisher;
+
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
@@ -7,7 +13,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
-import java.util.concurrent.TimeUnit;
 
 
 public class BaseRx {
@@ -20,15 +25,20 @@ public class BaseRx {
         mDestroySubject = destroySubject;
     }
 
-    public PublishSubject<Object> getDestroySubject() {
-        return mDestroySubject;
-    }
-
     public static <T> ObservableTransformer<T, T> applySchedulers() {
         return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(Observable<T> tObservable) {
                 return tObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    public static <T> FlowableTransformer<T, T> applyFlowableSchedulers() {
+        return new FlowableTransformer<T, T>() {
+            @Override
+            public Publisher<T> apply(Flowable<T> upstream) {
+                return upstream.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             }
         };
     }
@@ -48,6 +58,9 @@ public class BaseRx {
         };
     }
 
+    public PublishSubject<Object> getDestroySubject() {
+        return mDestroySubject;
+    }
 
     public <T> ObservableTransformer<T, T> applyLifecycle() {
         return new ObservableTransformer<T, T>() {

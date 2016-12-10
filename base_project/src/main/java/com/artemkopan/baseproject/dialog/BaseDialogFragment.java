@@ -139,27 +139,27 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     }
 
     @Override
-    public void dismiss() {
-        try {
-            super.dismiss();
-        } catch (IllegalStateException ignored) {
-            // There's no way to avoid getting this if saveInstanceState has already been called.
-            ignored.printStackTrace();
+    public void showError(@Nullable Object tag, String error) {}
+
+    @Override
+    public void showProgress(@Nullable Object tag) {}
+
+    @Override
+    public void hideProgress(@Nullable Object tag) {}
+
+    /**
+     * @return Check implemented class and return them. If fragment was started from another fragment, then
+     * used {@link #getParentFragment()} , else {@link #getActivity()}
+     */
+    @Nullable
+    public <T> T getParentClass(Class<T> clazz) {
+        if (getParentFragment() != null && clazz.isInstance(getParentFragment())) {
+            return clazz.cast(getParentFragment());
+        } else if (getActivity() != null && clazz.isInstance(getActivity())) {
+            return clazz.cast(getActivity());
         }
+        return null;
     }
 
-    @Override
-    public void showError(@Nullable Object tag, String error) {
 
-    }
-
-    @Override
-    public void showProgress(@Nullable Object tag) {
-
-    }
-
-    @Override
-    public void hideProgress(@Nullable Object tag) {
-
-    }
 }
