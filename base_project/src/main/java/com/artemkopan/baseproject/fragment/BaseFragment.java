@@ -220,12 +220,15 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
 
 
     /**
-     * @return Check implemented class and return them. If fragment was started from another fragment, then
-     * used {@link #getParentFragment()} , else {@link #getActivity()}
+     * @return Check implemented class and return them. If fragment was started from another
+     * fragment {@link #getTargetFragment()} or {@link #getParentFragment()},
+     * then used {@link #getParentFragment()} , else {@link #getActivity()}
      */
     @Nullable
     public <T> T getParentClass(Class<T> clazz) {
-        if (getParentFragment() != null && clazz.isInstance(getParentFragment())) {
+        if (getTargetFragment() != null && clazz.isInstance(getTargetFragment())) {
+            return clazz.cast(getTargetFragment());
+        } else if (getParentFragment() != null && clazz.isInstance(getParentFragment())) {
             return clazz.cast(getParentFragment());
         } else if (getActivity() != null && clazz.isInstance(getActivity())) {
             return clazz.cast(getActivity());

@@ -16,19 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.presenter.BasePresenter;
 import com.artemkopan.baseproject.presenter.MvpView;
 import com.artemkopan.baseproject.rx.BaseRx;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import io.reactivex.subjects.PublishSubject;
 
-
-public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView>
-        extends DialogFragment implements MvpView {
+public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView> extends DialogFragment
+        implements MvpView {
 
     private static final String KEY_IS_SHOWN = "IS_SHOWN";
     public PublishSubject<Object> mDestroySubject = PublishSubject.create();
@@ -49,51 +46,6 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
         transactionFragment.commitAllowingStateLoss();
     }
 
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        if (onCreateInflateView() > 0) {
-            View view = inflater.inflate(onCreateInflateView(), container, false);
-            mUnbinder = ButterKnife.bind(this, view);
-            return view;
-        } else {
-            return super.onCreateView(inflater, container, savedInstanceState);
-        }
-    }
-
-    /**
-     * Call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} with auto inflate
-     *
-     * @return {@link LayoutRes} layout res id
-     */
-    public abstract int onCreateInflateView();
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (mPresenter != null) {
-            mPresenter.attachView((V) this);
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        if (mPresenter != null) {
-            mPresenter.detachView();
-        }
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
-        }
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        mDestroySubject.onNext(BaseRx.TRIGGER);
-        super.onDestroy();
-    }
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -112,6 +64,50 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
         onBaseDialogSize(window);
     }
 
+    @Override
+    public void onDestroyView() {
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
+        if (mUnbinder != null) {
+            mUnbinder.unbind();
+        }
+        super.onDestroyView();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        if (onCreateInflateView() > 0) {
+            View view = inflater.inflate(onCreateInflateView(), container, false);
+            mUnbinder = ButterKnife.bind(this, view);
+            return view;
+        } else {
+            return super.onCreateView(inflater, container, savedInstanceState);
+        }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if (mPresenter != null) {
+            mPresenter.attachView((V) this);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        mDestroySubject.onNext(BaseRx.TRIGGER);
+        super.onDestroy();
+    }
+
+    /**
+     * Call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} with auto inflate
+     *
+     * @return {@link LayoutRes} layout res id
+     */
+    public abstract int onCreateInflateView();
+
     public void onBaseDialogAnim(Window window) {
         window.getAttributes().windowAnimations = R.style.DialogAnimationUpDown;
     }
@@ -125,9 +121,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     }
 
     public void onBaseDialogSize(Window window) {
-        window.setLayout(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     public void onBaseDialogRequestFeature(Window window) {
@@ -148,18 +142,19 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     public void hideProgress(@Nullable Object tag) {}
 
     /**
-     * @return Check implemented class and return them. If fragment was started from another fragment, then
-     * used {@link #getParentFragment()} , else {@link #getActivity()}
+     * @return Check implemented class and return them. If fragment was started from another
+     * fragment {@link #getTargetFragment()} or {@link #getParentFragment()},
+     * then used {@link #getParentFragment()} , else {@link #getActivity()}
      */
     @Nullable
     public <T> T getParentClass(Class<T> clazz) {
-        if (getParentFragment() != null && clazz.isInstance(getParentFragment())) {
+        if (getTargetFragment() != null && clazz.isInstance(getTargetFragment())) {
+            return clazz.cast(getTargetFragment());
+        } else if (getParentFragment() != null && clazz.isInstance(getParentFragment())) {
             return clazz.cast(getParentFragment());
         } else if (getActivity() != null && clazz.isInstance(getActivity())) {
             return clazz.cast(getActivity());
         }
         return null;
     }
-
-
 }
