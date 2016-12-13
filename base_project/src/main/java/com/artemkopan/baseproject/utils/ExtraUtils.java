@@ -1,34 +1,37 @@
 package com.artemkopan.baseproject.utils;
 
-
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.support.annotation.FloatRange;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
+import android.text.Html;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
 import com.artemkopan.baseproject.R;
-
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import static android.text.Html.FROM_HTML_MODE_COMPACT;
+
+@SuppressWarnings("WeakerAccess")
 public final class ExtraUtils {
 
     /**
@@ -52,14 +55,30 @@ public final class ExtraUtils {
     }
 
     /**
+     * Get html compat {@link Html#fromHtml(String, int)}
+     */
+    @TargetApi(VERSION_CODES.N)
+    public static CharSequence fromHtml(String value) {
+        return fromHtml(value, FROM_HTML_MODE_COMPACT);
+    }
+
+    public static CharSequence fromHtml(String value, int flags) {
+        if (VERSION.SDK_INT >= VERSION_CODES.N) {
+            return Html.fromHtml(value, flags);
+        } else {
+            return Html.fromHtml(value);
+        }
+    }
+
+    /**
      * Hide keyboard if view !=null
      *
      * @param view current focused view
      */
     public static void hideKeyboard(View view) {
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)
-                    view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) view.getContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -73,11 +92,12 @@ public final class ExtraUtils {
         if (view == null) {
             return;
         }
-        InputMethodManager inputMethodManager = (InputMethodManager)
-                view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) view.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        inputMethodManager.toggleSoftInputFromWindow(
-                view.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+        inputMethodManager
+                .toggleSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED,
+                        0);
         view.requestFocus();
     }
 
@@ -88,8 +108,8 @@ public final class ExtraUtils {
      * @return if internet (WIFI or MOBILE) is connected return true;
      */
     public static boolean checkInternetConnection(Context context) {
-        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMgr = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
@@ -118,23 +138,24 @@ public final class ExtraUtils {
      * Get toolbar height size
      */
     public static int getToolbarHeight(Context context) {
-        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[]{R.attr.actionBarSize});
+        final TypedArray styledAttributes = context.getTheme()
+                .obtainStyledAttributes(new int[] { R.attr.actionBarSize });
         int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
         styledAttributes.recycle();
         return toolbarHeight;
     }
 
     /**
-     * Keep the CPU On! If you want keep the Screen On you must add flag   getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) or  android:keepScreenOn="true" in  layout
+     * Keep the CPU On! If you want keep the Screen On you must add flag   getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+     * or  android:keepScreenOn="true" in  layout
      *
      * @param context for get power manager service
      * @return wake lock for {@link ExtraUtils#wakeUnlock(PowerManager.WakeLock)}
      */
     public static PowerManager.WakeLock wakeLock(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                                                                  context.getClass().getName());
+        PowerManager.WakeLock wakeLock = powerManager
+                .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, context.getClass().getName());
         wakeLock.acquire();
         return wakeLock;
     }
@@ -150,13 +171,10 @@ public final class ExtraUtils {
         }
     }
 
-
     /**
      * Allow all ssl certificates
      *
      * @return {@link SSLSocketFactory}
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
      */
     public static SSLContext getUnsafeSSL() throws NoSuchAlgorithmException, KeyManagementException {
         return getUnsafeSSL(getTrustAllCerts());
@@ -166,11 +184,9 @@ public final class ExtraUtils {
      * Allow all ssl certificates
      *
      * @return {@link SSLSocketFactory}
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
      */
-    public static SSLContext getUnsafeSSL(
-            TrustManager[] trustAllCerts) throws NoSuchAlgorithmException, KeyManagementException {
+    public static SSLContext getUnsafeSSL(TrustManager[] trustAllCerts)
+            throws NoSuchAlgorithmException, KeyManagementException {
         final SSLContext sslContext = SSLContext.getInstance("SSL");
         sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
         // Create an ssl socket factory with our all-trusting manager
@@ -182,33 +198,32 @@ public final class ExtraUtils {
      */
     @SuppressLint("TrustAllX509TrustManager")
     public static TrustManager[] getTrustAllCerts() {
-        return new TrustManager[]{
+        return new TrustManager[] {
                 new X509TrustManager() {
                     @Override
-                    public void checkClientTrusted(X509Certificate[] chain,
-                                                   String authType) throws CertificateException {
+                    public void checkClientTrusted(X509Certificate[] chain, String authType)
+                            throws CertificateException {
                     }
 
                     @Override
-                    public void checkServerTrusted(X509Certificate[] chain,
-                                                   String authType) throws CertificateException {
+                    public void checkServerTrusted(X509Certificate[] chain, String authType)
+                            throws CertificateException {
                     }
 
                     @Override
                     public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[]{};
+                        return new X509Certificate[] {};
                     }
                 }
         };
     }
 
-
     /**
      * @return if true then RTL;
      */
     public static boolean isRTL() {
-        return TextUtilsCompat.getLayoutDirectionFromLocale(
-                Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
+        return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault())
+                == ViewCompat.LAYOUT_DIRECTION_RTL;
     }
 
     public static boolean postLollipop() {
@@ -220,9 +235,8 @@ public final class ExtraUtils {
      *
      * @param percentage Current percent from 0 to 1;
      */
-    public static float currentValue(@FloatRange(from = 0, to = 1) float percentage,
-                                     float startValue,
-                                     float endValue) {
+    public static float currentValue(@FloatRange(from = 0, to = 1) float percentage, float startValue,
+            float endValue) {
         return ((startValue - endValue) * (1 - percentage) + endValue);
     }
 }

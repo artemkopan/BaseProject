@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:background="@drawable/dialog_background"
-                android:orientation="vertical">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/dialog_background"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/base_dialog_24"
+    android:paddingTop="@dimen/base_dialog_24"
+    >
 
     <com.artemkopan.baseproject.widget.CircularProgressView
         android:id="@+id/progress_view"
@@ -15,9 +17,9 @@
         android:layout_height="@dimen/base_progress_size"
         android:layout_marginLeft="@dimen/base_dialog_24"
         android:layout_marginStart="@dimen/base_dialog_24"
-        android:layout_marginTop="@dimen/base_dialog_24"
         app:cpv_border_width="3dp"
-        app:cpv_progressColor="?colorAccent"/>
+        app:cpv_progressColor="?colorAccent"
+        />
 
 
     <TextView
@@ -33,10 +35,10 @@
         android:gravity="center_vertical"
         android:minHeight="@dimen/base_progress_size"
         android:paddingBottom="@dimen/base_dialog_24"
-        android:paddingTop="@dimen/base_dialog_24"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        tools:text="Loading asdoaskodkaospkdoaskodkasodkaosdkodsaodsaodsa"/>
+        tools:text="Loading"
+        />
 
     <com.artemkopan.baseproject.widget.ExTextSwitcher
         android:id="@+id/action_btn"
@@ -45,7 +47,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/description_txt"
-        android:layout_marginBottom="@dimen/base_dialog_8"
         android:layout_marginEnd="@dimen/base_dialog_8"
         android:layout_marginRight="@dimen/base_dialog_8"
         android:background="?selectableItemBackground"
@@ -53,7 +54,8 @@
         android:inAnimation="@anim/fragment_alpha_enter"
         android:outAnimation="@anim/fragment_alpha_exit"
         android:paddingLeft="@dimen/base_dialog_8"
-        android:paddingRight="@dimen/base_dialog_8">
+        android:paddingRight="@dimen/base_dialog_8"
+        >
 
         <TextView
             android:layout_width="match_parent"
@@ -63,7 +65,8 @@
             android:textAllCaps="true"
             android:textColor="?colorAccent"
             android:textSize="16sp"
-            tools:text="@string/cancel"/>
+            tools:text="@string/cancel"
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -73,7 +76,8 @@
             android:textAllCaps="true"
             android:textColor="?colorAccent"
             android:textSize="16sp"
-            tools:text="@string/cancel"/>
+            tools:text="@string/cancel"
+            />
 
     </com.artemkopan.baseproject.widget.ExTextSwitcher>
 
