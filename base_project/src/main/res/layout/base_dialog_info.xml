@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:background="@drawable/dialog_background"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/base_dialog_24"
-    android:paddingTop="@dimen/base_dialog_24"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dialog_background"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/base_dialog_24"
+                android:paddingTop="@dimen/base_dialog_24"
     >
 
     <com.artemkopan.baseproject.widget.CircularProgressView
@@ -34,7 +33,6 @@
         android:layout_toRightOf="@+id/progress_view"
         android:gravity="center_vertical"
         android:minHeight="@dimen/base_progress_size"
-        android:paddingBottom="@dimen/base_dialog_24"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         tools:text="Loading"

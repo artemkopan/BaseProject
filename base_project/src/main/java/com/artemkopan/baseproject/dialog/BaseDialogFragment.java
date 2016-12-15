@@ -8,6 +8,8 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
@@ -16,24 +18,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.presenter.BasePresenter;
 import com.artemkopan.baseproject.presenter.MvpView;
 import com.artemkopan.baseproject.rx.BaseRx;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.subjects.PublishSubject;
 
 public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView> extends DialogFragment
         implements MvpView {
 
-    private static final String KEY_IS_SHOWN = "IS_SHOWN";
+    public static final int REQ_CODE = 343;
+
     public PublishSubject<Object> mDestroySubject = PublishSubject.create();
     protected Unbinder mUnbinder;
     protected P mPresenter;
 
     public void show(FragmentManager manager) {
         show(manager, this.getClass().getName());
+    }
+
+    public void show(FragmentActivity activity) {
+        show(activity.getSupportFragmentManager(), this.getClass().getName());
+    }
+
+    public void show(FragmentActivity activity, String tag) {
+        show(activity.getSupportFragmentManager(), tag);
+    }
+
+    public void show(Fragment fragment) {
+        show(fragment, this.getClass().getName());
+    }
+
+    public void show(Fragment fragment, String tag) {
+        show(fragment, tag, REQ_CODE);
+    }
+
+    public void show(Fragment fragment, String tag, int reqCode) {
+        show(fragment.getFragmentManager(), tag);
+        setTargetFragment(fragment, reqCode);
     }
 
     @Override
@@ -78,7 +104,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         if (onCreateInflateView() > 0) {
             View view = inflater.inflate(onCreateInflateView(), container, false);
             mUnbinder = ButterKnife.bind(this, view);
