@@ -9,16 +9,16 @@ import io.reactivex.FlowableTransformer;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
-
 public class BaseRx {
 
     public static final Object TRIGGER = new Object();
-
+    private static final int DEFAULT_DELAY = 600;
     protected final PublishSubject<Object> mDestroySubject;
 
     public BaseRx(PublishSubject<Object> destroySubject) {
@@ -43,17 +43,21 @@ public class BaseRx {
         };
     }
 
-    public static <T> ObservableTransformer<T, T> delayObserver(final int millis) {
+    public static <T> ObservableTransformer<T, T> delayObserver() {
+        return delayObserver(DEFAULT_DELAY, AndroidSchedulers.mainThread());
+    }
+
+    public static <T> ObservableTransformer<T, T> delayObserver(final int millis, final Scheduler scheduler) {
         return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(Observable<T> tObservable) {
-                return tObservable.zipWith(Observable.timer(millis, TimeUnit.MILLISECONDS),
-                                           new BiFunction<T, Long, T>() {
-                                               @Override
-                                               public T apply(T t, Long aLong) throws Exception {
-                                                   return t;
-                                               }
-                                           });
+                return tObservable.zipWith(Observable.timer(millis, TimeUnit.MILLISECONDS, scheduler),
+                        new BiFunction<T, Long, T>() {
+                            @Override
+                            public T apply(T t, Long aLong) throws Exception {
+                                return t;
+                            }
+                        });
             }
         };
     }
