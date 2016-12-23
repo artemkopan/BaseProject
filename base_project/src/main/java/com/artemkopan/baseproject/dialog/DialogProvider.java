@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.helper.Log;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -48,7 +49,6 @@ public class DialogProvider {
                                   actionClick);
     }
 
-
     public InfoDialog showProgressDialog(FragmentActivity activity,
                                          final String description,
                                          final String action,
@@ -58,17 +58,17 @@ public class DialogProvider {
         }
 
         if (mDismissCall.compareAndSet(true, false) || dialogInactive()) {
-            mInfoDialog = InfoDialog.newInstance(description, action, true).setActionClick(actionClick);
+            mInfoDialog = InfoDialog.newInstance(description, action, true)
+                    .setActionClick(new WeakReference<>(actionClick));
             mInfoDialog.show(activity.getSupportFragmentManager());
         } else {
             mInfoDialog.setDescription(description);
-            mInfoDialog.setAction(action, actionClick);
+            mInfoDialog.setAction(action, new WeakReference<>(actionClick));
             mInfoDialog.showProgress();
         }
         mInfoDialog.setCancelable(false);
         return mInfoDialog;
     }
-
 
     public InfoDialog showMessageDialog(@Nullable FragmentActivity activity, String title) {
         return showMessageDialog(activity, title, null, null);
@@ -99,11 +99,12 @@ public class DialogProvider {
         }
 
         if (mDismissCall.compareAndSet(true, false) || dialogInactive()) {
-            mInfoDialog = InfoDialog.newInstance(description, action, false).setActionClick(actionClick);
+            mInfoDialog = InfoDialog.newInstance(description, action, false)
+                    .setActionClick(new WeakReference<>(actionClick));
             mInfoDialog.show(activity.getSupportFragmentManager());
         } else {
             mInfoDialog.setDescription(description);
-            mInfoDialog.setAction(action, actionClick);
+            mInfoDialog.setAction(action, new WeakReference<>(actionClick));
             mInfoDialog.showMessage();
         }
         mInfoDialog.setCancelable(true);

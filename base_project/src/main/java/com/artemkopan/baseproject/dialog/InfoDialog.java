@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.widget.ExTextSwitcher;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created for BaseProject
  * by Kopan Artem on 27.11.2016.
@@ -24,7 +26,7 @@ public class InfoDialog extends BaseDialogFragment {
     private View progressView;
     private TextView descriptionTxt;
     private ExTextSwitcher actionBtn;
-    private OnClickListener actionClickListener;
+    private WeakReference<OnClickListener> actionClickListener;  // TODO: 22.12.16 remove this!!!
 
     public static InfoDialog newInstance(String description, String action, boolean showProgress) {
         InfoDialog fragment = new InfoDialog();
@@ -91,18 +93,17 @@ public class InfoDialog extends BaseDialogFragment {
         return this;
     }
 
-    public InfoDialog setAction(String value, OnClickListener onActionClick) {
+    public InfoDialog setAction(String value, WeakReference<OnClickListener> onActionClick) {
         actionBtn.setText(value, true);
         setActionClick(onActionClick);
         return this;
     }
 
-
-    public InfoDialog setActionClick(OnClickListener onActionClick) {
+    public InfoDialog setActionClick(WeakReference<OnClickListener> onActionClick) {
         actionClickListener = onActionClick;
         if (actionBtn != null) {
             actionBtn.setVisibility(onActionClick == null ? View.GONE : View.VISIBLE);
-            actionBtn.setOnClickListener(onActionClick);
+            actionBtn.setOnClickListener(onActionClick.get());
         }
         return this;
     }
