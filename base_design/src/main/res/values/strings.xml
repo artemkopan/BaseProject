@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">Base Support Design</string>
-
-    <string name="behavior_view_position">com.artemkopan.base_design.behavior.ViewPositionBehavior</string>
-    <string name="behavior_fab_scroll">com.artemkopan.base_design.behavior.FabScrollBehavior</string>
-</resources>
