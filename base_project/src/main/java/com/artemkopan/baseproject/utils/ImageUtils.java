@@ -1,6 +1,5 @@
 package com.artemkopan.baseproject.utils;
 
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -25,21 +24,19 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-
 public final class ImageUtils {
 
-
     public static void saveBitmapToJPEG(Bitmap bmp, String filePath,
-            @IntRange(from = 0, to = 100) int quality) throws IOException {
+                                        @IntRange(from = 0, to = 100) int quality) throws IOException {
         FileOutputStream out = new FileOutputStream(filePath);
         bmp.compress(Bitmap.CompressFormat.JPEG, quality, out); // bmp is your Bitmap instance
         out.close();
     }
 
     public static Observable<String> convertBitmapToBase64(final String path,
-            Bitmap.Config config, final Bitmap.CompressFormat format,
-            @IntRange(from = 0, to = 100) final int quality, final int width, final int height) {
-
+                                                           Bitmap.Config config, final Bitmap.CompressFormat format,
+                                                           @IntRange(from = 0, to = 100) final int quality,
+                                                           final int width, final int height) {
         return openBitmapFromFile(path, config)
                 .flatMap(new Function<Bitmap, Observable<String>>() {
                     @Override
@@ -53,8 +50,8 @@ public final class ImageUtils {
     }
 
     public static Observable<String> convertBitmapToBase64(final Bitmap bitmap,
-            final Bitmap.CompressFormat format,
-            @IntRange(from = 0, to = 100) final int quality) {
+                                                           final Bitmap.CompressFormat format,
+                                                           @IntRange(from = 0, to = 100) final int quality) {
 
         return Observable.create(new ObservableOnSubscribe<String>() {
             @Override
@@ -70,16 +67,13 @@ public final class ImageUtils {
         });
     }
 
-
     public static Observable<Bitmap> openBitmapFromFile(final String imagePath,
-            final Bitmap.Config config) {
+                                                        final Bitmap.Config config) {
         return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(ObservableEmitter<Bitmap> e) throws Exception {
                 if (TextUtils.isEmpty(imagePath)) {
-                    e.onError(
-                            new IllegalArgumentException(
-                                    "ImagePath is null or empty : " + imagePath));
+                    e.onError(new IllegalArgumentException("ImagePath is null or empty : " + imagePath));
                     return;
                 }
                 BitmapFactory.Options options = new BitmapFactory.Options();
@@ -98,8 +92,8 @@ public final class ImageUtils {
     }
 
     public static Observable<Bitmap> resizeBitmapObservable(final Bitmap image,
-            final int maxWidth,
-            final int maxHeight) {
+                                                            final int maxWidth,
+                                                            final int maxHeight) {
         return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(ObservableEmitter<Bitmap> subscriber) throws Exception {
@@ -108,7 +102,6 @@ public final class ImageUtils {
             }
         }).compose(BaseRx.<Bitmap>applySchedulers());
     }
-
 
     public static Bitmap resizeBitmap(Bitmap image, int maxWidth, int maxHeight) {
         if (maxHeight > 0 && maxWidth > 0) {
@@ -216,7 +209,6 @@ public final class ImageUtils {
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-
         return orientation;
     }
 

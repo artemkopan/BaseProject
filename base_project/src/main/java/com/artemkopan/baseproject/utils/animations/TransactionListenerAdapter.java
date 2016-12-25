@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.utils;
+package com.artemkopan.baseproject.utils.animations;
 
 
 import android.os.Build.VERSION_CODES;

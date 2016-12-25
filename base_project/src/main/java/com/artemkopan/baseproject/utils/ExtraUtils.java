@@ -18,12 +18,15 @@ import android.support.v4.view.ViewCompat;
 import android.text.Html;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
 import com.artemkopan.baseproject.R;
+
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
@@ -120,7 +123,7 @@ public final class ExtraUtils {
      * @param context {@link Application#getApplicationContext()}
      * @return current width in pixels
      */
-    public static int getWidnowWidth(Context context) {
+    public static int getWindowWidth(Context context) {
         return context.getResources().getDisplayMetrics().widthPixels;
     }
 
@@ -139,7 +142,7 @@ public final class ExtraUtils {
      */
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme()
-                .obtainStyledAttributes(new int[] { R.attr.actionBarSize });
+                .obtainStyledAttributes(new int[]{R.attr.actionBarSize});
         int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
         styledAttributes.recycle();
         return toolbarHeight;
@@ -198,7 +201,7 @@ public final class ExtraUtils {
      */
     @SuppressLint("TrustAllX509TrustManager")
     public static TrustManager[] getTrustAllCerts() {
-        return new TrustManager[] {
+        return new TrustManager[]{
                 new X509TrustManager() {
                     @Override
                     public void checkClientTrusted(X509Certificate[] chain, String authType)
@@ -212,7 +215,7 @@ public final class ExtraUtils {
 
                     @Override
                     public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[] {};
+                        return new X509Certificate[]{};
                     }
                 }
         };
@@ -223,7 +226,7 @@ public final class ExtraUtils {
      */
     public static boolean isRTL() {
         return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault())
-                == ViewCompat.LAYOUT_DIRECTION_RTL;
+               == ViewCompat.LAYOUT_DIRECTION_RTL;
     }
 
     public static boolean postLollipop() {
@@ -235,8 +238,16 @@ public final class ExtraUtils {
      *
      * @param percentage Current percent from 0 to 1;
      */
-    public static float currentValue(@FloatRange(from = 0, to = 1) float percentage, float startValue,
-            float endValue) {
+    public static float currentValue(@FloatRange(from = 0, to = 1) float percentage, float startValue, float endValue) {
         return ((startValue - endValue) * (1 - percentage) + endValue);
+    }
+
+    /**
+     * Equals two objects with check for null;
+     *
+     * @return true if objects equals;
+     */
+    public static boolean equalsObject(Object first, Object second) {
+        return (first == null && second == null) || (first != null && first.equals(second));
     }
 }

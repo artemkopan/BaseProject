@@ -1,1 +1,1 @@
-include ':app', ':base_project', ':base_design', ':fonts'
+include ':app', ':base_project'

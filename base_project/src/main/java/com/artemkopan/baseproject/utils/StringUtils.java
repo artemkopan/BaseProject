@@ -3,6 +3,7 @@ package com.artemkopan.baseproject.utils;
 
 import android.content.Context;
 import android.support.annotation.ColorRes;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -240,4 +241,14 @@ public final class StringUtils {
     }
 
 
+    /**
+     * @return Parse string and return only digits and +*# chars;
+     */
+    @Nullable
+    public static String getPhoneNumber(String value) {
+        if (isEmpty(value)) {
+            return null;
+        }
+        return value.replaceAll("[^0-9+*#]+", "");
+    }
 }
