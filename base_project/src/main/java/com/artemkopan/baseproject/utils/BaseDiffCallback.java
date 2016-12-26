@@ -42,7 +42,7 @@ public abstract class BaseDiffCallback<T> extends DiffUtil.Callback {
     }
 
     public boolean areItemsTheSame(T oldItem, T newItem) {
-        return false;
+        return (oldItem == null && newItem == null) || (oldItem != null && oldItem.equals(newItem));
     }
 
     @Override
@@ -52,5 +52,16 @@ public abstract class BaseDiffCallback<T> extends DiffUtil.Callback {
 
     public boolean areContentsTheSame(T oldItem, T newItem) {
         return false;
+    }
+
+    public static class SimpleDiffCallback<T> extends BaseDiffCallback<T> {
+
+        private SimpleDiffCallback(List<T> oldList, List<T> newList) {
+            super(oldList, newList);
+        }
+
+        public static <T> SimpleDiffCallback<T> init(List<T> oldList, List<T> newList) {
+            return new SimpleDiffCallback<>(oldList, newList);
+        }
     }
 }
