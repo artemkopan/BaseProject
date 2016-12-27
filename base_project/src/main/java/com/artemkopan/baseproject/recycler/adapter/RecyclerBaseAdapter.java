@@ -1,6 +1,5 @@
 package com.artemkopan.baseproject.recycler.adapter;
 
-
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
+import com.artemkopan.baseproject.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,7 +79,6 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         notifyItemRangeInserted(size, mList.size() - size);
     }
 
-
     public void moveItem(int fromPosition, int toPosition) {
         final M model = mList.remove(fromPosition);
         mList.add(toPosition, model);
@@ -116,13 +115,24 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     }
 
     public void setList(List<M> list, boolean notify) {
-        if (mList != null && !mList.isEmpty()) {
+        if (!CollectionUtils.isEmpty(list)) {
             mList.clear();
         }
         this.mList = list;
         if (notify) {
             notifyDataSetChanged();
         }
+    }
+
+    public void setList(Collection<M> list, boolean notify) {
+        if (mList == null) {
+            mList = new ArrayList<>();
+            mList.addAll(list);
+        } else {
+            mList.clear();
+            mList.addAll(list);
+        }
+        notifyDataSetChanged();
     }
 
     public void createList(boolean dropIfExist) {
