@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
-import com.artemkopan.baseproject.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -115,7 +114,7 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     }
 
     public void setList(List<M> list, boolean notify) {
-        if (!CollectionUtils.isEmpty(list)) {
+        if (mList != null && mList.isEmpty()) {
             mList.clear();
         }
         this.mList = list;

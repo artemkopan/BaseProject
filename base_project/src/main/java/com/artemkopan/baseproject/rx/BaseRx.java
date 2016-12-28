@@ -47,17 +47,21 @@ public class BaseRx {
         return delayObserver(DEFAULT_DELAY, AndroidSchedulers.mainThread());
     }
 
+    public static <T> ObservableTransformer<T, T> delayObserver(final Scheduler schedule) {
+        return delayObserver(DEFAULT_DELAY, schedule);
+    }
+
     public static <T> ObservableTransformer<T, T> delayObserver(final int millis, final Scheduler scheduler) {
         return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(Observable<T> tObservable) {
                 return tObservable.zipWith(Observable.timer(millis, TimeUnit.MILLISECONDS, scheduler),
-                        new BiFunction<T, Long, T>() {
-                            @Override
-                            public T apply(T t, Long aLong) throws Exception {
-                                return t;
-                            }
-                        });
+                                           new BiFunction<T, Long, T>() {
+                                               @Override
+                                               public T apply(T t, Long aLong) throws Exception {
+                                                   return t;
+                                               }
+                                           });
             }
         };
     }

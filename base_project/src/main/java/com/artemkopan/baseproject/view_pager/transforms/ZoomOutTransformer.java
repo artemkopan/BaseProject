@@ -7,7 +7,7 @@ import android.view.View;
  * 09.12.16
  */
 
-public class ZoomOutTranformer extends ABaseTransformer {
+public class ZoomOutTransformer extends ABaseTransformer {
 
     @Override
     protected void onTransform(View view, float position) {

@@ -22,7 +22,7 @@ import io.reactivex.subjects.PublishSubject;
 @SuppressWarnings("WeakerAccess")
 public class RxViewClick implements ObservableOnSubscribe<View> {
 
-    private static final int TIME_DELAY = 600;
+    public static final int TIME_DELAY = 600;
 
     private WeakReference<View> mViewWeak;
 
@@ -38,8 +38,8 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
         if (view == null) return Observable.empty();
 
         return Observable.create(new RxViewClick(view))
-                .takeUntil(mDestroySubject)
-                .throttleFirst(milliseconds, TimeUnit.MILLISECONDS);
+                         .takeUntil(mDestroySubject)
+                         .throttleFirst(milliseconds, TimeUnit.MILLISECONDS);
     }
 
     public static PublishSubject<View> create(Consumer<View> onNext, PublishSubject<Object> mDestroySubject) {
