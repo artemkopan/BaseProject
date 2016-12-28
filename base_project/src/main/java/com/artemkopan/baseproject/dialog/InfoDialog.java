@@ -1,38 +1,32 @@
 package com.artemkopan.baseproject.dialog;
 
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.widget.ExTextSwitcher;
-
-import java.lang.ref.WeakReference;
 
 /**
- * Created for BaseProject
- * by Kopan Artem on 27.11.2016.
+ * Base info dialog with indeterminate progress bar.
+ * You {@link #getParentClass(Class)} must implement {@link OnDismissListener} for dismiss event;
  */
-
 public class InfoDialog extends BaseDialogFragment {
 
+    public static final int REQ_CODE = 12312;
     private static final String KEY_DESCRIPTION = "DESCRIPTION";
-    private static final String KEY_ACTION = "ACTION";
     private static final String KEY_PROGRESS = "PROGRESS";
     private View progressView;
     private TextView descriptionTxt;
-    private ExTextSwitcher actionBtn;
-    private WeakReference<OnClickListener> actionClickListener;  // TODO: 22.12.16 remove this!!!
 
-    public static InfoDialog newInstance(String description, String action, boolean showProgress) {
+    public static InfoDialog newInstance(String description, boolean showProgress) {
         InfoDialog fragment = new InfoDialog();
         Bundle args = new Bundle();
         args.putString(KEY_DESCRIPTION, description);
-        args.putString(KEY_ACTION, action);
         args.putBoolean(KEY_PROGRESS, showProgress);
         fragment.setArguments(args);
         return fragment;
@@ -40,8 +34,9 @@ public class InfoDialog extends BaseDialogFragment {
 
     @Override
     public void onBaseDialogSize(Window window) {
+        float percent = getContext().getResources().getFraction(R.fraction.dialog_width, 1, 1);
         window.setLayout(
-                (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.8),
+                (int) (getContext().getResources().getDisplayMetrics().widthPixels * percent),
                 WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
@@ -50,12 +45,7 @@ public class InfoDialog extends BaseDialogFragment {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             setDescription(savedInstanceState.getString(KEY_DESCRIPTION));
-            setAction(savedInstanceState.getString(KEY_ACTION), null);
-            if (savedInstanceState.getBoolean(KEY_PROGRESS)) {
-                showProgress();
-            } else {
-                showMessage();
-            }
+            showProgress(savedInstanceState.getBoolean(KEY_PROGRESS, true));
         }
     }
 
@@ -67,25 +57,15 @@ public class InfoDialog extends BaseDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        progressView = view.findViewById(R.id.progress_view);
+        progressView = view.findViewById(R.id.progress_bar);
         descriptionTxt = (TextView) view.findViewById(R.id.description_txt);
-        actionBtn = (ExTextSwitcher) view.findViewById(R.id.action_btn);
         Bundle args = getArguments();
-        if (args.getBoolean(KEY_PROGRESS, true)) {
-            showProgress();
-        } else {
-            showMessage();
-        }
+        showProgress(args.getBoolean(KEY_PROGRESS, true));
         setDescription(args.getString(KEY_DESCRIPTION));
-        setAction(args.getString(KEY_ACTION), actionClickListener);
     }
 
-    public void showProgress() {
-        progressView.setVisibility(View.VISIBLE);
-    }
-
-    public void showMessage() {
-        progressView.setVisibility(View.GONE);
+    public void showProgress(boolean show) {
+        progressView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     public InfoDialog setDescription(String value) {
@@ -93,26 +73,17 @@ public class InfoDialog extends BaseDialogFragment {
         return this;
     }
 
-    public InfoDialog setAction(String value, WeakReference<OnClickListener> onActionClick) {
-        actionBtn.setText(value, true);
-        setActionClick(onActionClick);
-        return this;
-    }
-
-    public InfoDialog setActionClick(WeakReference<OnClickListener> onActionClick) {
-        actionClickListener = onActionClick;
-        if (actionBtn != null) {
-            actionBtn.setVisibility(onActionClick == null ? View.GONE : View.VISIBLE);
-            actionBtn.setOnClickListener(onActionClick.get());
-        }
-        return this;
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_DESCRIPTION, descriptionTxt.getText().toString());
-        outState.putString(KEY_ACTION, actionBtn.getText().toString());
-        outState.putBoolean(KEY_PROGRESS, getArguments().getBoolean(KEY_PROGRESS, true));
+        outState.putBoolean(KEY_PROGRESS, progressView.getVisibility() == View.VISIBLE);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        OnDismissListener onDismissListener = (OnDismissListener) getParentClass(OnDismissListener.class);
+        if (onDismissListener != null) onDismissListener.onDismiss(dialog);
     }
 }

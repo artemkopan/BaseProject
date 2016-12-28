@@ -1,8 +1,9 @@
 package com.artemkopan.baseproject.sample;
 
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 
 import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.dialog.DialogProvider;
@@ -19,7 +20,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
-public class Test extends BaseActivity {
+public class Test extends BaseActivity implements OnDismissListener{
 
     DialogProvider mDialogProvider = new DialogProvider();
 
@@ -84,38 +85,32 @@ public class Test extends BaseActivity {
         mProgressButton.showProgress(!mProgressButton.isShowProgress());
     }
 
-
     public void openDialog(View view) {
 
-        mDialogProvider.showProgressDialog(this, new OnClickListener() {
+        mDialogProvider.showProgressDialog(this);
+
+        Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
             @Override
-            public void onClick(View v) {
-
-                mDialogProvider.showProgressDialog(Test.this, "asdas", "sadasd", new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mDialogProvider.dismissDialog();
-
-                        Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                                .subscribe(new Consumer<Long>() {
-                                    @Override
-                                    public void accept(Long aLong) throws Exception {
-                                        mDialogProvider.showMessageDialog(Test.this, ",l,,l;", "1230=-12",
-                                                                          new OnClickListener() {
-                                                                              @Override
-                                                                              public void onClick(View v) {
-                                                                                  openDialog(null);
-                                                                              }
-                                                                          });
-                                    }
-                                });
-
-                    }
-                });
-
-
+            public void accept(Long aLong) throws Exception {
+                mDialogProvider.showMessageDialog(Test.this, "asdasdasasdko");
             }
         });
+        Observable.timer(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
+            @Override
+            public void accept(Long aLong) throws Exception {
+                mDialogProvider.showProgressDialog(Test.this);
+            }
+        });
+        Observable.timer(3300, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
+            @Override
+            public void accept(Long aLong) throws Exception {
+                mDialogProvider.showMessageDialog(Test.this, "qwe12e21");
+            }
+        });
+    }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        Log.i("onDismiss: ");
     }
 }

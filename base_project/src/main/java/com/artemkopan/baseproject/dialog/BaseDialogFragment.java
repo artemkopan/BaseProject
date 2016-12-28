@@ -69,7 +69,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
         }
         FragmentTransaction transactionFragment = manager.beginTransaction();
         transactionFragment.add(this, tag);
-        transactionFragment.commitAllowingStateLoss();
+        transactionFragment.commitNowAllowingStateLoss();
     }
 
     @NonNull

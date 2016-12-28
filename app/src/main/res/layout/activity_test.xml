@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         app:pbv_progressColor="@color/colorAccent"
         app:pbv_progressPadding="10dp"
+        android:textColor="@android:color/black"
         android:onClick="openDialog"
         android:layout_centerInParent="true"
         android:text="test"/>
