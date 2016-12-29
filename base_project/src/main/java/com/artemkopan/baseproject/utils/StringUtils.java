@@ -1,16 +1,22 @@
 package com.artemkopan.baseproject.utils;
 
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Patterns;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import static android.text.Html.FROM_HTML_MODE_COMPACT;
 
 public final class StringUtils {
 
@@ -250,5 +256,21 @@ public final class StringUtils {
             return null;
         }
         return value.replaceAll("[^0-9+*#]+", "");
+    }
+
+    /**
+     * Get html compat {@link Html#fromHtml(String, int)}
+     */
+    @TargetApi(VERSION_CODES.N)
+    public static CharSequence fromHtml(String value) {
+        return fromHtml(value, FROM_HTML_MODE_COMPACT);
+    }
+
+    public static CharSequence fromHtml(String value, int flags) {
+        if (VERSION.SDK_INT >= VERSION_CODES.N) {
+            return Html.fromHtml(value, flags);
+        } else {
+            return Html.fromHtml(value);
+        }
     }
 }

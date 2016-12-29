@@ -25,10 +25,24 @@ public class DialogProvider {
     private AtomicBoolean mDismissCall = new AtomicBoolean(false);
 
     public InfoDialog showProgressDialog(Object obj) {
+        return showProgressDialog(obj, R.string.base_info_loading);
+    }
+
+    public InfoDialog showProgressDialog(Object obj, @StringRes int description) {
         if (obj instanceof Fragment) {
-            return showDialog((Fragment) obj, R.string.base_info_loading, true);
+            return showDialog((Fragment) obj, description, true);
         } else if (obj instanceof FragmentActivity) {
-            return showDialog((FragmentActivity) obj, R.string.base_info_loading, true);
+            return showDialog((FragmentActivity) obj, description, true);
+        } else {
+            throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
+        }
+    }
+
+    public InfoDialog showProgressDialog(Object obj, String description) {
+        if (obj instanceof Fragment) {
+            return showDialog((Fragment) obj, description, true);
+        } else if (obj instanceof FragmentActivity) {
+            return showDialog((FragmentActivity) obj, description, true);
         } else {
             throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
         }

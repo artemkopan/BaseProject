@@ -58,22 +58,6 @@ public final class ExtraUtils {
     }
 
     /**
-     * Get html compat {@link Html#fromHtml(String, int)}
-     */
-    @TargetApi(VERSION_CODES.N)
-    public static CharSequence fromHtml(String value) {
-        return fromHtml(value, FROM_HTML_MODE_COMPACT);
-    }
-
-    public static CharSequence fromHtml(String value, int flags) {
-        if (VERSION.SDK_INT >= VERSION_CODES.N) {
-            return Html.fromHtml(value, flags);
-        } else {
-            return Html.fromHtml(value);
-        }
-    }
-
-    /**
      * Hide keyboard if view !=null
      *
      * @param view current focused view
