@@ -1,21 +1,17 @@
 package com.artemkopan.baseproject.utils;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.support.annotation.FloatRange;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
-import android.text.Html;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -31,8 +27,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
-import static android.text.Html.FROM_HTML_MODE_COMPACT;
 
 @SuppressWarnings("WeakerAccess")
 public final class ExtraUtils {
@@ -65,7 +59,7 @@ public final class ExtraUtils {
     public static void hideKeyboard(View view) {
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) view.getContext()
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                              .getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -80,11 +74,11 @@ public final class ExtraUtils {
             return;
         }
         InputMethodManager inputMethodManager = (InputMethodManager) view.getContext()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                                         .getSystemService(Context.INPUT_METHOD_SERVICE);
 
         inputMethodManager
                 .toggleSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED,
-                        0);
+                                           0);
         view.requestFocus();
     }
 
@@ -126,7 +120,7 @@ public final class ExtraUtils {
      */
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme()
-                .obtainStyledAttributes(new int[]{R.attr.actionBarSize});
+                                                   .obtainStyledAttributes(new int[]{R.attr.actionBarSize});
         int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
         styledAttributes.recycle();
         return toolbarHeight;
@@ -234,4 +228,33 @@ public final class ExtraUtils {
     public static boolean equalsObject(Object first, Object second) {
         return (first == null && second == null) || (first != null && first.equals(second));
     }
+
+    /**
+     * Check obj instance of String and cast them. If obj != String or empty return empty string;
+     */
+    public static String castToString(Object obj) {
+        return instanceOfString(obj) ? (String) obj : "";
+    }
+
+    /**
+     * @return If object instance is Integer return true
+     */
+    public static boolean instanceOfInt(Object object) {
+        return instanceOf(object, Integer.class);
+    }
+
+    /**
+     * @return If object instance is String return true
+     */
+    public static boolean instanceOfString(Object object) {
+        return instanceOf(object, String.class);
+    }
+
+    /**
+     * Check instance of Object; If object is null then return false;
+     */
+    public static <T> boolean instanceOf(Object obj, Class<T> clazz) {
+        return clazz.isInstance(obj);
+    }
+
 }

@@ -66,10 +66,17 @@ public class ErrorEditText extends TextInputEditText {
 
     /**
      * Convenience method to get the input text as a {@link String}.
+     * <p>
+     * Trim is default. If you won't trim, use {@link #getString(boolean)}
      */
     public String getString() {
+        return getString(true);
+    }
+
+    public String getString(boolean trim) {
         Editable editable = getText();
-        return editable != null ? editable.toString() : "";
+        return editable != null ? trim ? editable.toString().trim() : editable.toString()
+                                : "";
     }
 
     /**

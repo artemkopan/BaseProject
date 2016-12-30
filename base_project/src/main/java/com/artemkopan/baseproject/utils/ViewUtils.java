@@ -3,13 +3,23 @@ package com.artemkopan.baseproject.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
+import android.widget.TextView;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import butterknife.ButterKnife;
 
+import static com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition.DRAWABLE_BOTTOM;
+import static com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition.DRAWABLE_LEFT;
+import static com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition.DRAWABLE_RIGHT;
+import static com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition.DRAWABLE_TOP;
 
 public final class ViewUtils {
 
@@ -56,7 +66,9 @@ public final class ViewUtils {
     public static float getRelativeX(View view, @Nullable View parentView) {
         if (view.getParent() == (parentView == null ? view.getRootView() : parentView)) {
             return view.getX();
-        } else { return view.getX() + getRelativeX((View) view.getParent(), parentView); }
+        } else {
+            return view.getX() + getRelativeX((View) view.getParent(), parentView);
+        }
     }
 
     /**
@@ -69,7 +81,9 @@ public final class ViewUtils {
     public static float getRelativeY(View view, @Nullable View parentView) {
         if (view.getParent() == (parentView == null ? view.getRootView() : parentView)) {
             return view.getY();
-        } else { return view.getY() + getRelativeY((View) view.getParent(), parentView); }
+        } else {
+            return view.getY() + getRelativeY((View) view.getParent(), parentView);
+        }
     }
 
     /**
@@ -87,7 +101,6 @@ public final class ViewUtils {
         int height = view.getHeight();
         return view.getY() + (height > 0 ? height / 2 : 0);
     }
-
 
     /**
      * Check view size, if {@link View#getWidth()} or {@link View#getHeight()} > 0, then return true;
@@ -123,5 +136,33 @@ public final class ViewUtils {
         } else {
             preDrawListener(view, ready);
         }
+    }
+
+    /**
+     * Handle click on drawable textView; Set listener {@link TextView#onTouchEvent(MotionEvent)} add call this method.
+     * If true, then drawable was clicked;
+     * <p>
+     * <b>IMPORTANT!!!</b> in {@link TextView#onTouchEvent(MotionEvent)} you must return true,
+     * because it is work only if event action == {@link MotionEvent#ACTION_UP}
+     * </p>
+     */
+    public static boolean onDrawableClick(MotionEvent event, TextView view, @DrawablePosition int pos) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            int drawableWidth = view.getCompoundDrawables()[pos].getBounds().width();
+            if (event.getRawX() >= (view.getRight() - drawableWidth)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @IntDef({DRAWABLE_LEFT, DRAWABLE_TOP, DRAWABLE_RIGHT, DRAWABLE_BOTTOM})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DrawablePosition {
+
+        int DRAWABLE_LEFT = 0;
+        int DRAWABLE_TOP = 1;
+        int DRAWABLE_RIGHT = 2;
+        int DRAWABLE_BOTTOM = 3;
     }
 }

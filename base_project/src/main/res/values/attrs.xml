@@ -37,5 +37,11 @@
         <attr name="siv_by_height" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="VectorCompatTextView">
+        <attr name="drawableStartCompat" format="reference"/>
+        <attr name="drawableTopCompat" format="reference"/>
+        <attr name="drawableEndCompat" format="reference"/>
+        <attr name="drawableBottomCompat" format="reference"/>
+    </declare-styleable>
 
 </resources>

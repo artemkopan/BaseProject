@@ -14,7 +14,7 @@ import com.artemkopan.baseproject.R;
  * 06.12.16
  */
 
-class AspectViewHelper {
+final class AspectViewHelper {
 
     private int aspectWidth = 1;
     private int aspectHeight = 1;
