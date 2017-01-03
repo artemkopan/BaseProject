@@ -9,11 +9,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.util.Property;
+import android.view.animation.AccelerateInterpolator;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.helper.Log;
@@ -104,12 +106,12 @@ public class ProgressButtonView extends AppCompatButton {
     public void showProgress(boolean show) {
         Log.d("showProgress: is show " + show);
 
-        if (!ViewUtils.checkSize(this)) {
-            mShowProgress = false;
-            postInvalidate();
-            Log.w("showProgress: Width or Height == 0");
+        if (show == mShowProgress) {
             return;
-        } else if (show == mShowProgress) {
+        } else if (show && !ViewUtils.checkSize(this)) {
+            mProgressDrawable.setAlpha(255);
+            mProgressDrawable.start();
+            postInvalidate();
             return;
         }
 
@@ -118,7 +120,7 @@ public class ProgressButtonView extends AppCompatButton {
         if (mAnimator == null) {
             mAnimator = ObjectAnimator.ofFloat(this, mBackgroundProperty, 0, 1);
             mAnimator.setDuration(AnimUtils.VERY_FAST_DURATION);
-            mAnimator.setInterpolator(PathInterpolatorCompat.create(0.4f, 0, 0.2f, 1));
+            mAnimator.setInterpolator(new AccelerateInterpolator());
             mAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -131,6 +133,7 @@ public class ProgressButtonView extends AppCompatButton {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     mProgressDrawable.setAlpha(0);
+
                     if (mBackgroundBounds == null && getBackground() != null) {
                         mBackgroundBounds = new Rect(getBackground().getBounds());
                     }
@@ -199,6 +202,59 @@ public class ProgressButtonView extends AppCompatButton {
                                   (int) ExtraUtils.currentValue(percentage, from.top, to.top),
                                   (int) ExtraUtils.currentValue(percentage, from.right, to.right),
                                   (int) ExtraUtils.currentValue(percentage, from.bottom, to.bottom));
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        //begin boilerplate code that allows parent classes to save state
+        Parcelable superState = super.onSaveInstanceState();
+
+        SavedState ss = new SavedState(superState);
+        ss.showProgress = mShowProgress;
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof SavedState) {
+            SavedState ss = (SavedState) state;
+            super.onRestoreInstanceState(ss.getSuperState());
+            showProgress(ss.showProgress);
+        } else {
+            super.onRestoreInstanceState(state);
+        }
+    }
+
+    static class SavedState extends BaseSavedState {
+
+        boolean showProgress;
+
+        SavedState(Parcel source) {
+            super(source);
+            this.showProgress = source.readByte() != 0;
+        }
+
+        private SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeByte(this.showProgress ? (byte) 1 : (byte) 0);
+        }
+
+        //required field that makes Parcelables from a Parcel
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 
 }

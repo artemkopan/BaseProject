@@ -35,19 +35,7 @@ public class Test extends BaseActivity implements OnDismissListener{
 
         mProgressButton = (ProgressButtonView) findViewById(R.id.progress_btn);
 
-//        ExRecyclerView list = (ExRecyclerView) findViewById(R.id.list);
-//
-//        list.showProgress();
-
-        /*mDialogProvider.showProgressDialog(this, new Runnable() {
-            @Override
-            public void run() {
-                Test2Activity.startActivity(Test.this);
-            }
-        });
-*/
-        mCompositeDisposable.add(
-                testObservable("Composite")
+        mCompositeDisposable.add(testObservable("Composite")
                         .takeUntil(mDestroySubject).subscribe());
 
         testObservable("Tale Until")

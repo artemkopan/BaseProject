@@ -45,7 +45,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         if (onCreateInflateView() > 0) {
             View view = inflater.inflate(onCreateInflateView(), container, false);
             mUnbinder = ButterKnife.bind(this, view);
@@ -108,7 +108,6 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
         return true;
     }
 
-
     //region Toolbar methods
 
     /**
@@ -129,7 +128,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
      * @param fromActivity If need find toolbar in {@link AppCompatActivity}
      */
     protected void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable,
-            boolean fromActivity) {
+                                 boolean fromActivity) {
 
         if (fromActivity && getActivity() != null) {
             mToolbar = findById(getActivity(), toolbarId);
@@ -137,8 +136,8 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
             mToolbar = findById(getView(), toolbarId);
         } else {
             Log.e("From Activity: " + fromActivity +
-                    "\nActivity: " + getActivity() +
-                    "\nView: " + getView());
+                  "\nActivity: " + getActivity() +
+                  "\nView: " + getView());
         }
 
         if (mToolbar == null) {
@@ -185,10 +184,10 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
      */
     protected void onToolbarHomeBtn(boolean show) {
         if (getActivity() != null
-                && getActivity() instanceof AppCompatActivity
-                && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            && getActivity() instanceof AppCompatActivity
+            && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar()
-                    .setDisplayHomeAsUpEnabled(show);
+                                               .setDisplayHomeAsUpEnabled(show);
         }
     }
 
@@ -217,7 +216,6 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
         }
     }
     //endregion
-
 
     /**
      * @return Check implemented class and return them. If fragment was started from another

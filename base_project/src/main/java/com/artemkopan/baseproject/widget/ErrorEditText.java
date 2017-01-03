@@ -158,13 +158,15 @@ public class ErrorEditText extends TextInputEditText {
      *
      * @param errorMessage the error message to display to the user. {@code null} will remove any error message displayed.
      */
-    public void setError(@Nullable String errorMessage) {
+    public void setError(@Nullable CharSequence errorMessage) {
         mError = !TextUtils.isEmpty(errorMessage);
 
         TextInputLayout textInputLayout = getTextInputLayoutParent();
         if (textInputLayout != null) {
             textInputLayout.setErrorEnabled(!TextUtils.isEmpty(errorMessage));
             textInputLayout.setError(errorMessage);
+        } else {
+            super.setError(errorMessage);
         }
 
         if (mError) {

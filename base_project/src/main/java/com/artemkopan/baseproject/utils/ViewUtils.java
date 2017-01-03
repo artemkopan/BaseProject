@@ -57,6 +57,13 @@ public final class ViewUtils {
     }
 
     /**
+     * @return content view from activity.
+     */
+    public static View findContentView(@NonNull Activity activity) {
+        return activity.findViewById(android.R.id.content);
+    }
+
+    /**
      * Get relative value of X position from root View;
      * Default parentView is System DecorView;
      *
