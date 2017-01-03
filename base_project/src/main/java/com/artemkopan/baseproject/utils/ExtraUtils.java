@@ -216,7 +216,7 @@ public final class ExtraUtils {
      *
      * @param percentage Current percent from 0 to 1;
      */
-    public static float currentValue(@FloatRange(from = 0, to = 1) float percentage, float startValue, float endValue) {
+    public static float calculateFactorValue(@FloatRange(from = 0, to = 1) float percentage, float startValue, float endValue) {
         return ((startValue - endValue) * (1 - percentage) + endValue);
     }
 
