@@ -4,9 +4,10 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -20,22 +21,28 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.internal.UiInterface;
+import com.artemkopan.baseproject.internal.UiManager;
 import com.artemkopan.baseproject.presenter.BasePresenter;
 import com.artemkopan.baseproject.presenter.MvpView;
-import com.artemkopan.baseproject.rx.BaseRx;
+import com.jakewharton.rxrelay2.PublishRelay;
 
-import butterknife.ButterKnife;
+import java.util.concurrent.TimeUnit;
+
 import butterknife.Unbinder;
-import io.reactivex.subjects.PublishSubject;
 
 public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView> extends DialogFragment
-        implements MvpView {
+        implements MvpView, UiInterface {
 
     public static final int REQ_CODE = 343;
 
-    public PublishSubject<Object> mDestroySubject = PublishSubject.create();
-    protected Unbinder mUnbinder;
     protected P mPresenter;
+    private UiManager mUiManager;
+
+    //==============================================================================================
+    // Show dialog methods
+    //==============================================================================================
+    //region methods
 
     public void show(FragmentManager manager) {
         show(manager, this.getClass().getName());
@@ -72,11 +79,23 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
         transactionFragment.commitAllowingStateLoss();
     }
 
+    //endregion
+
+    //==============================================================================================
+    // Create Dialog methods
+    //==============================================================================================
+    //region methods
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        onBaseDialogRequestFeature(dialog.getWindow());
+        Dialog dialog;
+        if (onBaseBottomSheetDialog()) {
+            dialog = new BottomSheetDialog(getContext(), getTheme());
+        } else {
+            dialog = super.onCreateDialog(savedInstanceState);
+            onBaseDialogRequestFeature(dialog.getWindow());
+        }
         return dialog;
     }
 
@@ -89,50 +108,6 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
         onBaseDialogGravity(window);
         onBaseDialogSize(window);
     }
-
-    @Override
-    public void onDestroyView() {
-        if (mPresenter != null) {
-            mPresenter.detachView();
-        }
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
-        }
-        super.onDestroyView();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        if (onCreateInflateView() > 0) {
-            View view = inflater.inflate(onCreateInflateView(), container, false);
-            mUnbinder = ButterKnife.bind(this, view);
-            return view;
-        } else {
-            return super.onCreateView(inflater, container, savedInstanceState);
-        }
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (mPresenter != null) {
-            mPresenter.attachView((V) this);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        mDestroySubject.onNext(BaseRx.TRIGGER);
-        super.onDestroy();
-    }
-
-    /**
-     * Call {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} with auto inflate
-     *
-     * @return {@link LayoutRes} layout res id
-     */
-    public abstract int onCreateInflateView();
 
     public void onBaseDialogAnim(Window window) {
         window.getAttributes().windowAnimations = R.style.DialogAnimationUpDown;
@@ -152,6 +127,48 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
 
     public void onBaseDialogRequestFeature(Window window) {
         window.requestFeature(Window.FEATURE_NO_TITLE);
+    }
+
+    public boolean onBaseBottomSheetDialog() {
+        return false;
+    }
+
+    //endregion
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        mUiManager = UiManager.Factory.create(this);
+        super.onCreate(savedInstanceState);
+        mUiManager.onCreate();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return mUiManager.onCreateView(inflater, container, null, this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if (mPresenter != null) {
+            mPresenter.attachView((V) this);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
+        mUiManager.onDestroyView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        mUiManager.onDestroy();
+        super.onDestroy();
     }
 
     public boolean isShowing() {
@@ -182,5 +199,32 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
             return clazz.cast(getActivity());
         }
         return null;
+    }
+
+    @Override
+    public FragmentActivity getBaseActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public PublishRelay<Object> getDestroySubject() {
+        return mUiManager.getDestroySubject();
+    }
+
+    @Override
+    public FragmentManager getSupportFragmentManager() {
+        return getActivity().getSupportFragmentManager();
+    }
+
+    public void setUnbinder(Unbinder unbinder) {
+        mUiManager.setUnbinder(unbinder);
+    }
+
+    public void setStatusBarColor(@ColorInt int color) {
+        mUiManager.setStatusBarColor(color);
+    }
+
+    public void setStatusBarColor(@ColorInt int color, long delay, TimeUnit timeUnit) {
+        mUiManager.setStatusBarColor(color, delay, timeUnit);
     }
 }

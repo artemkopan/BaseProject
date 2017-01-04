@@ -1,5 +1,7 @@
 package com.artemkopan.baseproject.rx;
 
+import com.jakewharton.rxrelay2.PublishRelay;
+
 import org.reactivestreams.Publisher;
 
 import java.util.concurrent.TimeUnit;
@@ -13,15 +15,14 @@ import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
 
 public class BaseRx {
 
     public static final Object TRIGGER = new Object();
     private static final int DEFAULT_DELAY = 600;
-    protected final PublishSubject<Object> mDestroySubject;
+    protected final PublishRelay<Object> mDestroySubject;
 
-    public BaseRx(PublishSubject<Object> destroySubject) {
+    public BaseRx(PublishRelay<Object> destroySubject) {
         mDestroySubject = destroySubject;
     }
 
@@ -66,7 +67,7 @@ public class BaseRx {
         };
     }
 
-    public PublishSubject<Object> getDestroySubject() {
+    public PublishRelay<Object> getDestroySubject() {
         return mDestroySubject;
     }
 

@@ -50,7 +50,7 @@ public class InfoDialog extends BaseDialogFragment {
     }
 
     @Override
-    public int onCreateInflateView() {
+    public int onInflateLayout() {
         return R.layout.base_dialog_info;
     }
 

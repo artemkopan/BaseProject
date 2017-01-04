@@ -176,7 +176,6 @@ public class ProgressButtonView extends AppCompatButton {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.i("onDraw: " + mShowProgress + " draw prog" + mDrawProgress);
         if (mShowProgress && mDrawProgress) {
             mProgressDrawable.draw(canvas);
         } else {
