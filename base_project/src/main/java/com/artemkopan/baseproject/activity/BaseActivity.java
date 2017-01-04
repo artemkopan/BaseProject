@@ -19,6 +19,7 @@ import com.artemkopan.baseproject.fragment.BaseFragment;
 import com.artemkopan.baseproject.internal.UiInterface;
 import com.artemkopan.baseproject.internal.UiManager;
 import com.artemkopan.baseproject.presenter.BasePresenter;
+import com.artemkopan.baseproject.presenter.BasePresenterImpl;
 import com.artemkopan.baseproject.presenter.MvpView;
 import com.jakewharton.rxrelay2.PublishRelay;
 
