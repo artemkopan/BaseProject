@@ -220,41 +220,4 @@ public final class ExtraUtils {
         return ((startValue - endValue) * (1 - percentage) + endValue);
     }
 
-    /**
-     * Equals two objects with check for null;
-     *
-     * @return true if objects equals;
-     */
-    public static boolean equalsObject(Object first, Object second) {
-        return (first == null && second == null) || (first != null && first.equals(second));
-    }
-
-    /**
-     * Check obj instance of String and cast them. If obj != String or empty return empty string;
-     */
-    public static String castToString(Object obj) {
-        return instanceOfString(obj) ? (String) obj : "";
-    }
-
-    /**
-     * @return If object instance is Integer return true
-     */
-    public static boolean instanceOfInt(Object object) {
-        return instanceOf(object, Integer.class);
-    }
-
-    /**
-     * @return If object instance is String return true
-     */
-    public static boolean instanceOfString(Object object) {
-        return instanceOf(object, String.class);
-    }
-
-    /**
-     * Check instance of Object; If object is null then return false;
-     */
-    public static <T> boolean instanceOf(Object obj, Class<T> clazz) {
-        return clazz.isInstance(obj);
-    }
-
 }

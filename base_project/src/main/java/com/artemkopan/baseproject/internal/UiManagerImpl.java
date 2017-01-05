@@ -34,6 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 
 import static butterknife.ButterKnife.findById;
+import static com.artemkopan.baseproject.utils.ObjectUtils.castObject;
 
 /**
  * Created by Artem Kopan for jabrool
@@ -150,16 +151,15 @@ public final class UiManagerImpl implements UiManager {
             return;
         }
 
-        if (mUiInterface.getBaseActivity() instanceof AppCompatActivity) {
-            ((AppCompatActivity) mUiInterface.getBaseActivity()).setSupportActionBar(toolbar);
-        }
-
-        mToolbarReference = new WeakReference<>(toolbar);
+        setSupportToolbar(toolbar);
 
         if (homeDrawable > 0) {
             toolbar.setNavigationIcon(ContextCompat.getDrawable(mUiInterface.getBaseActivity(), homeDrawable));
             onToolbarHomeBtn(true);
         }
+
+        mToolbarReference = new WeakReference<>(toolbar);
+
     }
 
     /**
@@ -169,7 +169,7 @@ public final class UiManagerImpl implements UiManager {
     public void onToolbarNavigationClickListener(OnClickListener onClickListener) {
         if (mToolbarReference != null && mToolbarReference.get() != null) {
             mToolbarReference.get().setNavigationOnClickListener(onClickListener);
-        }else {
+        } else {
             Log.e("onToolbarNavigationClickListener: toolbar is null");
         }
     }
@@ -179,10 +179,12 @@ public final class UiManagerImpl implements UiManager {
      */
     @Override
     public void onToolbarSetTitle(@StringRes int titleRes) {
-        if (mToolbarReference != null && mToolbarReference.get() != null) {
-            mToolbarReference.get().setTitle(titleRes);
-        }else {
-            Log.e("onToolbarSetTitle: toolbar is null");
+        AppCompatActivity activity = castObject(mUiInterface.getBaseActivity(), AppCompatActivity.class);
+        if (activity != null && activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setTitle(titleRes);
+        } else {
+            Log.e("onToolbarSetTitle: wrong instance activity " + mUiInterface.getBaseActivity() + " or action bar is" +
+                  " null");
         }
     }
 
@@ -191,10 +193,12 @@ public final class UiManagerImpl implements UiManager {
      */
     @Override
     public void onToolbarSetTitle(CharSequence title) {
-        if (mToolbarReference != null && mToolbarReference.get() != null) {
-            mToolbarReference.get().setTitle(title);
-        }else {
-            Log.e("onToolbarSetTitle: toolbar is null");
+        AppCompatActivity activity = castObject(mUiInterface.getBaseActivity(), AppCompatActivity.class);
+        if (activity != null && activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setTitle(title);
+        } else {
+            Log.e("onToolbarSetTitle: wrong instance activity " + mUiInterface.getBaseActivity() + " or action bar is" +
+                  " null");
         }
     }
 
@@ -208,6 +212,12 @@ public final class UiManagerImpl implements UiManager {
             if (supportActionBar != null) {
                 supportActionBar.setDisplayHomeAsUpEnabled(show);
             }
+        }
+    }
+
+    private void setSupportToolbar(Toolbar toolbar) {
+        if (mUiInterface.getBaseActivity() instanceof AppCompatActivity) {
+            ((AppCompatActivity) mUiInterface.getBaseActivity()).setSupportActionBar(toolbar);
         }
     }
 
