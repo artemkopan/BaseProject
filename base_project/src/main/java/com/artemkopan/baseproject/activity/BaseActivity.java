@@ -19,7 +19,6 @@ import com.artemkopan.baseproject.fragment.BaseFragment;
 import com.artemkopan.baseproject.internal.UiInterface;
 import com.artemkopan.baseproject.internal.UiManager;
 import com.artemkopan.baseproject.presenter.BasePresenter;
-import com.artemkopan.baseproject.presenter.BasePresenterImpl;
 import com.artemkopan.baseproject.presenter.MvpView;
 import com.jakewharton.rxrelay2.PublishRelay;
 
@@ -38,6 +37,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     @SuppressWarnings("SpellCheckingInspection")
     protected P mPresenter;
     private UiManager mUiManager;
+    private boolean mShouldFinish;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +51,14 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     public void injectPresenter(P presenter, boolean attach) {
         mPresenter = presenter;
         if (attach) mPresenter.attachView((V) this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mShouldFinish) {
+            finish();
+        }
     }
 
     @Override
@@ -111,9 +119,17 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         return mUiManager.getDestroySubject();
     }
 
-    @Override @Nullable
+    @Override
+    @Nullable
     public View getView() {
         return findViewById(android.R.id.content);
+    }
+
+    /**
+     * Use this method if you want start new activity with transition and finish current;
+     */
+    public void shouldFinish() {
+        mShouldFinish = true;
     }
 
     public void setUnbinder(Unbinder unbinder) {
