@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.dialog.DialogProvider;
+import com.artemkopan.baseproject.dialog.MessageDialog;
 import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.widget.ProgressButtonView;
 
@@ -20,7 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
-public class Test extends BaseActivity implements OnDismissListener{
+public class Test extends BaseActivity implements OnDismissListener {
 
     DialogProvider mDialogProvider = new DialogProvider();
 
@@ -35,11 +36,11 @@ public class Test extends BaseActivity implements OnDismissListener{
 
         mProgressButton = (ProgressButtonView) findViewById(R.id.progress_btn);
 
-        mCompositeDisposable.add(testObservable("Composite")
-                        .takeUntil(mDestroySubject).subscribe());
-
-        testObservable("Tale Until")
-                .takeUntil(mDestroySubject).subscribe();
+        MessageDialog.newInstance("", "asdasdas").show(this);
+//        mCompositeDisposable.add(testObservable("Composite")
+//                        .takeUntil(mDestroySubject).subscribe());
+//
+//        testObservable("Tale Until").takeUntil(mDestroySubject).subscribe();
 
     }
 
@@ -75,24 +76,27 @@ public class Test extends BaseActivity implements OnDismissListener{
 
     public void openDialog(View view) {
 
-        mDialogProvider.showProgressDialog(this);
+        mDialogProvider.showProgress(this);
 
         Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
             @Override
             public void accept(Long aLong) throws Exception {
-                mDialogProvider.showMessageDialog(Test.this, "asdasdasasdko");
+                mDialogProvider.dismissProgress();
+                mDialogProvider.showMessage(Test.this, "asdasdasasdko");
             }
         });
         Observable.timer(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
             @Override
             public void accept(Long aLong) throws Exception {
-                mDialogProvider.showProgressDialog(Test.this);
+                mDialogProvider.dismissMessage();
+                mDialogProvider.showProgress(Test.this);
             }
         });
         Observable.timer(3300, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
             @Override
             public void accept(Long aLong) throws Exception {
-                mDialogProvider.showMessageDialog(Test.this, "qwe12e21");
+                mDialogProvider.dismissProgress();
+                mDialogProvider.showMessage(Test.this, "qwe12e21");
             }
         });
     }
@@ -100,5 +104,10 @@ public class Test extends BaseActivity implements OnDismissListener{
     @Override
     public void onDismiss(DialogInterface dialog) {
         Log.i("onDismiss: ");
+    }
+
+    @Override
+    public int onInflateLayout() {
+        return 0;
     }
 }

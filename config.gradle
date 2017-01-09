@@ -13,7 +13,7 @@ ext {
 ext {
     versionMajor = 1
     versionMinor = 0
-    versionPatch = 0
+    versionPatch = 11
     versionBuild = 0
 
     computeVersionCode = this.&computeVersionCode

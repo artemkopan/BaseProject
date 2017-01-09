@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Unbinder;
 
-public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView> extends DialogFragment
+public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView> extends AppCompatDialogFragment
         implements MvpView, UiInterface {
 
     public static final int REQ_CODE = 343;

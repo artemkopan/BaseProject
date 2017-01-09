@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="base_info_items_not_found">البنود لم يتم العثور</string>
+    <string name="base_info_loading">جار التحميل. أرجو الإنتظار…</string>
+    <string name="base_info_something_wrong">حدث خطأ ما…</string>
+</resources>

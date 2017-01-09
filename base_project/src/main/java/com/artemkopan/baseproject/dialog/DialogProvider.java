@@ -1,143 +1,133 @@
 package com.artemkopan.baseproject.dialog;
 
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.helper.Log;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.artemkopan.baseproject.dialog.InfoDialog.REQ_CODE;
 
 /**
- * Created for medimee
- * by Kopan Artem on 09.10.2016.
+ * Created by Artem Kopan for BaseProject
+ * 09.10.2016
  */
 
 @SuppressWarnings({"ConstantConditions", "WeakerAccess"})
 public class DialogProvider {
 
-    private InfoDialog mInfoDialog;
-    private AtomicBoolean mDismissCall = new AtomicBoolean(false);
+    private ProgressDialog progressDialog;
+    private MessageDialog messageDialog;
 
-    public InfoDialog showProgressDialog(Object obj) {
-        return showProgressDialog(obj, R.string.base_info_loading);
+    //==============================================================================================
+    // Progress Dialog
+    //==============================================================================================
+    //region methods
+    public synchronized ProgressDialog showProgress(Object obj) {
+        return showProgress(obj, R.string.base_info_loading);
     }
 
-    public InfoDialog showProgressDialog(Object obj, @StringRes int description) {
+    public synchronized ProgressDialog showProgress(Object obj, @StringRes int description) {
         if (obj instanceof Fragment) {
-            return showDialog((Fragment) obj, description, true);
+            Fragment fragment = (Fragment) obj;
+            return this.showProgress(fragment,
+                                     fragment.getString(description));
         } else if (obj instanceof FragmentActivity) {
-            return showDialog((FragmentActivity) obj, description, true);
+            FragmentActivity activity = (FragmentActivity) obj;
+            return this.showProgress(activity,
+                                     activity.getString(description));
         } else {
             throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
         }
     }
 
-    public InfoDialog showProgressDialog(Object obj, String description) {
+    public synchronized ProgressDialog showProgress(Object obj, String description) {
+        if (progressDialog == null || progressDialog.isShowing()) {
+            if (progressDialog != null) progressDialog.dismiss();
+            progressDialog = ProgressDialog.newInstance(description);
+            progressDialog.show(getFragmentManager(obj));
+        } else {
+            progressDialog.setDescription(description);
+        }
+        progressDialog.setCancelable(false);
+        return progressDialog;
+
+    }
+
+    public synchronized void dismissProgress() {
+        if (progressDialog != null) {
+            progressDialog.dismissAllowingStateLoss();
+            progressDialog = null;
+        }
+    }
+    //endregion
+
+    //==============================================================================================
+    // Message Dialog
+    //==============================================================================================
+    //region methods
+    public synchronized MessageDialog showMessage(Object obj, @StringRes int description) {
+        return showMessage(obj, R.string.base_info_something_wrong, description);
+    }
+
+    public synchronized MessageDialog showMessage(Object obj, String description) {
+        String title;
         if (obj instanceof Fragment) {
-            return showDialog((Fragment) obj, description, true);
+            title = ((Fragment) obj).getString(R.string.base_info_something_wrong);
         } else if (obj instanceof FragmentActivity) {
-            return showDialog((FragmentActivity) obj, description, true);
+            title = ((FragmentActivity) obj).getString(R.string.base_info_something_wrong);
+        } else {
+            title = null;
+        }
+
+        return showMessage(obj, title, description);
+    }
+
+    public synchronized MessageDialog showMessage(Object obj, @StringRes int title, @StringRes int description) {
+        if (obj instanceof Fragment) {
+            Fragment fragment = (Fragment) obj;
+            return this.showMessage(fragment,
+                                    fragment.getString(title),
+                                    fragment.getString(description));
+        } else if (obj instanceof FragmentActivity) {
+            FragmentActivity activity = (FragmentActivity) obj;
+            return this.showMessage(activity,
+                                    activity.getString(title),
+                                    activity.getString(description));
         } else {
             throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
         }
     }
 
-    public InfoDialog showMessageDialog(Object obj, @StringRes int description) {
-        if (obj instanceof Fragment) {
-            return showDialog((Fragment) obj, description, false);
-        } else if (obj instanceof FragmentActivity) {
-            return showDialog((FragmentActivity) obj, description, false);
-        } else {
-            throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
-        }
-    }
-
-    public InfoDialog showMessageDialog(Object obj, String description) {
-        if (obj instanceof Fragment) {
-            return showDialog((Fragment) obj, description, false);
-        } else if (obj instanceof FragmentActivity) {
-            return showDialog((FragmentActivity) obj, description, false);
-        } else {
-            throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
-        }
-    }
-
-    public InfoDialog showDialog(@Nullable Fragment fragment, @StringRes int descriptionRes, boolean isProgress) {
-        if (checkNull(fragment)) {
-            return mInfoDialog;
-        }
-        return showDialog(fragment, fragment.getString(descriptionRes), isProgress);
-    }
-
-    public InfoDialog showDialog(@Nullable Fragment fragment, String description, boolean isProgress) {
-        InfoDialog infoDialog = showDialog(fragment.getFragmentManager(), description, isProgress);
-        infoDialog.setTargetFragment(fragment, REQ_CODE);
-        return infoDialog;
-    }
-
-    public InfoDialog showDialog(@Nullable FragmentActivity activity, @StringRes int descriptionRes, boolean isProgress) {
-        if (checkNull(activity)) {
-            return mInfoDialog;
-        }
-        return showDialog(activity, activity.getString(descriptionRes), isProgress);
-    }
-
-    public InfoDialog showDialog(@Nullable FragmentActivity activity, String description, boolean isProgress) {
-        if (checkNull(activity)) {
-            return mInfoDialog;
-        }
-        return showDialog(activity.getSupportFragmentManager(), description, isProgress);
-    }
-
-    /**
-     * Show message inform dialog; Usually use in warnings or errors;
-     * Use on default {@link InfoDialog}
-     *
-     * @return Dialog fragment
-     */
     @SuppressWarnings("ConstantConditions")
-    public InfoDialog showDialog(FragmentManager fragmentManager,
-                                 final String description,
-                                 boolean isProgress) {
-        if (mDismissCall.compareAndSet(true, false) || dialogInactive()) {
-            mInfoDialog = InfoDialog.newInstance(description, isProgress);
-            mInfoDialog.show(fragmentManager);
+    public synchronized MessageDialog showMessage(Object obj, final String title, final String description) {
+        if (messageDialog == null || messageDialog.isShowing()) {
+            if (messageDialog != null) messageDialog.dismiss();
+            messageDialog = MessageDialog.newInstance(title, description);
+            messageDialog.show(getFragmentManager(obj));
         } else {
-            mInfoDialog.setDescription(description);
-            mInfoDialog.showProgress(isProgress);
+            messageDialog.setTitle(title);
+            messageDialog.setDescription(description);
         }
-        mInfoDialog.setCancelable(!isProgress);
-
-        return mInfoDialog;
+        return messageDialog;
     }
 
-    public void dismissDialog() {
-        mDismissCall.set(true);
-        if (!dialogInactive()) {
-            mInfoDialog.dismissAllowingStateLoss();
+    public synchronized void dismissMessage() {
+        if (messageDialog != null) {
+            messageDialog.dismissAllowingStateLoss();
+            messageDialog = null;
         }
     }
+    //endregion
 
-    public void setCancelable(boolean cancelable) {
-        if (mInfoDialog != null) mInfoDialog.setCancelable(cancelable);
-    }
-
-    private boolean dialogInactive() {
-        return mInfoDialog == null || !mInfoDialog.isShowing();
-    }
-
-    private boolean checkNull(Object o) {
-        if (o == null) {
-            Log.w("Activity is null!");
-            return true;
+    private static FragmentManager getFragmentManager(Object obj) {
+        FragmentManager fragmentManager;
+        if (obj instanceof Fragment) {
+            fragmentManager = ((Fragment) obj).getFragmentManager();
+        } else if (obj instanceof FragmentActivity) {
+            fragmentManager = ((FragmentActivity) obj).getSupportFragmentManager();
+        } else {
+            throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
         }
-        return false;
+        return fragmentManager;
     }
-
 }
