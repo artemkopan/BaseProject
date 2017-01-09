@@ -19,7 +19,6 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 public class ProgressDialog extends BaseDialogFragment {
 
     private static final String KEY_DESCRIPTION = "KEY.DESCRIPTION";
-    private CircularProgressView progressView;
     private TextView progressTxt;
     private String description;
 
@@ -54,7 +53,6 @@ public class ProgressDialog extends BaseDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.base_dialog_progress, container, false);
-        progressView = (CircularProgressView) rootView.findViewById(R.id.progress_view);
         progressTxt = (TextView) rootView.findViewById(R.id.progress_txt);
         progressTxt.setText(description);
         return rootView;
