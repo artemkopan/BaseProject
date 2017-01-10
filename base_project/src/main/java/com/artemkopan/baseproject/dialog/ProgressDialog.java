@@ -1,14 +1,17 @@
 package com.artemkopan.baseproject.dialog;
 
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.widget.CircularProgressView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
@@ -41,8 +44,16 @@ public class ProgressDialog extends BaseDialogFragment {
     }
 
     @Override
+    public void onBaseDialogBackground(Window window) {
+        window.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.color.dialog_progress_background));
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            window.setFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS, LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
+
+    @Override
     public void onBaseDialogAnim(Window window) {
-        window.getAttributes().windowAnimations = R.style.DialogAnimationAlpha;
+        window.getAttributes().windowAnimations = R.style.DialogAnimationAlphaFast;
     }
 
     @Override

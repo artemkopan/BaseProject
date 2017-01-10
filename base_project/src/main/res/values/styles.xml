@@ -11,5 +11,10 @@
         <item name="android:windowExitAnimation">@anim/fragment_alpha_exit</item>
     </style>
 
+    <style name="DialogAnimationAlphaFast">
+        <item name="android:windowEnterAnimation">@anim/fragment_alpha_enter_fast</item>
+        <item name="android:windowExitAnimation">@anim/fragment_alpha_exit_fast</item>
+    </style>
+
 
 </resources>

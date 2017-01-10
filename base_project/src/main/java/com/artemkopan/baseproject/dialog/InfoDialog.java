@@ -13,7 +13,7 @@ import com.artemkopan.baseproject.R;
 
 /**
  * Base info dialog with indeterminate progress bar.
- * You {@link #getParentClass(Class)} must implement {@link OnDismissListener} for dismiss event;
+ * You {@link #getRootClass(Class)} must implement {@link OnDismissListener} for dismiss event;
  */
 public class InfoDialog extends BaseDialogFragment {
 
@@ -83,7 +83,7 @@ public class InfoDialog extends BaseDialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        OnDismissListener onDismissListener = (OnDismissListener) getParentClass(OnDismissListener.class);
+        OnDismissListener onDismissListener = (OnDismissListener) getRootClass(OnDismissListener.class);
         if (onDismissListener != null) onDismissListener.onDismiss(dialog);
     }
 }

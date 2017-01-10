@@ -100,7 +100,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
      * then used {@link #getParentFragment()} , else {@link #getActivity()}
      */
     @Nullable
-    public <T> T getParentClass(Class<T> clazz) {
+    public <T> T getRootClass(Class<T> clazz) {
         if (getTargetFragment() != null && clazz.isInstance(getTargetFragment())) {
             return clazz.cast(getTargetFragment());
         } else if (getParentFragment() != null && clazz.isInstance(getParentFragment())) {

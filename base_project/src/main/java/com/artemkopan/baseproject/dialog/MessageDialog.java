@@ -1,13 +1,19 @@
 package com.artemkopan.baseproject.dialog;
 
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.utils.ExtraUtils;
 
 /**
  * Created by Artem Kopan for BaseProject
@@ -37,6 +43,15 @@ public class MessageDialog extends BaseDialogFragment {
     @Override
     public boolean onBaseBottomSheetDialog() {
         return true;
+    }
+
+
+    @Override
+    public void onBaseDialogBackground(Window window) {
+        super.onBaseDialogBackground(window);
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            window.addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
     }
 
     @Override

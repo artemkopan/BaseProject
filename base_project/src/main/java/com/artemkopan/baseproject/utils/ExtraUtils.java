@@ -126,6 +126,15 @@ public final class ExtraUtils {
         return toolbarHeight;
     }
 
+    public static int getStatusBarHeight(Context context){
+        int statusBarHeight = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return statusBarHeight;
+    }
+
     /**
      * Keep the CPU On! If you want keep the Screen On you must add flag   getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
      * or  android:keepScreenOn="true" in  layout

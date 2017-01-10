@@ -24,11 +24,11 @@ public class InfoDialogProvider {
     private InfoDialog mInfoDialog;
     private AtomicBoolean mDismissCall = new AtomicBoolean(false);
 
-    public InfoDialog showProgressDialog(Object obj) {
-        return showProgressDialog(obj, R.string.base_info_loading);
+    public InfoDialog showProgress(Object obj) {
+        return showProgress(obj, R.string.base_info_loading);
     }
 
-    public InfoDialog showProgressDialog(Object obj, @StringRes int description) {
+    public InfoDialog showProgress(Object obj, @StringRes int description) {
         if (obj instanceof Fragment) {
             return showDialog((Fragment) obj, description, true);
         } else if (obj instanceof FragmentActivity) {
@@ -38,7 +38,7 @@ public class InfoDialogProvider {
         }
     }
 
-    public InfoDialog showProgressDialog(Object obj, String description) {
+    public InfoDialog showProgress(Object obj, String description) {
         if (obj instanceof Fragment) {
             return showDialog((Fragment) obj, description, true);
         } else if (obj instanceof FragmentActivity) {
