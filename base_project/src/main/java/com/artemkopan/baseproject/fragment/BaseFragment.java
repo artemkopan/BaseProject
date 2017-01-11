@@ -18,7 +18,6 @@ import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.internal.UiInterface;
 import com.artemkopan.baseproject.internal.UiManager;
 import com.artemkopan.baseproject.presenter.BasePresenter;
-import com.artemkopan.baseproject.presenter.BasePresenterImpl;
 import com.artemkopan.baseproject.presenter.MvpView;
 import com.jakewharton.rxrelay2.PublishRelay;
 
@@ -48,7 +47,9 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        onAttachPresenter();
+        if (mPresenter != null) {
+            mPresenter.attachView((V) this);
+        }
     }
 
     @Override
@@ -64,12 +65,6 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
     public void onDestroy() {
         mUiManager.onDestroy();
         super.onDestroy();
-    }
-
-    public void onAttachPresenter() {
-        if (mPresenter != null) {
-            mPresenter.attachView((V) this);
-        }
     }
 
     @Override

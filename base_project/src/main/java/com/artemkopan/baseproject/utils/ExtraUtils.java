@@ -35,7 +35,7 @@ public final class ExtraUtils {
      * Check current thread; If was not main then throw illegalState exception;
      */
     public static void checkUiThread() {
-        if (Looper.getMainLooper() != Looper.myLooper()) {
+        if (!isMainLooper()) {
             throw new IllegalStateException(
                     "Must be called from the main thread. Was: " + Thread.currentThread());
         }
@@ -49,6 +49,10 @@ public final class ExtraUtils {
             throw new IllegalStateException(
                     "Must be called from the background thread. Was: " + Thread.currentThread());
         }
+    }
+
+    public static boolean isMainLooper(){
+        return Looper.getMainLooper() == Looper.myLooper();
     }
 
     /**

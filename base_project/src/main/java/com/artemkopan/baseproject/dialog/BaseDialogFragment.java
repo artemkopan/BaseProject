@@ -22,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.helper.Log;
 import com.artemkopan.baseproject.internal.UiInterface;
 import com.artemkopan.baseproject.internal.UiManager;
 import com.artemkopan.baseproject.presenter.BasePresenter;
@@ -74,6 +75,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     @Override
     public void show(FragmentManager manager, String tag) {
         if (manager == null) {
+            Log.e("show: Fragment Manager is null!!!");
             return;
         }
         FragmentTransaction transactionFragment = manager.beginTransaction();

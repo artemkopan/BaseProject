@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.helper.Log;
 
 /**
  * Created by Artem Kopan for BaseProject
@@ -34,11 +35,11 @@ public class DialogProvider {
     // Progress Dialog
     //==============================================================================================
     //region methods
-    public synchronized ProgressDialog showProgress(Object obj) {
+    public  ProgressDialog showProgress(Object obj) {
         return showProgress(obj, R.string.base_info_loading);
     }
 
-    public synchronized ProgressDialog showProgress(Object obj, @StringRes int description) {
+    public  ProgressDialog showProgress(Object obj, @StringRes int description) {
         if (obj instanceof Fragment) {
             Fragment fragment = (Fragment) obj;
             return this.showProgress(fragment, description > 0 ? fragment.getString(description) : null);
@@ -50,7 +51,7 @@ public class DialogProvider {
         }
     }
 
-    public synchronized ProgressDialog showProgress(Object obj, String description) {
+    public  ProgressDialog showProgress(Object obj, String description) {
         if (progressDialog == null || !progressDialog.isShowing()) {
             if (progressDialog != null) progressDialog.dismiss();
             progressDialog = ProgressDialog.newInstance(description);
@@ -59,27 +60,28 @@ public class DialogProvider {
             progressDialog.setDescription(description);
         }
         progressDialog.setCancelable(false);
+
         return progressDialog;
-
     }
-    //endregion
 
-    public synchronized void dismissProgress() {
+    public  void dismissProgress() {
         if (progressDialog != null) {
             progressDialog.dismissAllowingStateLoss();
             progressDialog = null;
         }
     }
+    //endregion
+
 
     //==============================================================================================
     // Message Dialog
     //==============================================================================================
     //region methods
-    public synchronized MessageDialog showMessage(Object obj, @StringRes int description) {
+    public  MessageDialog showMessage(Object obj, @StringRes int description) {
         return showMessage(obj, R.string.base_info_something_wrong, description);
     }
 
-    public synchronized MessageDialog showMessage(Object obj, String description) {
+    public  MessageDialog showMessage(Object obj, String description) {
         String title;
         if (obj instanceof Fragment) {
             title = ((Fragment) obj).getString(R.string.base_info_something_wrong);
@@ -92,7 +94,7 @@ public class DialogProvider {
         return showMessage(obj, title, description);
     }
 
-    public synchronized MessageDialog showMessage(Object obj, @StringRes int title, @StringRes int description) {
+    public  MessageDialog showMessage(Object obj, @StringRes int title, @StringRes int description) {
         if (obj instanceof Fragment) {
             Fragment fragment = (Fragment) obj;
             return this.showMessage(fragment,
@@ -109,7 +111,7 @@ public class DialogProvider {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public synchronized MessageDialog showMessage(Object obj, final String title, final String description) {
+    public  MessageDialog showMessage(Object obj, final String title, final String description) {
         if (messageDialog == null || !messageDialog.isShowing()) {
             if (messageDialog != null) messageDialog.dismiss();
             messageDialog = MessageDialog.newInstance(title, description);
@@ -122,7 +124,7 @@ public class DialogProvider {
     }
     //endregion
 
-    public synchronized void dismissMessage() {
+    public  void dismissMessage() {
         if (messageDialog != null) {
             messageDialog.dismissAllowingStateLoss();
             messageDialog = null;
