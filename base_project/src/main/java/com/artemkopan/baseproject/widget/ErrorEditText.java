@@ -180,7 +180,7 @@ public class ErrorEditText extends TextInputEditText {
     public void showErrorAction() {
         if (mErrorAnimator != null) {
             startAnimation(mErrorAnimator);
-            VibrationHelper.vibrate(getContext(), 10);
+            VibrationHelper.vibrate(getContext(), 100);
         }
     }
 

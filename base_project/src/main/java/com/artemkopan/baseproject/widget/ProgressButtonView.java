@@ -20,7 +20,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.utils.ViewUtils;
 import com.artemkopan.baseproject.utils.animations.AnimUtils;
 import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;

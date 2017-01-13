@@ -13,7 +13,7 @@ import android.transition.Fade;
 import android.view.View;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.utils.animations.DetailsTransition;
 
 import java.lang.annotation.Retention;

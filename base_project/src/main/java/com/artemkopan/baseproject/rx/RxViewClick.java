@@ -81,6 +81,7 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
                 if (mViewWeak.get() != null) {
                     mViewWeak.get().setOnClickListener(null);
                 }
+                mViewWeak.clear();
             }
         });
     }

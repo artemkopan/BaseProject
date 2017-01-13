@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.helper.Log;
 
 /**
  * Created by Artem Kopan for BaseProject

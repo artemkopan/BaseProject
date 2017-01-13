@@ -60,8 +60,5 @@ public class RxTextWatcher implements ObservableOnSubscribe<CharSequence> {
         });
 
         view.addTextChangedListener(watcher);
-
-        // Emit initial value.
-        subscriber.onNext(view.getText());
     }
 }

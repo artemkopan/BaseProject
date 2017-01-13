@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
 
 import java.util.ArrayList;
@@ -166,4 +166,5 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
             mOnItemClickListener.onItemClickListener(view, pos, object, transactionViews);
         }
     }
+
 }

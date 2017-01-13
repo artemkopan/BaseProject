@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.helper;
+package com.artemkopan.baseproject.utils;
 
 
 import android.Manifest;
@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
-
-import com.artemkopan.baseproject.utils.StringUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 

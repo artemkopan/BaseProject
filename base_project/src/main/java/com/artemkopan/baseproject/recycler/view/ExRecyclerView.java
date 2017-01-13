@@ -11,6 +11,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -20,8 +21,10 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener;
+import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener.OnRecyclerPaginationResult;
+import com.artemkopan.baseproject.utils.ObjectUtils;
 import com.artemkopan.baseproject.utils.ViewUtils;
 import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
@@ -30,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-
 
 public class ExRecyclerView extends RecyclerView {
 
@@ -46,7 +48,6 @@ public class ExRecyclerView extends RecyclerView {
     private int mProgressSize = NO_VALUE;
     private int mTextPadding = NO_VALUE;
     private boolean mDrawText, mDrawProgress;
-
 
     public ExRecyclerView(Context context) {
         this(context, null, 0);
@@ -71,7 +72,7 @@ public class ExRecyclerView extends RecyclerView {
                 borderWidth = array.getDimensionPixelSize(
                         R.styleable.ExRecyclerView_erv_progressBorderWidth,
                         context.getResources()
-                                .getDimensionPixelSize(R.dimen.base_progress_border_width));
+                               .getDimensionPixelSize(R.dimen.base_progress_border_width));
                 progressColor = array.getColor(R.styleable.ExRecyclerView_erv_progressColor,
                                                NO_VALUE);
 
@@ -89,9 +90,9 @@ public class ExRecyclerView extends RecyclerView {
             }
         } else {
             mProgressSize = context.getResources()
-                    .getDimensionPixelSize(R.dimen.base_progress_size);
+                                   .getDimensionPixelSize(R.dimen.base_progress_size);
             borderWidth = context.getResources()
-                    .getDimensionPixelSize(R.dimen.base_progress_border_width);
+                                 .getDimensionPixelSize(R.dimen.base_progress_border_width);
         }
 
         if (progressColor == NO_VALUE) {
@@ -100,11 +101,11 @@ public class ExRecyclerView extends RecyclerView {
 
         if (textSize == NO_VALUE) {
             textSize = getContext().getResources()
-                    .getDimensionPixelSize(R.dimen.base_recycler_text_size);
+                                   .getDimensionPixelSize(R.dimen.base_recycler_text_size);
         }
         if (mTextPadding == NO_VALUE) {
             mTextPadding = context.getResources()
-                    .getDimensionPixelSize(R.dimen.base_recycler_text_padding);
+                                  .getDimensionPixelSize(R.dimen.base_recycler_text_padding);
         }
 
         if (mBackgroundDrawable == null) {
@@ -132,7 +133,20 @@ public class ExRecyclerView extends RecyclerView {
                 w / 2 + mProgressSize / 2, h / 2 + mProgressSize / 2);
     }
 
-    public void addPaginationListener(OnRecyclerPaginationListener scrollListener) {
+    public OnRecyclerPaginationListener createPaginationListener(OnRecyclerPaginationResult listener) {
+        if (!ObjectUtils.instanceOf(getLayoutManager(), LinearLayoutManager.class)) {
+            // TODO: 12.01.17 add support different layout manager
+            throw new ClassCastException("Pagination only work with LinearLayoutManager");
+        }
+
+        setPaginationListener(new OnRecyclerPaginationListener(((LinearLayoutManager) getLayoutManager()),
+                                                               OnRecyclerPaginationListener.VERTICAL,
+                                                               listener));
+        return mPaginationListener;
+    }
+
+    public void setPaginationListener(OnRecyclerPaginationListener scrollListener) {
+        if (mPaginationListener != null) removeOnScrollListener(mPaginationListener);
         mPaginationListener = scrollListener;
         addOnScrollListener(scrollListener);
     }
@@ -143,10 +157,6 @@ public class ExRecyclerView extends RecyclerView {
         } else {
             disablePagination();
         }
-    }
-
-    public void setProgressColor(@ColorInt int color) {
-        mProgressDrawable.setColor(color);
     }
 
     public void enablePagination() {
@@ -161,10 +171,13 @@ public class ExRecyclerView extends RecyclerView {
         }
     }
 
+    public void setProgressColor(@ColorInt int color) {
+        mProgressDrawable.setColor(color);
+    }
+
     public void setTextPadding(int textPadding) {
         mTextPadding = textPadding;
     }
-
 
     public void showText(@StringRes int textRes, Object... arguments) {
         showText(getContext().getString(textRes, arguments));
@@ -252,7 +265,7 @@ public class ExRecyclerView extends RecyclerView {
         super.draw(c);
 
         if ((mDrawProgress || mDrawText)
-                && getAdapter() != null && getAdapter().getItemCount() > 0) {
+            && getAdapter() != null && getAdapter().getItemCount() > 0) {
 
             final int restore = c.save();
             mBackgroundDrawable.draw(c);

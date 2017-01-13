@@ -19,7 +19,7 @@ import io.reactivex.schedulers.Schedulers;
 public class BaseRx {
 
     public static final Object TRIGGER = new Object();
-    private static final int DEFAULT_DELAY = 600;
+    private static final int DEFAULT_DELAY = 700;
     protected final PublishRelay<Object> mDestroySubject;
 
     public BaseRx(PublishRelay<Object> destroySubject) {

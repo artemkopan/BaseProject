@@ -8,7 +8,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -22,11 +21,10 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.internal.UiInterface;
 import com.artemkopan.baseproject.internal.UiManager;
 import com.artemkopan.baseproject.presenter.BasePresenter;
-import com.artemkopan.baseproject.presenter.BasePresenterImpl;
 import com.artemkopan.baseproject.presenter.MvpView;
 import com.jakewharton.rxrelay2.PublishRelay;
 

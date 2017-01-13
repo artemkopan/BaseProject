@@ -51,7 +51,10 @@ public final class ExtraUtils {
         }
     }
 
-    public static boolean isMainLooper(){
+    /**
+     * @return Check current thread. If thread is main then return true;
+     */
+    public static boolean isMainLooper() {
         return Looper.getMainLooper() == Looper.myLooper();
     }
 
@@ -130,7 +133,7 @@ public final class ExtraUtils {
         return toolbarHeight;
     }
 
-    public static int getStatusBarHeight(Context context){
+    public static int getStatusBarHeight(Context context) {
         int statusBarHeight = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {

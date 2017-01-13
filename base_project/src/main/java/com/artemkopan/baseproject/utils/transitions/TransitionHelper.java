@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.helper;
+package com.artemkopan.baseproject.utils.transitions;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

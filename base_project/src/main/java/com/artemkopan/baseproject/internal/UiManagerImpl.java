@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
-import com.artemkopan.baseproject.helper.Log;
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.rx.BaseRx;
 import com.artemkopan.baseproject.utils.ExtraUtils;
 import com.jakewharton.rxrelay2.PublishRelay;
