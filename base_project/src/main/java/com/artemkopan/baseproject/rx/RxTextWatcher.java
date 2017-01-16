@@ -55,7 +55,7 @@ public class RxTextWatcher implements ObservableOnSubscribe<CharSequence> {
         subscriber.setDisposable(new MainThreadDisposable() {
             @Override
             protected void onDispose() {
-                view.removeTextChangedListener(watcher);
+               view.removeTextChangedListener(watcher);
             }
         });
 

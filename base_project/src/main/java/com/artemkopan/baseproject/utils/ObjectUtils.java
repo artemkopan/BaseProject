@@ -26,6 +26,10 @@ public class ObjectUtils {
         return instanceOfString(obj) ? (String) obj : "";
     }
 
+    public static int castToInteger(Object obj, int defaultValue) {
+        return instanceOfInt(obj) ? (int) obj : defaultValue;
+    }
+
     /**
      * Check object instance and return with cast;
      *

@@ -167,12 +167,6 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
         super.onDestroyView();
     }
 
-    @Override
-    public void onDestroy() {
-        mUiManager.onDestroy();
-        super.onDestroy();
-    }
-
     public boolean isShowing() {
         return getDialog() != null && getDialog().isShowing();
     }

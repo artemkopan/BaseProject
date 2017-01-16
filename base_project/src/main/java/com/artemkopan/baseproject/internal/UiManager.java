@@ -42,8 +42,6 @@ public interface UiManager {
      */
     void onDestroyView();
 
-    void onDestroy();
-
     PublishRelay<Object> getDestroySubject();
 
     /**

@@ -3,6 +3,7 @@ package com.artemkopan.baseproject.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.Point;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -104,7 +105,23 @@ public final class ViewUtils {
     }
 
     /**
-     * Get center of view and plus X position;
+     * Get relative center of view;
+     */
+    public static Point getCenterRelativeView(View view, @Nullable View parentView) {
+        int x = (int) getRelativeX(view, parentView);
+        int y = (int) getRelativeY(view, parentView);
+        return new Point(x + view.getWidth() / 2, y + view.getHeight() / 2);
+    }
+
+    /**
+     * Get center of view ;
+     */
+    public static Point getCenterView(View view) {
+        return new Point((int) getCenterViewXPos(view), (int) getCenterViewYPos(view));
+    }
+
+    /**
+     * Get center of view by X position;
      */
     public static float getCenterViewXPos(View view) {
         int width = view.getWidth();
@@ -112,7 +129,7 @@ public final class ViewUtils {
     }
 
     /**
-     * Get center of view and plus Y position;
+     * Get center of view by Y position;
      */
     public static float getCenterViewYPos(View view) {
         int height = view.getHeight();

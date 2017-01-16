@@ -34,22 +34,23 @@ public class IntentHelper {
 
     public static void intentSendSMS(Context context, String phoneNumbers, String smsBody) throws ActivityNotFoundException {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent it = new Intent(Intent.ACTION_SENDTO,
-                                   TextUtils.isEmpty(phoneNumbers) ? null : Uri.parse(
-                                           "sms:" + phoneNumbers));
-
-            it.putExtra("sms_body", smsBody);
-            it.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(it);
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            Intent it = new Intent(Intent.ACTION_SENDTO,
+//                                   TextUtils.isEmpty(phoneNumbers) ? null : Uri.parse(
+//                                           "sms:" + phoneNumbers));
+//
+//            it.putExtra("sms_body", smsBody);
+//            it.setFlags(FLAG_ACTIVITY_NEW_TASK);
+//            context.startActivity(it);
+//        } else {
             Intent sendIntent = new Intent(android.content.Intent.ACTION_VIEW);
             sendIntent.putExtra("address", phoneNumbers);
             sendIntent.putExtra("sms_body", smsBody);
             sendIntent.setType("vnd.android-dir/mms-sms");
             sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(sendIntent);
-        }
+//        }
+
 //        //At least KitKat
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            //Need to change the build to API 19

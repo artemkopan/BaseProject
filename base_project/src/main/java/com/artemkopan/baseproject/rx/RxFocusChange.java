@@ -37,7 +37,9 @@ public class RxFocusChange implements ObservableOnSubscribe<View> {
         OnFocusChangeListener onFocusChangeListener = new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                subscriber.onNext(v);
+                if (!subscriber.isDisposed()) {
+                    subscriber.onNext(v);
+                }
             }
         };
 

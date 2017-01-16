@@ -62,12 +62,6 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
     }
 
     @Override
-    public void onDestroy() {
-        mUiManager.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
     public void showError(@Nullable Object tag, String error) {
 
     }

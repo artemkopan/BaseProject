@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
+import com.artemkopan.baseproject.utils.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,12 +134,9 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    public void createList(boolean dropIfExist) {
-        if (dropIfExist && mList != null) {
-            setList(new ArrayList<M>());
-        } else if (mList == null) {
-            setList(new ArrayList<M>());
-        }
+    public void createList(boolean dropList) {
+        if (mList != null && !dropList) return;
+        setList(new ArrayList<M>());
     }
 
     /***

@@ -15,7 +15,7 @@ public class SimpleHolder extends BaseHolder {
     }
 
     @Override
-    public void bind(Context context, Object model) {
+    public void bind(Context context, Object item) {
 
     }
 

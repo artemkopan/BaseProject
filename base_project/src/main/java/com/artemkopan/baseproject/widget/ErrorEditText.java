@@ -152,13 +152,18 @@ public class ErrorEditText extends TextInputEditText {
         return mError;
     }
 
+
+    public void setError(@Nullable CharSequence errorMessage) {
+        setError(errorMessage, true);
+    }
+
     /**
      * Controls the error state of this {@link ErrorEditText} and sets a visual indication that the
      * {@link ErrorEditText} contains an error.
      *
      * @param errorMessage the error message to display to the user. {@code null} will remove any error message displayed.
      */
-    public void setError(@Nullable CharSequence errorMessage) {
+    public void setError(@Nullable CharSequence errorMessage, boolean animate) {
         mError = !TextUtils.isEmpty(errorMessage);
 
         TextInputLayout textInputLayout = getTextInputLayoutParent();
@@ -169,7 +174,7 @@ public class ErrorEditText extends TextInputEditText {
             super.setError(errorMessage);
         }
 
-        if (mError) {
+        if (mError && animate) {
             showErrorAction();
         }
     }

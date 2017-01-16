@@ -16,6 +16,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.utils.animations.AnimUtils;
 
 /**
  * Example of use:
@@ -93,12 +94,12 @@ public class CircularRevealTransition extends Visibility {
                              TransitionValues endValues) {
         if (view == null || view.getHeight() == 0 || view.getWidth() == 0) return null;
         ensureCenterPoint(sceneRoot, view);
-        return ViewAnimationUtils.createCircularReveal(
+        return new AnimUtils.NoPauseAnimator(ViewAnimationUtils.createCircularReveal(
                 view,
                 center.x,
                 center.y,
                 startRadius,
-                getFullyRevealedRadius(view));
+                getFullyRevealedRadius(view)));
     }
 
     @Override
@@ -107,12 +108,12 @@ public class CircularRevealTransition extends Visibility {
                                 TransitionValues endValues) {
         if (view == null || view.getHeight() == 0 || view.getWidth() == 0) return null;
         ensureCenterPoint(sceneRoot, view);
-        return ViewAnimationUtils.createCircularReveal(
+        return new AnimUtils.NoPauseAnimator(ViewAnimationUtils.createCircularReveal(
                 view,
                 center.x,
                 center.y,
                 getFullyRevealedRadius(view),
-                endRadius);
+                endRadius));
     }
 
     private void ensureCenterPoint(ViewGroup sceneRoot, View view) {

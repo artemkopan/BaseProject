@@ -75,14 +75,10 @@ public final class UiManagerImpl implements UiManager {
 
     @Override
     public void onDestroyView() {
+        mDestroySubject.accept(BaseRx.TRIGGER);
         if (mUnbinder != null) {
             mUnbinder.unbind();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        mDestroySubject.accept(BaseRx.TRIGGER);
     }
 
     @Override
