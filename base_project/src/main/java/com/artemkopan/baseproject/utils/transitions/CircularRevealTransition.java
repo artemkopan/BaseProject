@@ -1,13 +1,13 @@
 package com.artemkopan.baseproject.utils.transitions;
 
 import android.animation.Animator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.os.Build.VERSION_CODES;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.transition.TransitionValues;
 import android.transition.Visibility;
 import android.util.AttributeSet;
@@ -38,7 +38,7 @@ import com.artemkopan.baseproject.utils.animations.AnimUtils;
  * </pre>
  */
 
-@TargetApi(VERSION_CODES.LOLLIPOP)
+@RequiresApi(VERSION_CODES.LOLLIPOP)
 public class CircularRevealTransition extends Visibility {
 
     private Point center;
