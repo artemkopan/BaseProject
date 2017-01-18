@@ -22,6 +22,6 @@ public class VectorCompatTextView extends AppCompatTextView {
     }
 
     private void init(AttributeSet attrs) {
-        VectorCompatTextViewHelper.loadFromAttributes(this, attrs);
+        VectorCompatViewHelper.loadFromAttributes(this, attrs);
     }
 }

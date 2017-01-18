@@ -17,7 +17,7 @@ import static android.support.v4.widget.TextViewCompat.setCompoundDrawablesRelat
  * 30.12.16
  */
 
-final class VectorCompatTextViewHelper {
+final class VectorCompatViewHelper {
 
     private static final int NO_VALUE = -1;
 
