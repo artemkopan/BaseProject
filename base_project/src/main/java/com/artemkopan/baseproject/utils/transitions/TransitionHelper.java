@@ -13,9 +13,6 @@ import android.transition.Transition;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.artemkopan.baseproject.utils.ExtraUtils;
-import com.artemkopan.baseproject.utils.animations.TransactionListenerAdapter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,20 +25,33 @@ import java.util.List;
 @SuppressWarnings("WeakerAccess")
 public class TransitionHelper {
 
-    public static void onEnterTransition(Activity activity, final Runnable actionEnd) {
-        if (ExtraUtils.postLollipop()) {
-            Transition enterTransition = activity.getWindow().getEnterTransition();
-            if (enterTransition != null) {
-                enterTransition.addListener(new TransactionListenerAdapter() {
-                    @Override
-                    @TargetApi(VERSION_CODES.KITKAT)
-                    public void onTransitionEnd(Transition transition) {
-                        transition.removeListener(this);
-                        if (actionEnd != null) actionEnd.run();
-                    }
-                });
-                return;
-            }
+    public static void onEnterTransitionEndAction(Activity activity, final Runnable actionEnd) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            onTransitionEndAction(activity.getWindow().getEnterTransition(), actionEnd);
+        } else if (actionEnd != null) {
+            actionEnd.run();
+        }
+    }
+
+    public static void onEnterSharedTransitionEndAction(Activity activity, final Runnable actionEnd) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            onTransitionEndAction(activity.getWindow().getSharedElementEnterTransition(), actionEnd);
+        } else if (actionEnd != null) {
+            actionEnd.run();
+        }
+    }
+
+    public static void onTransitionEndAction(Transition transition, final Runnable actionEnd) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && transition != null) {
+            transition.addListener(new TransitionListenerAdapter() {
+                @Override
+                @TargetApi(VERSION_CODES.KITKAT)
+                public void onTransitionEnd(Transition transition) {
+                    transition.removeListener(this);
+                    if (actionEnd != null) actionEnd.run();
+                }
+            });
+            return;
         }
         if (actionEnd != null) {
             actionEnd.run();
@@ -57,7 +67,7 @@ public class TransitionHelper {
     @SafeVarargs
     @Nullable
     public static Bundle generateBundle(Activity activity, boolean includeStatusBar, Pair<View, String>... elements) {
-        if (ExtraUtils.postLollipop()) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             Pair<View, String>[] pairs = createSafeTransitionParticipants(activity, includeStatusBar, elements);
             return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pairs).toBundle();
         } else {
@@ -67,14 +77,22 @@ public class TransitionHelper {
 
     @TargetApi(VERSION_CODES.LOLLIPOP)
     public static void waitStartTransition(final Activity activity) {
-        if (!ExtraUtils.postLollipop() || activity == null) return;
-        activity.postponeEnterTransition();
+        if (!(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) || activity == null)
+            return;
         final View decor = activity.getWindow().getDecorView();
-        decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        waitStartTransition(activity, decor);
+    }
+
+    @TargetApi(VERSION_CODES.LOLLIPOP)
+    public static void waitStartTransition(final Activity activity, final View view) {
+        if (!(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) || activity == null)
+            return;
+        activity.postponeEnterTransition();
+        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                if (decor.getViewTreeObserver().isAlive()) {
-                    decor.getViewTreeObserver().removeOnPreDrawListener(this);
+                if (view.getViewTreeObserver().isAlive()) {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);
                 }
                 activity.startPostponedEnterTransition();
                 return true;

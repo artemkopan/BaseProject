@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.utils.animations;
+package com.artemkopan.baseproject.utils.transitions;
 
 
 import android.os.Build.VERSION_CODES;
@@ -12,7 +12,7 @@ import android.transition.Transition.TransitionListener;
  */
 
 @RequiresApi(api = VERSION_CODES.KITKAT)
-public abstract class TransactionListenerAdapter implements TransitionListener {
+public abstract class TransitionListenerAdapter implements TransitionListener {
 
     @Override
     public void onTransitionStart(Transition transition) {
