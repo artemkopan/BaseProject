@@ -3,14 +3,17 @@ package com.artemkopan.baseproject.widget;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
 
 import static android.support.v4.widget.TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds;
+import static android.support.v7.content.res.AppCompatResources.getDrawable;
 
 /**
  * Created by Artem Kopan for jabrool
@@ -18,7 +21,6 @@ import static android.support.v4.widget.TextViewCompat.setCompoundDrawablesRelat
  */
 
 final class VectorCompatViewHelper {
-
     private static final int NO_VALUE = -1;
 
     static void loadFromAttributes(TextView textView, AttributeSet attrs) {
@@ -35,35 +37,55 @@ final class VectorCompatViewHelper {
             Drawable drawableEnd = null;
             Drawable drawableTop = null;
             Drawable drawableBottom = null;
+            int width = 0;
+            int height = 0;
 
             int drawableStartId = ta.getResourceId(R.styleable.VectorCompatTextView_drawableStartCompat, NO_VALUE);
             if (drawableStartId != NO_VALUE) {
-                drawableStart = VectorDrawableCompat.create(res, drawableStartId, context.getTheme());
+                drawableStart = getDrawable(context, drawableStartId);
             }
 
             int drawableTopId = ta.getResourceId(R.styleable.VectorCompatTextView_drawableTopCompat, NO_VALUE);
             if (drawableTopId != NO_VALUE) {
-                drawableTop = VectorDrawableCompat.create(res, drawableTopId, context.getTheme());
+                drawableTop = getDrawable(context, drawableTopId);
             }
 
             int drawableEndId = ta.getResourceId(R.styleable.VectorCompatTextView_drawableEndCompat, NO_VALUE);
             if (drawableEndId != NO_VALUE) {
-                drawableEnd = VectorDrawableCompat.create(res, drawableEndId, context.getTheme());
+                drawableEnd = getDrawable(context, drawableEndId);
             }
 
             int drawableBottomId = ta.getResourceId(R.styleable.VectorCompatTextView_drawableBottomCompat, NO_VALUE);
             if (drawableBottomId != NO_VALUE) {
-                drawableBottom = VectorDrawableCompat.create(res, drawableBottomId, context.getTheme());
+                drawableBottom = getDrawable(context, drawableBottomId);
             }
 
-            setCompoundDrawablesRelativeWithIntrinsicBounds(textView,
+            if (drawableStart != null || drawableEnd != null || drawableTop != null || drawableBottom != null) {
+                width = ta.getDimensionPixelSize(R.styleable.VectorCompatTextView_drawableWidth, width);
+                height = ta.getDimensionPixelSize(R.styleable.VectorCompatTextView_drawableHeight, height);
+
+                setDrawableSize(drawableStart, width, height);
+                setDrawableSize(drawableEnd, width, height);
+                setDrawableSize(drawableTop, width, height);
+                setDrawableSize(drawableBottom, width, height);
+
+                TextViewCompat.setCompoundDrawablesRelative(textView,
                                                             drawableStart,
                                                             drawableTop,
                                                             drawableEnd,
                                                             drawableBottom);
+            }
         } finally {
             ta.recycle();
         }
     }
+
+    private static void setDrawableSize(Drawable drawable, int width, int height) {
+        if (drawable == null) return;
+        Rect rect = drawable.getBounds();
+        drawable.setBounds(rect.left, rect.top, width == 0 ? rect.right : width, height == 0 ? rect.bottom : height);
+    }
+
+
 
 }

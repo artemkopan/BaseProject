@@ -42,8 +42,9 @@
         <attr name="drawableTopCompat" format="reference"/>
         <attr name="drawableEndCompat" format="reference"/>
         <attr name="drawableBottomCompat" format="reference"/>
+        <attr name="drawableWidth" format="dimension"/>
+        <attr name="drawableHeight" format="dimension"/>
     </declare-styleable>
-
 
     <declare-styleable name="CircularRevealTransition">
         <attr name="startRadius" format="dimension"/>
