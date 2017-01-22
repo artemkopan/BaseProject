@@ -34,7 +34,7 @@ public class IntentHelper {
 
     public static void intentSendSMS(Context context, String phoneNumbers, String smsBody) throws ActivityNotFoundException {
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//        if (FragmentBuilder.VERSION.SDK_INT >= FragmentBuilder.VERSION_CODES.KITKAT) {
 //            Intent it = new Intent(Intent.ACTION_SENDTO,
 //                                   TextUtils.isEmpty(phoneNumbers) ? null : Uri.parse(
 //                                           "sms:" + phoneNumbers));
@@ -52,7 +52,7 @@ public class IntentHelper {
 //        }
 
 //        //At least KitKat
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//        if (FragmentBuilder.VERSION.SDK_INT >= FragmentBuilder.VERSION_CODES.KITKAT) {
 //            //Need to change the build to API 19
 //            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(context);
 //
