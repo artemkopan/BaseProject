@@ -96,8 +96,9 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
             dialog = new BottomSheetDialog(getContext(), getTheme());
         } else {
             dialog = super.onCreateDialog(savedInstanceState);
-            onBaseDialogRequestFeature(dialog.getWindow());
         }
+        onBaseDialogRequestFeature(dialog.getWindow());
+
         return dialog;
     }
 
