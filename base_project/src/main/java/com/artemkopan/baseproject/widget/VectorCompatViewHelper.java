@@ -5,15 +5,14 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.utils.ViewUtils;
 
-import static android.support.v4.widget.TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds;
-import static android.support.v7.content.res.AppCompatResources.getDrawable;
+import static android.support.v4.content.ContextCompat.getDrawable;
 
 /**
  * Created by Artem Kopan for jabrool
@@ -21,6 +20,7 @@ import static android.support.v7.content.res.AppCompatResources.getDrawable;
  */
 
 final class VectorCompatViewHelper {
+
     private static final int NO_VALUE = -1;
 
     static void loadFromAttributes(TextView textView, AttributeSet attrs) {
@@ -28,7 +28,6 @@ final class VectorCompatViewHelper {
         if (textView == null || attrs == null) return;
 
         Context context = textView.getContext();
-        Resources res = textView.getResources();
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.VectorCompatTextView);
         try {
@@ -37,8 +36,8 @@ final class VectorCompatViewHelper {
             Drawable drawableEnd = null;
             Drawable drawableTop = null;
             Drawable drawableBottom = null;
-            int width = 0;
-            int height = 0;
+            int width = NO_VALUE;
+            int height = NO_VALUE;
 
             int drawableStartId = ta.getResourceId(R.styleable.VectorCompatTextView_drawableStartCompat, NO_VALUE);
             if (drawableStartId != NO_VALUE) {
@@ -64,10 +63,13 @@ final class VectorCompatViewHelper {
                 width = ta.getDimensionPixelSize(R.styleable.VectorCompatTextView_drawableWidth, width);
                 height = ta.getDimensionPixelSize(R.styleable.VectorCompatTextView_drawableHeight, height);
 
-                setDrawableSize(drawableStart, width, height);
-                setDrawableSize(drawableEnd, width, height);
-                setDrawableSize(drawableTop, width, height);
-                setDrawableSize(drawableBottom, width, height);
+                if (width != NO_VALUE && height != NO_VALUE) {
+                    setDrawableSize(drawableStart, width, height);
+                    setDrawableSize(drawableEnd, width, height);
+                    setDrawableSize(drawableTop, width, height);
+                    setDrawableSize(drawableBottom, width, height);
+                }
+
 
                 TextViewCompat.setCompoundDrawablesRelative(textView,
                                                             drawableStart,
@@ -83,9 +85,7 @@ final class VectorCompatViewHelper {
     private static void setDrawableSize(Drawable drawable, int width, int height) {
         if (drawable == null) return;
         Rect rect = drawable.getBounds();
-        drawable.setBounds(rect.left, rect.top, width == 0 ? rect.right : width, height == 0 ? rect.bottom : height);
+        drawable.setBounds(rect.left, rect.top, width, height);
     }
-
-
 
 }

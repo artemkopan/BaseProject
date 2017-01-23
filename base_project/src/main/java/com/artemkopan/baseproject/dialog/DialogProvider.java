@@ -1,11 +1,9 @@
 package com.artemkopan.baseproject.dialog;
 
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.internal.UiInterface;
 
 /**
  * Created by Artem Kopan for BaseProject
@@ -18,43 +16,23 @@ public class DialogProvider {
     private ProgressDialog progressDialog;
     private MessageDialog messageDialog;
 
-    private static FragmentManager getFragmentManager(Object obj) {
-        FragmentManager fragmentManager;
-        if (obj instanceof Fragment) {
-            fragmentManager = ((Fragment) obj).getFragmentManager();
-        } else if (obj instanceof FragmentActivity) {
-            fragmentManager = ((FragmentActivity) obj).getSupportFragmentManager();
-        } else {
-            throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
-        }
-        return fragmentManager;
-    }
-
     //==============================================================================================
     // Progress Dialog
     //==============================================================================================
     //region methods
-    public  ProgressDialog showProgress(Object obj) {
-        return showProgress(obj, R.string.base_info_loading);
+    public ProgressDialog showProgress(UiInterface uiInterface) {
+        return showProgress(uiInterface, R.string.base_info_loading);
     }
 
-    public  ProgressDialog showProgress(Object obj, @StringRes int description) {
-        if (obj instanceof Fragment) {
-            Fragment fragment = (Fragment) obj;
-            return this.showProgress(fragment, description > 0 ? fragment.getString(description) : null);
-        } else if (obj instanceof FragmentActivity) {
-            FragmentActivity activity = (FragmentActivity) obj;
-            return this.showProgress(activity, description > 0 ? activity.getString(description) : null);
-        } else {
-            throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
-        }
+    public ProgressDialog showProgress(UiInterface uiInterface, @StringRes int description) {
+        return showProgress(uiInterface, description > 0 ? uiInterface.getBaseActivity().getString(description) : null);
     }
 
-    public  ProgressDialog showProgress(Object obj, String description) {
+    public ProgressDialog showProgress(UiInterface uiInterface, String description) {
         if (progressDialog == null || !progressDialog.isShowing()) {
             if (progressDialog != null) progressDialog.dismiss();
             progressDialog = ProgressDialog.newInstance(description);
-            progressDialog.show(getFragmentManager(obj));
+            progressDialog.show(uiInterface.getSupportFragmentManager());
         } else {
             progressDialog.setDescription(description);
         }
@@ -63,7 +41,7 @@ public class DialogProvider {
         return progressDialog;
     }
 
-    public  void dismissProgress() {
+    public void dismissProgress() {
         if (progressDialog != null) {
             progressDialog.dismissAllowingStateLoss();
             progressDialog = null;
@@ -71,50 +49,31 @@ public class DialogProvider {
     }
     //endregion
 
-
     //==============================================================================================
     // Message Dialog
     //==============================================================================================
     //region methods
-    public  MessageDialog showMessage(Object obj, @StringRes int description) {
-        return showMessage(obj, R.string.base_info_something_wrong, description);
+    public MessageDialog showMessage(UiInterface uiInterface, @StringRes int description) {
+        return showMessage(uiInterface, R.string.base_info_something_wrong, description);
     }
 
-    public  MessageDialog showMessage(Object obj, String description) {
-        String title;
-        if (obj instanceof Fragment) {
-            title = ((Fragment) obj).getString(R.string.base_info_something_wrong);
-        } else if (obj instanceof FragmentActivity) {
-            title = ((FragmentActivity) obj).getString(R.string.base_info_something_wrong);
-        } else {
-            title = null;
-        }
-
-        return showMessage(obj, title, description);
+    public MessageDialog showMessage(UiInterface uiInterface, String description) {
+        return showMessage(uiInterface, uiInterface.getBaseActivity()
+                                                   .getString(R.string.base_info_something_wrong), description);
     }
 
-    public  MessageDialog showMessage(Object obj, @StringRes int title, @StringRes int description) {
-        if (obj instanceof Fragment) {
-            Fragment fragment = (Fragment) obj;
-            return this.showMessage(fragment,
-                                    title > 0 ? fragment.getString(title) : null,
-                                    description > 0 ? fragment.getString(description) : null);
-        } else if (obj instanceof FragmentActivity) {
-            FragmentActivity activity = (FragmentActivity) obj;
-            return this.showMessage(activity,
-                                    title > 0 ? activity.getString(title) : null,
-                                    description > 0 ? activity.getString(description) : null);
-        } else {
-            throw new IllegalArgumentException("obj must be instance of Fragment or FragmentActivity");
-        }
+    public MessageDialog showMessage(UiInterface uiInterface, @StringRes int title, @StringRes int description) {
+        return showMessage(uiInterface,
+                           title > 0 ? uiInterface.getBaseActivity().getString(title) : null,
+                           description > 0 ? uiInterface.getBaseActivity().getString(description) : null);
     }
 
     @SuppressWarnings("ConstantConditions")
-    public  MessageDialog showMessage(Object obj, final String title, final String description) {
+    public MessageDialog showMessage(UiInterface uiInterface, final String title, final String description) {
         if (messageDialog == null || !messageDialog.isShowing()) {
             if (messageDialog != null) messageDialog.dismiss();
             messageDialog = MessageDialog.newInstance(title, description);
-            messageDialog.show(getFragmentManager(obj));
+            messageDialog.show(uiInterface.getSupportFragmentManager());
         } else {
             messageDialog.setTitle(title);
             messageDialog.setDescription(description);
@@ -123,7 +82,7 @@ public class DialogProvider {
     }
     //endregion
 
-    public  void dismissMessage() {
+    public void dismissMessage() {
         if (messageDialog != null) {
             messageDialog.dismissAllowingStateLoss();
             messageDialog = null;

@@ -127,8 +127,7 @@ public class TransitionHelper {
         addNonNullViewToTransitionParticipants(statusBar, participants);
         addNonNullViewToTransitionParticipants(navBar, participants);
         // only add transition participants if there's at least one none-null element
-        if (otherParticipants != null && !(otherParticipants.length == 1
-                                           && otherParticipants[0] == null)) {
+        if (otherParticipants != null && !(otherParticipants.length == 1 && otherParticipants[0] == null)) {
             participants.addAll(Arrays.asList(otherParticipants));
         }
         //noinspection unchecked

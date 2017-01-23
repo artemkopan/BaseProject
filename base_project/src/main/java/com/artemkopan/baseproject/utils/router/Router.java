@@ -45,9 +45,6 @@ import static com.artemkopan.baseproject.utils.router.IRouterBuilder.FragmentAni
 @SuppressWarnings("WeakerAccess")
 public class Router {
 
-    @IdRes
-    private static int sIdResDefault;
-
     public static FragmentBuilder fragment() {
         return new FragmentBuilder();
     }
@@ -55,15 +52,6 @@ public class Router {
     @SuppressWarnings("unchecked")
     public static <T extends Activity> ActivityBuilder activity(Class<T> navigateClass) {
         return new ActivityBuilder(navigateClass);
-    }
-
-    /**
-     * If needed you can set default id res for fragments. Usually call in {@link android.app.Application}
-     *
-     * @param idResDefault fragment container id;
-     */
-    public static void setIdResDefault(@IdRes int idResDefault) {
-        sIdResDefault = idResDefault;
     }
 
     public enum Method {
@@ -136,7 +124,7 @@ public class Router {
         }
 
         public ActivityBuilder clearBackStack() {
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             return this;
         }
 
@@ -228,7 +216,12 @@ public class Router {
             else fragment.startActivity(intent);
         }
 
-        public void startWithTransition(Activity activity, Pair<View, String>... shared) {
+        public void startWithTransition(Activity activity) {
+            startWithTransition(activity, (Pair<View, String>[]) null);
+        }
+
+        @SafeVarargs
+        public final void startWithTransition(Activity activity, Pair<View, String>... shared) {
             intent.setClass(activity, navigateClass);
             if (resultCode > 0) {
                 startActivityForResult(activity, intent, resultCode, TransitionHelper.generateBundle(activity, shared));
@@ -240,6 +233,9 @@ public class Router {
     public static class FragmentBuilder implements FragmentAnim, IRouterBuilder.FragmentBuilder {
 
         @IdRes
+        private static int sIdResDefault;
+
+        @IdRes
         private int mIdRes;
         @AnimRes
         private int mEnter, mExit, mPopEnter, mPopExit;
@@ -249,6 +245,15 @@ public class Router {
         private Object mSharedEnterTransition, mSharedReturnTransition;
         private Object mEnterTransition, mExitTransition, mReenterTransition, mReturnTransition;
         private boolean mAddToBackStack = true, mUseCustomAnim = true;
+
+        /**
+         * If needed you can set default id res for fragments. Usually call in {@link android.app.Application}
+         *
+         * @param idResDefault fragment container id;
+         */
+        public static void setIdResDefault(@IdRes int idResDefault) {
+            sIdResDefault = idResDefault;
+        }
 
         @Override
         public FragmentAnim setEnterAnim(@AnimRes int idRes) {
