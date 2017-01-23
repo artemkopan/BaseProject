@@ -1,7 +1,6 @@
 package com.artemkopan.baseproject.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -10,7 +9,6 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.utils.ViewUtils;
 
 import static android.support.v4.content.ContextCompat.getDrawable;
 
@@ -68,14 +66,19 @@ final class VectorCompatViewHelper {
                     setDrawableSize(drawableEnd, width, height);
                     setDrawableSize(drawableTop, width, height);
                     setDrawableSize(drawableBottom, width, height);
+
+                    TextViewCompat.setCompoundDrawablesRelative(textView,
+                                                                drawableStart,
+                                                                drawableTop,
+                                                                drawableEnd,
+                                                                drawableBottom);
+                } else {
+                    TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(textView,
+                                                                                   drawableStart,
+                                                                                   drawableTop,
+                                                                                   drawableEnd,
+                                                                                   drawableBottom);
                 }
-
-
-                TextViewCompat.setCompoundDrawablesRelative(textView,
-                                                            drawableStart,
-                                                            drawableTop,
-                                                            drawableEnd,
-                                                            drawableBottom);
             }
         } finally {
             ta.recycle();
