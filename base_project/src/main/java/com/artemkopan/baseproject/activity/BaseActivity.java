@@ -36,7 +36,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
     @SuppressWarnings("SpellCheckingInspection")
     protected P mPresenter;
-    private UiManager mUiManager;
+    protected UiManager mUiManager;
     private boolean mShouldFinish;
 
     @Override

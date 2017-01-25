@@ -141,6 +141,11 @@ public final class ExtraUtils {
         return context.getResources().getDisplayMetrics().heightPixels;
     }
 
+    public static int getDialogWidth(Context context) {
+        float percent = context.getResources().getFraction(R.fraction.dialog_width, 1, 1);
+        return (int) (getWindowWidth(context) * percent);
+    }
+
     /**
      * Get toolbar height size
      */

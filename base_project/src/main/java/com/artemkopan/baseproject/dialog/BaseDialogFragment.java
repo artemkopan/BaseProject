@@ -38,7 +38,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     public static final int REQ_CODE = 343;
 
     protected P mPresenter;
-    private UiManager mUiManager;
+    protected UiManager mUiManager;
 
     //==============================================================================================
     // Show dialog methods

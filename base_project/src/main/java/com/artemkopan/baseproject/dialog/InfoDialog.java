@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.utils.ExtraUtils;
 
 /**
  * Base info dialog with indeterminate progress bar.
@@ -34,10 +35,7 @@ public class InfoDialog extends BaseDialogFragment {
 
     @Override
     public void onBaseDialogSize(Window window) {
-        float percent = getContext().getResources().getFraction(R.fraction.dialog_width, 1, 1);
-        window.setLayout(
-                (int) (getContext().getResources().getDisplayMetrics().widthPixels * percent),
-                WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(ExtraUtils.getDialogWidth(getContext()), WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     @Override

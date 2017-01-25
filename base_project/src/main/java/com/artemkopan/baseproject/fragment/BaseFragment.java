@@ -29,7 +29,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
         implements MvpView, UiInterface {
 
     protected P mPresenter;
-    private UiManager mUiManager;
+    protected UiManager mUiManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
