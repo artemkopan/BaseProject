@@ -23,7 +23,7 @@ import io.reactivex.functions.Consumer;
 @SuppressWarnings("WeakerAccess")
 public class RxViewClick implements ObservableOnSubscribe<View> {
 
-    public static final int TIME_DELAY = 600;
+    public static final int TIME_DELAY = 400;
 
     private WeakReference<View> mViewWeak;
 

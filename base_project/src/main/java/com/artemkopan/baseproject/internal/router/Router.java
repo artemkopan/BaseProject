@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.utils.router;
+package com.artemkopan.baseproject.internal.router;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
-import static com.artemkopan.baseproject.utils.router.IRouterBuilder.FragmentAnim;
+import static com.artemkopan.baseproject.internal.router.IRouterBuilder.FragmentAnim;
 
 /**
  * <p> - {@link Method} set default {@link Method#REPLACE}</p>

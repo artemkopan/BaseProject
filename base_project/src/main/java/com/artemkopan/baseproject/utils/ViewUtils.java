@@ -11,9 +11,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.TextView;
+
+import com.artemkopan.baseproject.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -188,6 +191,31 @@ public final class ViewUtils {
             }
         }
         return false;
+    }
+
+    public static void enableRecordTouchPos(final View view) {
+        view.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    view.setTag(R.id.view_touch_x, event.getRawX());
+                    view.setTag(R.id.view_touch_y, event.getRawX());
+                }
+                return true;
+            }
+        });
+    }
+
+    public static Point readRecordedTouchPos(View view) {
+        Point point = new Point();
+        Object x = view.getTag(R.id.view_touch_x);
+        Object y = view.getTag(R.id.view_touch_y);
+        if (ObjectUtils.instanceOfInt(x) && ObjectUtils.instanceOfInt(y)) {
+            point.set((Integer) x, (Integer) y);
+        } else {
+            Log.e("firstly, you must enable record touch pos ViewUtils.enableRecordTouchPos()");
+        }
+        return point;
     }
 
     @IntDef({DRAWABLE_LEFT, DRAWABLE_TOP, DRAWABLE_RIGHT, DRAWABLE_BOTTOM})

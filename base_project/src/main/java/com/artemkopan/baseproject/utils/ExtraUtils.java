@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.location.Address;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.support.annotation.FloatRange;
+import android.support.annotation.Nullable;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
@@ -100,6 +102,23 @@ public final class ExtraUtils {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    /**
+     * Get full address from {@link Address}
+     */
+    public static String getCompleteAddressLine(@Nullable Address address) {
+        StringBuilder strReturnedAddress = new StringBuilder("");
+        if (address != null) {
+            if (address.getMaxAddressLineIndex() == 0) {
+                strReturnedAddress.append(address.getAddressLine(0));
+                return strReturnedAddress.toString();
+            }
+            for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+                strReturnedAddress.append(address.getAddressLine(i)).append("\n");
+            }
+        }
+        return strReturnedAddress.toString();
     }
 
     /**

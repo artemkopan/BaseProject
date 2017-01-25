@@ -1,19 +1,20 @@
 package com.artemkopan.baseproject.utils;
 
-
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
+
+import java.util.List;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class IntentHelper {
-
 
     public static void intentSharingText(Context context, String text, String title) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -33,51 +34,24 @@ public class IntentHelper {
     }
 
     public static void intentSendSMS(Context context, String phoneNumbers, String smsBody) throws ActivityNotFoundException {
+        Intent sendIntent = new Intent(android.content.Intent.ACTION_VIEW);
+        sendIntent.putExtra("address", phoneNumbers);
+        sendIntent.putExtra("sms_body", smsBody);
+        sendIntent.setType("vnd.android-dir/mms-sms");
+        sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
 
-//        if (FragmentBuilder.VERSION.SDK_INT >= FragmentBuilder.VERSION_CODES.KITKAT) {
-//            Intent it = new Intent(Intent.ACTION_SENDTO,
-//                                   TextUtils.isEmpty(phoneNumbers) ? null : Uri.parse(
-//                                           "sms:" + phoneNumbers));
-//
-//            it.putExtra("sms_body", smsBody);
-//            it.setFlags(FLAG_ACTIVITY_NEW_TASK);
-//            context.startActivity(it);
-//        } else {
-            Intent sendIntent = new Intent(android.content.Intent.ACTION_VIEW);
-            sendIntent.putExtra("address", phoneNumbers);
-            sendIntent.putExtra("sms_body", smsBody);
-            sendIntent.setType("vnd.android-dir/mms-sms");
-            sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        if (isAvailable(context, sendIntent)) {
             context.startActivity(sendIntent);
-//        }
+            return;
+        }
 
-//        //At least KitKat
-//        if (FragmentBuilder.VERSION.SDK_INT >= FragmentBuilder.VERSION_CODES.KITKAT) {
-//            //Need to change the build to API 19
-//            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(context);
-//
-//            Intent sendIntent = new Intent(Intent.ACTION_SEND, Uri.parse("smsto:" + phoneNumbers));
-////            sendIntent.setData();
-//            sendIntent.setType("text/plain");
-//            sendIntent.putExtra("exit_on_sent", true);
-//            sendIntent.putExtra(Intent.EXTRA_TEXT, smsBody);
-//
-//            // Can be null in case that there is no default, then the user would be able
-//            // to choose any app that support this intent.
-//            if (defaultSmsPackageName != null) {
-//                sendIntent.setPackage(defaultSmsPackageName);
-//            }
-//            sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-//            context.startActivity(sendIntent);
-//        } else {
-//            // For early versions we just use ACTION_VIEW
-//            Intent sendIntent = new Intent(android.content.Intent.ACTION_VIEW);
-//            sendIntent.putExtra("address", phoneNumbers);
-//            sendIntent.putExtra("sms_body", smsBody);
-//            sendIntent.setType("vnd.android-dir/mms-sms");
-//            sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-//            context.startActivity(sendIntent);
-//        }
+        sendIntent = new Intent(Intent.ACTION_SENDTO,
+                               TextUtils.isEmpty(phoneNumbers) ? null : Uri.parse("sms:" + phoneNumbers));
+
+        sendIntent.putExtra("sms_body", smsBody);
+        sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(sendIntent);
+
     }
 
     @SuppressWarnings("MissingPermission")
@@ -99,5 +73,11 @@ public class IntentHelper {
         if (!StringUtils.isEmpty(body)) intent.putExtra(Intent.EXTRA_TEXT, body);
         intent.setData(Uri.parse("mailto:"));
         context.startActivity(intent);
+    }
+
+    public static boolean isAvailable(Context ctx, Intent intent) {
+        final PackageManager mgr = ctx.getPackageManager();
+        List<ResolveInfo> list = mgr.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
     }
 }

@@ -19,9 +19,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
-import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.rx.BaseRx;
 import com.artemkopan.baseproject.utils.ExtraUtils;
+import com.artemkopan.baseproject.utils.Log;
 import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.lang.ref.WeakReference;
@@ -75,10 +75,14 @@ public final class UiManagerImpl implements UiManager {
 
     @Override
     public void onDestroyView() {
-        mDestroySubject.accept(BaseRx.TRIGGER);
         if (mUnbinder != null) {
             mUnbinder.unbind();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mDestroySubject.accept(BaseRx.TRIGGER);
     }
 
     @Override

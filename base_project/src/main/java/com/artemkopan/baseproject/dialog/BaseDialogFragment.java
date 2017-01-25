@@ -21,11 +21,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.internal.UiInterface;
 import com.artemkopan.baseproject.internal.UiManager;
 import com.artemkopan.baseproject.presenter.BasePresenter;
 import com.artemkopan.baseproject.presenter.MvpView;
+import com.artemkopan.baseproject.utils.Log;
 import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.util.concurrent.TimeUnit;
@@ -168,18 +168,27 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
         super.onDestroyView();
     }
 
+    @Override
+    public void onDestroy() {
+        mUiManager.onDestroy();
+        super.onDestroy();
+    }
+
     public boolean isShowing() {
         return getDialog() != null && getDialog().isShowing();
     }
 
     @Override
-    public void showError(@Nullable Object tag, String error) {}
+    public void showError(@Nullable Object tag, String error) {
+    }
 
     @Override
-    public void showProgress(@Nullable Object tag) {}
+    public void showProgress(@Nullable Object tag) {
+    }
 
     @Override
-    public void hideProgress(@Nullable Object tag) {}
+    public void hideProgress(@Nullable Object tag) {
+    }
 
     /**
      * @return Check implemented class and return them. If fragment was started from another

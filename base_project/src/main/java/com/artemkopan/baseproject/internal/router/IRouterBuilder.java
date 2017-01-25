@@ -1,4 +1,4 @@
-package com.artemkopan.baseproject.utils.router;
+package com.artemkopan.baseproject.internal.router;
 
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
@@ -10,8 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.view.View;
 
-import com.artemkopan.baseproject.utils.router.Router;
-import com.artemkopan.baseproject.utils.router.Router.AnimDefault;
+import com.artemkopan.baseproject.internal.router.Router.AnimDefault;
 
 
 @SuppressWarnings("ALL")
