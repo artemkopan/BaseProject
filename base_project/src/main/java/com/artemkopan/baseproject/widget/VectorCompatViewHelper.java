@@ -21,7 +21,7 @@ final class VectorCompatViewHelper {
 
     private static final int NO_VALUE = -1;
 
-    static void loadFromAttributes(TextView textView, AttributeSet attrs) {
+    public static void loadFromAttributes(TextView textView, AttributeSet attrs) {
 
         if (textView == null || attrs == null) return;
 
