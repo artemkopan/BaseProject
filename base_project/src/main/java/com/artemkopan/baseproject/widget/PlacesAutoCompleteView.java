@@ -10,14 +10,13 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.ExtraUtils;
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -41,34 +40,36 @@ import io.reactivex.subjects.PublishSubject;
  * 26.01.17
  */
 
-public class GeocodeAutoCompleteView extends AppCompatAutoCompleteTextView {
+public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
 
     private static final int DEBOUNCE = 1000;
     private static final int MIN_START_SEARCH = 2;
     private static final int MAX_RESULT = 10;
     private Geocoder geocoder;
-    private Predicate<CharSequence> filter;
+    private Predicate<String> filter;
     private Consumer<List<Address>> consumer;
+    private Function<CharSequence, String> convert;
     private PublishSubject<CharSequence> textChangeSubject;
-    private Function<CharSequence, MaybeSource<List<Address>>> findItem;
+    private Function<String, MaybeSource<List<Address>>> findItem;
     private AddressAdapter addressAdapter;
     private OnLoadingListener loadingListener;
+    private String oldValue;
     private int debounce = DEBOUNCE;
     private int minStartSearch = MIN_START_SEARCH;
     private int maxResult = MAX_RESULT;
-    private boolean disabled;
+    private boolean blocked;
 
-    public GeocodeAutoCompleteView(Context context) {
+    public PlacesAutoCompleteView(Context context) {
         super(context);
         init(null);
     }
 
-    public GeocodeAutoCompleteView(Context context, AttributeSet attrs) {
+    public PlacesAutoCompleteView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public GeocodeAutoCompleteView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PlacesAutoCompleteView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
@@ -93,22 +94,24 @@ public class GeocodeAutoCompleteView extends AppCompatAutoCompleteTextView {
         VectorCompatViewHelper.loadFromAttributes(this, attrs);
 
         setAdapter(addressAdapter);
-        setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                disabled = true;
-                setText(ExtraUtils.getCompleteAddressLine(addressAdapter.getItem(position)));
-                disabled = false;
-            }
-        });
+    }
+
+    @Override
+    protected void replaceText(CharSequence text) {
+        blocked = true;
+        super.replaceText(text);
+        oldValue = text.toString();
+        blocked = false;
     }
 
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        if (text.length() >= minStartSearch && textChangeSubject != null && !disabled) {
-            textChangeSubject.onNext(text);
-        } else if (addressAdapter != null) {
+        if (text.length() >= minStartSearch && textChangeSubject != null && !blocked) {
+            Log.i("onNext " + text + " " + oldValue);
+            textChangeSubject.onNext(StringUtils.trim(text));
+        } else if (!blocked && addressAdapter != null) {
+            Log.i("clear");
             addressAdapter.clear();
         }
     }
@@ -117,6 +120,7 @@ public class GeocodeAutoCompleteView extends AppCompatAutoCompleteTextView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         textChangeSubject
+                .map(getRxConvert())
                 .filter(getRxFilter())
                 .debounce(debounce, TimeUnit.MILLISECONDS, Schedulers.io())
                 .flatMapMaybe(getRxFinder())
@@ -139,16 +143,28 @@ public class GeocodeAutoCompleteView extends AppCompatAutoCompleteTextView {
     //==============================================================================================
     //region methods
 
-    private Function<CharSequence, MaybeSource<List<Address>>> getRxFinder() {
-        if (findItem == null) {
-            findItem = new Function<CharSequence, MaybeSource<List<Address>>>() {
+    private Function<CharSequence, String> getRxConvert() {
+        if (convert == null) {
+            convert = new Function<CharSequence, String>() {
                 @Override
-                public MaybeSource<List<Address>> apply(final CharSequence sequence) throws Exception {
+                public String apply(CharSequence charSequence) throws Exception {
+                    return charSequence.toString();
+                }
+            };
+        }
+        return convert;
+    }
+
+    private Function<String, MaybeSource<List<Address>>> getRxFinder() {
+        if (findItem == null) {
+            findItem = new Function<String, MaybeSource<List<Address>>>() {
+                @Override
+                public MaybeSource<List<Address>> apply(final String sequence) throws Exception {
                     return Maybe.create(new MaybeOnSubscribe<List<Address>>() {
                         @Override
                         public void subscribe(MaybeEmitter<List<Address>> e) throws Exception {
                             if (loadingListener != null) loadingListener.startLoad();
-                            e.onSuccess(geocoder.getFromLocationName(sequence.toString(), maxResult));
+                            e.onSuccess(geocoder.getFromLocationName(sequence, maxResult));
                             if (loadingListener != null) loadingListener.stopLoad();
                             e.onComplete();
                         }
@@ -159,12 +175,17 @@ public class GeocodeAutoCompleteView extends AppCompatAutoCompleteTextView {
         return findItem;
     }
 
-    private Predicate<CharSequence> getRxFilter() {
+    private Predicate<String> getRxFilter() {
         if (filter == null) {
-            filter = new Predicate<CharSequence>() {
+            filter = new Predicate<String>() {
                 @Override
-                public boolean test(CharSequence sequence) throws Exception {
-                    return !StringUtils.isEmpty(sequence);
+                public boolean test(String string) throws Exception {
+                    if (string.equals(oldValue)) {
+                        showDropDown();
+                        return false;
+                    }
+                    oldValue = string;
+                    return !StringUtils.isEmpty(string);
                 }
             };
         }
@@ -204,6 +225,11 @@ public class GeocodeAutoCompleteView extends AppCompatAutoCompleteTextView {
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
 
+            }
+
+            @Override
+            public CharSequence convertResultToString(Object resultValue) {
+                return super.convertResultToString(ExtraUtils.getCompleteAddressLine((Address) resultValue));
             }
         };
 
