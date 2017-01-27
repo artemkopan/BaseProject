@@ -80,12 +80,12 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
         addressAdapter = new AddressAdapter(getContext(), 0, new ArrayList<Address>());
 
         if (attrs != null) {
-            TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.GeocodeAutoCompleteView);
+            TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.PlacesAutoCompleteView);
 
             try {
-                debounce = ta.getInteger(R.styleable.GeocodeAutoCompleteView_gac_debounce, DEBOUNCE);
-                minStartSearch = ta.getInteger(R.styleable.GeocodeAutoCompleteView_gac_min_start_search, MIN_START_SEARCH);
-                maxResult = ta.getInteger(R.styleable.GeocodeAutoCompleteView_gac_max_result, MAX_RESULT);
+                debounce = ta.getInteger(R.styleable.PlacesAutoCompleteView_gac_debounce, DEBOUNCE);
+                minStartSearch = ta.getInteger(R.styleable.PlacesAutoCompleteView_gac_min_start_search, MIN_START_SEARCH);
+                maxResult = ta.getInteger(R.styleable.PlacesAutoCompleteView_gac_max_result, MAX_RESULT);
             } finally {
                 ta.recycle();
             }
@@ -181,7 +181,6 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
                 @Override
                 public boolean test(String string) throws Exception {
                     if (string.equals(oldValue)) {
-                        showDropDown();
                         return false;
                     }
                     oldValue = string;
@@ -219,7 +218,7 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
         private static final Filter NO_FILTER = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                return new FilterResults();
+                return null;
             }
 
             @Override
