@@ -48,6 +48,7 @@
         <attr name="gac_debounce" format="integer"/>
         <attr name="gac_min_start_search" format="integer"/>
         <attr name="gac_max_result" format="integer"/>
+        <attr name="gac_init_adapter" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="CircularRevealTransition">

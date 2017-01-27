@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -24,10 +25,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Maybe;
-import io.reactivex.MaybeEmitter;
-import io.reactivex.MaybeOnSubscribe;
-import io.reactivex.MaybeSource;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -42,7 +43,7 @@ import io.reactivex.subjects.PublishSubject;
 
 public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
 
-    private static final int DEBOUNCE = 1000;
+    private static final int DEBOUNCE = 800;
     private static final int MIN_START_SEARCH = 2;
     private static final int MAX_RESULT = 10;
     private Geocoder geocoder;
@@ -50,13 +51,14 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     private Consumer<List<Address>> consumer;
     private Function<CharSequence, String> convert;
     private PublishSubject<CharSequence> textChangeSubject;
-    private Function<String, MaybeSource<List<Address>>> findItem;
-    private AddressAdapter addressAdapter;
-    private OnLoadingListener loadingListener;
+    private Function<String, ObservableSource<List<Address>>> findItem;
+    private @Nullable ArrayAdapter<Address> addressAdapter;
+    private OnLocationListener loadingListener;
     private String oldValue;
     private int debounce = DEBOUNCE;
     private int minStartSearch = MIN_START_SEARCH;
     private int maxResult = MAX_RESULT;
+    private boolean initAdapter = true;
     private boolean blocked;
 
     public PlacesAutoCompleteView(Context context) {
@@ -77,7 +79,6 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     private void init(AttributeSet attrs) {
         geocoder = new Geocoder(getContext(), Locale.getDefault());
         textChangeSubject = PublishSubject.create();
-        addressAdapter = new AddressAdapter(getContext(), 0, new ArrayList<Address>());
 
         if (attrs != null) {
             TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.PlacesAutoCompleteView);
@@ -86,6 +87,7 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
                 debounce = ta.getInteger(R.styleable.PlacesAutoCompleteView_gac_debounce, DEBOUNCE);
                 minStartSearch = ta.getInteger(R.styleable.PlacesAutoCompleteView_gac_min_start_search, MIN_START_SEARCH);
                 maxResult = ta.getInteger(R.styleable.PlacesAutoCompleteView_gac_max_result, MAX_RESULT);
+                initAdapter = ta.getBoolean(R.styleable.PlacesAutoCompleteView_gac_init_adapter, true);
             } finally {
                 ta.recycle();
             }
@@ -93,7 +95,10 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
 
         VectorCompatViewHelper.loadFromAttributes(this, attrs);
 
-        setAdapter(addressAdapter);
+        if (initAdapter) {
+            addressAdapter = new AddressAdapter(getContext(), 0, new ArrayList<Address>());
+            super.setAdapter(addressAdapter);
+        }
     }
 
     @Override
@@ -123,7 +128,7 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
                 .map(getRxConvert())
                 .filter(getRxFilter())
                 .debounce(debounce, TimeUnit.MILLISECONDS, Schedulers.io())
-                .flatMapMaybe(getRxFinder())
+                .switchMap(getRxFinder())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getRxConsumer());
     }
@@ -134,7 +139,12 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
         super.onDetachedFromWindow();
     }
 
-    public void setLoadingListener(OnLoadingListener loadingListener) {
+    public void setAdapter(ArrayAdapter<Address> adapter) {
+        super.setAdapter(adapter);
+        addressAdapter = adapter;
+    }
+
+    public void setLoadingListener(OnLocationListener loadingListener) {
         this.loadingListener = loadingListener;
     }
 
@@ -155,16 +165,20 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
         return convert;
     }
 
-    private Function<String, MaybeSource<List<Address>>> getRxFinder() {
+    private Function<String, ObservableSource<List<Address>>> getRxFinder() {
         if (findItem == null) {
-            findItem = new Function<String, MaybeSource<List<Address>>>() {
+            findItem = new Function<String, ObservableSource<List<Address>>>() {
                 @Override
-                public MaybeSource<List<Address>> apply(final String sequence) throws Exception {
-                    return Maybe.create(new MaybeOnSubscribe<List<Address>>() {
+                public ObservableSource<List<Address>> apply(final String s) throws Exception {
+                    return Observable.create(new ObservableOnSubscribe<List<Address>>() {
                         @Override
-                        public void subscribe(MaybeEmitter<List<Address>> e) throws Exception {
+                        public void subscribe(ObservableEmitter<List<Address>> e) throws Exception {
                             if (loadingListener != null) loadingListener.startLoad();
-                            e.onSuccess(geocoder.getFromLocationName(sequence, maxResult));
+                            try {
+                                e.onNext(geocoder.getFromLocationName(s, maxResult));
+                            } catch (Exception ex) {
+                                if (loadingListener != null) loadingListener.error(ex);
+                            }
                             if (loadingListener != null) loadingListener.stopLoad();
                             e.onComplete();
                         }
@@ -196,6 +210,7 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
             consumer = new Consumer<List<Address>>() {
                 @Override
                 public void accept(List<Address> addresses) throws Exception {
+                    if (addressAdapter == null) return;
                     addressAdapter.clear();
                     addressAdapter.addAll(addresses);
                 }
@@ -206,11 +221,13 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
 
     //endregion
 
-    public interface OnLoadingListener {
+    public interface OnLocationListener {
 
         void startLoad();
 
         void stopLoad();
+
+        void error(Throwable throwable);
     }
 
     private static class AddressAdapter extends ArrayAdapter<Address> {

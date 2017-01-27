@@ -98,8 +98,7 @@ public final class ExtraUtils {
      * @return if internet (WIFI or MOBILE) is connected return true;
      */
     public static boolean checkInternetConnection(Context context) {
-        ConnectivityManager connMgr = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
@@ -110,12 +109,14 @@ public final class ExtraUtils {
     public static String getCompleteAddressLine(@Nullable Address address) {
         StringBuilder strReturnedAddress = new StringBuilder("");
         if (address != null) {
-            if (address.getMaxAddressLineIndex() == 0) {
+            int count = address.getMaxAddressLineIndex();
+            if (count == 0) {
                 strReturnedAddress.append(address.getAddressLine(0));
                 return strReturnedAddress.toString();
             }
-            for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                strReturnedAddress.append(address.getAddressLine(i)).append("\n");
+            for (int i = 0; i < count; i++) {
+                strReturnedAddress.append(address.getAddressLine(i));
+                if (i < count - 1) strReturnedAddress.append(", ");
             }
         }
         return strReturnedAddress.toString();
