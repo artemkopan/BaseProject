@@ -193,29 +193,23 @@ public final class ViewUtils {
         return false;
     }
 
-    public static void enableRecordTouchPos(final View view) {
+    public static void rememberLastClickPos(View view) {
         view.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    view.setTag(R.id.view_touch_x, event.getRawX());
-                    view.setTag(R.id.view_touch_y, event.getRawX());
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    v.setTag(R.id.view_touch_x, (int) event.getRawX());
+                    v.setTag(R.id.view_touch_y, (int) event.getRawY());
                 }
                 return true;
             }
         });
     }
 
-    public static Point readRecordedTouchPos(View view) {
-        Point point = new Point();
-        Object x = view.getTag(R.id.view_touch_x);
-        Object y = view.getTag(R.id.view_touch_y);
-        if (ObjectUtils.instanceOfInt(x) && ObjectUtils.instanceOfInt(y)) {
-            point.set((Integer) x, (Integer) y);
-        } else {
-            Log.e("firstly, you must enable record touch pos ViewUtils.enableRecordTouchPos()");
-        }
-        return point;
+    public static Point remindLastClickPost(View view) {
+        Object rawX = view.getTag(R.id.view_touch_x);
+        Object rawY = view.getTag(R.id.view_touch_y);
+        return new Point(ObjectUtils.castToInteger(rawX, 0), ObjectUtils.castToInteger(rawY, 0));
     }
 
     @IntDef({DRAWABLE_LEFT, DRAWABLE_TOP, DRAWABLE_RIGHT, DRAWABLE_BOTTOM})
