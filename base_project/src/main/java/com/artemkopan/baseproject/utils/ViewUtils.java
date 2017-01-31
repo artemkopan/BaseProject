@@ -201,7 +201,7 @@ public final class ViewUtils {
                     v.setTag(R.id.view_touch_x, (int) event.getRawX());
                     v.setTag(R.id.view_touch_y, (int) event.getRawY());
                 }
-                return true;
+                return false;
             }
         });
     }
