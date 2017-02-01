@@ -5,6 +5,9 @@ import android.support.annotation.StringRes;
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.internal.UiInterface;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
+
 /**
  * Created by Artem Kopan for BaseProject
  * 09.10.2016
@@ -42,7 +45,11 @@ public class DialogProvider {
     }
 
     public void dismissProgress() {
-        if (progressDialog != null) {
+        boolean destroyed = false;
+        if (progressDialog != null && SDK_INT >= JELLY_BEAN_MR1 && progressDialog.getActivity() != null) {
+            destroyed = progressDialog.getBaseActivity().isDestroyed();
+        }
+        if (progressDialog != null && progressDialog.getActivity() != null && !destroyed) {
             progressDialog.dismissAllowingStateLoss();
             progressDialog = null;
         }
@@ -83,7 +90,11 @@ public class DialogProvider {
     //endregion
 
     public void dismissMessage() {
-        if (messageDialog != null) {
+        boolean destroyed = false;
+        if (messageDialog != null && SDK_INT >= JELLY_BEAN_MR1 && messageDialog.getActivity() != null) {
+            destroyed = messageDialog.getActivity().isDestroyed();
+        }
+        if (messageDialog != null && messageDialog.getActivity() != null && !destroyed) {
             messageDialog.dismissAllowingStateLoss();
             messageDialog = null;
         }

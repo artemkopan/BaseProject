@@ -101,6 +101,11 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
         }
     }
 
+    public void setText(CharSequence text, boolean blocked) {
+        if (blocked) replaceText(text);
+        else setText(text);
+    }
+
     @Override
     protected void replaceText(CharSequence text) {
         blocked = true;
@@ -126,8 +131,9 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
         super.onAttachedToWindow();
         textChangeSubject
                 .map(getRxConvert())
+                .subscribeOn(Schedulers.computation())
                 .filter(getRxFilter())
-                .debounce(debounce, TimeUnit.MILLISECONDS, Schedulers.io())
+                .debounce(debounce, TimeUnit.MILLISECONDS, Schedulers.computation())
                 .switchMap(getRxFinder())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getRxConsumer());
