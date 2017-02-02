@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.artemkopan.baseproject.recycler.holder.BaseHolder;
 import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
 import com.artemkopan.baseproject.utils.Log;
 
@@ -52,9 +53,9 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     }
 
     public M removeItem(int position) {
+        if (position == -1) return null;
         final M model = mList.remove(position);
         notifyItemRemoved(position);
-//        notifyItemRangeChanged(position, getItemCount() - position);  // TODO: 30.08.16 check this
         return model;
     }
 
@@ -137,6 +138,14 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     public void createList(boolean dropList) {
         if (mList != null && !dropList) return;
         setList(new ArrayList<M>());
+    }
+
+    @Override
+    public void onViewRecycled(VH holder) {
+        super.onViewRecycled(holder);
+        if (holder != null && holder instanceof BaseHolder) {
+            ((BaseHolder) holder).clear();
+        }
     }
 
     /***

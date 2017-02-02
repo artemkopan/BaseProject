@@ -15,6 +15,7 @@ import android.transition.Transition;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.utils.ObjectUtils;
 
 import java.util.ArrayList;
@@ -60,7 +61,14 @@ public class TransitionHelper {
                 @Override
                 @TargetApi(VERSION_CODES.KITKAT)
                 public void onTransitionEnd(Transition transition) {
+                    Log.d("onTransitionEnd");
                     transition.removeListener(this);
+                    if (actionEnd != null) actionEnd.run();
+                }
+
+                @Override
+                public void onTransitionCancel(Transition transition) {
+                    Log.d("onTransitionCancel");
                     if (actionEnd != null) actionEnd.run();
                 }
             });

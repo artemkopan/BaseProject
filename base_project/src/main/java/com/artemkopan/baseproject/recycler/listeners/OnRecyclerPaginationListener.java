@@ -9,6 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 
 public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener {
 
+
     public static final int VERTICAL = 0, HORIZONTAL = 1;
 
     protected LinearLayoutManager mLayoutManager;
@@ -31,7 +32,7 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
 
         int value = type == VERTICAL ? dy : dx;
 
-        if (value > 0 && loading) //check for scroll down
+        if (value != 0 && loading) //check for scroll down
         {
             int visibleItemCount = mLayoutManager.getChildCount();
             int totalItemCount = mLayoutManager.getItemCount();
@@ -59,7 +60,6 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
     public interface OnRecyclerPaginationResult {
         void onRecyclePaginationNextPage();
     }
-
 
     @IntDef({VERTICAL, HORIZONTAL})
     @Retention(RetentionPolicy.SOURCE)
