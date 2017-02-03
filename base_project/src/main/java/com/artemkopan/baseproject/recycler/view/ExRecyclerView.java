@@ -134,12 +134,7 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     public OnRecyclerPaginationListener createPaginationListener(OnRecyclerPaginationResult listener) {
-        if (!ObjectUtils.instanceOf(getLayoutManager(), LinearLayoutManager.class)) {
-            // TODO: 12.01.17 add support different layout manager
-            throw new ClassCastException("Pagination only work with LinearLayoutManager");
-        }
-
-        setPaginationListener(new OnRecyclerPaginationListener(((LinearLayoutManager) getLayoutManager()),
+        setPaginationListener(new OnRecyclerPaginationListener(getLayoutManager(),
                                                                OnRecyclerPaginationListener.VERTICAL,
                                                                listener));
         return mPaginationListener;

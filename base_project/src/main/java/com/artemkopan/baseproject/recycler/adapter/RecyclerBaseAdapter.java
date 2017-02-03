@@ -53,7 +53,6 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     }
 
     public M removeItem(int position) {
-        if (position == -1) return null;
         final M model = mList.remove(position);
         notifyItemRemoved(position);
         return model;

@@ -130,10 +130,10 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         textChangeSubject
+                .subscribeOn(Schedulers.io())
                 .map(getRxConvert())
-                .subscribeOn(Schedulers.computation())
                 .filter(getRxFilter())
-                .debounce(debounce, TimeUnit.MILLISECONDS, Schedulers.computation())
+                .debounce(debounce, TimeUnit.MILLISECONDS, Schedulers.io())
                 .switchMap(getRxFinder())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getRxConsumer());

@@ -1,6 +1,7 @@
 package com.artemkopan.baseproject.recycler.listeners;
 
 import android.support.annotation.IntDef;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -9,16 +10,14 @@ import java.lang.annotation.RetentionPolicy;
 
 public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener {
 
-
     public static final int VERTICAL = 0, HORIZONTAL = 1;
 
-    protected LinearLayoutManager mLayoutManager;
+    protected RecyclerView.LayoutManager mLayoutManager;
     protected OnRecyclerPaginationResult onRecyclerPaginationResult;
     protected boolean loading = true;
     protected int type = VERTICAL;
 
-
-    public OnRecyclerPaginationListener(LinearLayoutManager mLayoutManager,
+    public OnRecyclerPaginationListener(RecyclerView.LayoutManager mLayoutManager,
                                         @TypePagination int type,
                                         OnRecyclerPaginationResult onRecyclerPaginationResult) {
         this.mLayoutManager = mLayoutManager;
@@ -36,7 +35,14 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
         {
             int visibleItemCount = mLayoutManager.getChildCount();
             int totalItemCount = mLayoutManager.getItemCount();
-            int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+            int pastVisibleItems;
+            if (mLayoutManager instanceof LinearLayoutManager) {
+                pastVisibleItems = ((LinearLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
+            } else if (mLayoutManager instanceof GridLayoutManager) {
+                pastVisibleItems = ((GridLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
+            } else {
+                throw new UnsupportedOperationException("StaggerGridLayoutManager not support");
+            }
 
             if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                 loading = false;
@@ -53,11 +59,12 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
         loading = false;
     }
 
-    public LinearLayoutManager getLayoutManager() {
+    public RecyclerView.LayoutManager getLayoutManager() {
         return mLayoutManager;
     }
 
     public interface OnRecyclerPaginationResult {
+
         void onRecyclePaginationNextPage();
     }
 

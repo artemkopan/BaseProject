@@ -21,6 +21,12 @@ import com.artemkopan.baseproject.utils.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created for jabrool
@@ -57,6 +63,17 @@ public class TransitionHelper {
 
     public static void onTransitionEndAction(Transition transition, final Runnable actionEnd) {
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && transition != null) {
+            final Disposable autoRun = Observable
+                    .timer(700, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Long>() {
+                        @Override
+                        public void accept(Long aLong) throws Exception {
+                            if (actionEnd != null) {
+                                actionEnd.run();
+                            }
+                        }
+                    });
+
             transition.addListener(new TransitionListenerAdapter() {
                 @Override
                 @TargetApi(VERSION_CODES.KITKAT)
@@ -70,6 +87,11 @@ public class TransitionHelper {
                 public void onTransitionCancel(Transition transition) {
                     Log.d("onTransitionCancel");
                     if (actionEnd != null) actionEnd.run();
+                }
+
+                @Override
+                public void onTransitionStart(Transition transition) {
+                    autoRun.dispose();
                 }
             });
             return;
