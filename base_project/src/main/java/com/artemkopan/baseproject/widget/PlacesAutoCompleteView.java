@@ -77,7 +77,7 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     }
 
     private void init(AttributeSet attrs) {
-        geocoder = new Geocoder(getContext(), Locale.getDefault());
+        geocoder = new Geocoder(getContext());
         textChangeSubject = PublishSubject.create();
 
         if (attrs != null) {
