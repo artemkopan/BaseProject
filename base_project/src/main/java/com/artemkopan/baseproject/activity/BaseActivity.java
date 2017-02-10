@@ -67,6 +67,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
             mPresenter.detachView();
         }
         mUiManager.onDestroyView();
+        mUiManager.onDestroy();
         super.onDestroy();
     }
 
