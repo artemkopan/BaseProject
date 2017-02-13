@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.Telephony;
 import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
 
@@ -34,23 +36,24 @@ public class IntentHelper {
     }
 
     public static void intentSendSMS(Context context, String phoneNumbers, String smsBody) throws ActivityNotFoundException {
-        Intent sendIntent = new Intent(android.content.Intent.ACTION_VIEW);
-        sendIntent.putExtra("address", phoneNumbers);
-        sendIntent.putExtra("sms_body", smsBody);
-        sendIntent.setType("vnd.android-dir/mms-sms");
-        sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
 
-        if (isAvailable(context, sendIntent)) {
-            context.startActivity(sendIntent);
-            return;
+        Uri smsUri;
+        if (TextUtils.isEmpty(phoneNumbers)) {
+            smsUri = Uri.parse("smsto:");
+        } else {
+            smsUri = Uri.parse("smsto:" + Uri.encode(phoneNumbers));
         }
+        Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent = new Intent(Intent.ACTION_SENDTO, smsUri);
+            intent.setPackage(Telephony.Sms.getDefaultSmsPackage(context));
+        } else {
+            intent = new Intent(Intent.ACTION_VIEW, smsUri);
+        }
+        intent.putExtra("sms_body", smsBody);
 
-        sendIntent = new Intent(Intent.ACTION_SENDTO,
-                               TextUtils.isEmpty(phoneNumbers) ? null : Uri.parse("sms:" + phoneNumbers));
-
-        sendIntent.putExtra("sms_body", smsBody);
-        sendIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(sendIntent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
 
     }
 
