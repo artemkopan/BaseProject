@@ -478,6 +478,8 @@ public class Router {
                 fragmentTransaction.addToBackStack(tag);
             }
 
+            fragmentTransaction.setAllowOptimization(true);
+
             return fragmentTransaction;
         }
     }

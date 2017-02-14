@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
@@ -130,14 +131,35 @@ public class TransitionHelper {
     public static void waitStartTransition(final Activity activity, final View view) {
         if (!(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) || activity == null)
             return;
-        activity.postponeEnterTransition();
+        ActivityCompat.postponeEnterTransition(activity);
         view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 if (view.getViewTreeObserver().isAlive()) {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
                 }
-                activity.startPostponedEnterTransition();
+                ActivityCompat.startPostponedEnterTransition(activity);
+                return true;
+            }
+        });
+    }
+
+    public static void waitStartTransition(final Fragment fragment) {
+        if (fragment == null)
+            return;
+        final View decor = fragment.getView();
+        waitStartTransition(fragment, decor);
+    }
+
+    public static void waitStartTransition(final Fragment fragment, final View view) {
+        fragment.postponeEnterTransition();
+        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                if (view.getViewTreeObserver().isAlive()) {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);
+                }
+                fragment.startPostponedEnterTransition();
                 return true;
             }
         });
