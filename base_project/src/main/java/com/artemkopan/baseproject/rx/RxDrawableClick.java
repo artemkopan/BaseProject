@@ -5,9 +5,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
 
+import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 import com.artemkopan.baseproject.utils.ViewUtils;
 import com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition;
-import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
@@ -36,13 +36,13 @@ public class RxDrawableClick implements ObservableOnSubscribe<TextView> {
         this.pos = pos;
     }
 
-    public static Observable<TextView> create(TextView view, @DrawablePosition int pos, PublishRelay<Object>
+    public static Observable<TextView> create(TextView view, @DrawablePosition int pos, Observable<RxLifeCycle>
             mDestroySubject) {
         return create(view, pos, mDestroySubject, TIME_DELAY);
     }
 
     public static Observable<TextView> create(TextView view, @DrawablePosition int pos,
-                                              PublishRelay<Object> mDestroySubject,
+                                              Observable<RxLifeCycle> mDestroySubject,
                                               int milliseconds) {
         if (view == null) return Observable.empty();
 

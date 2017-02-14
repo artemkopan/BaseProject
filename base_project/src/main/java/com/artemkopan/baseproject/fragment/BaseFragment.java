@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.internal.UiInterface;
 import com.artemkopan.baseproject.internal.UiManager;
+import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 import com.artemkopan.baseproject.presenter.BasePresenter;
 import com.artemkopan.baseproject.presenter.MvpView;
 import com.jakewharton.rxrelay2.PublishRelay;
@@ -24,6 +25,7 @@ import com.jakewharton.rxrelay2.PublishRelay;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Unbinder;
+import io.reactivex.Observable;
 
 public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView> extends Fragment
         implements MvpView, UiInterface {
@@ -112,8 +114,18 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
     }
 
     @Override
-    public PublishRelay<Object> getDestroySubject() {
-        return mUiManager.getDestroySubject();
+    public PublishRelay<RxLifeCycle> getRxLifeCycleSubject() {
+        return mUiManager.getRxLifeCycleSubject();
+    }
+
+    @Override
+    public Observable<RxLifeCycle> getOnDestroySubject() {
+        return mUiManager.getOnDestroySubject();
+    }
+
+    @Override
+    public Observable<RxLifeCycle> getOnDestroyViewSubject() {
+        return mUiManager.getOnDestroyViewSubject();
     }
 
     @Override

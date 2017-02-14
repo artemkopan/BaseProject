@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
-import com.jakewharton.rxrelay2.PublishRelay;
+import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -27,7 +27,7 @@ public class RxTextWatcher implements ObservableOnSubscribe<CharSequence> {
         this.view = view;
     }
 
-    public static Observable<CharSequence> create(TextView view, PublishRelay<Object> mDestroySubject) {
+    public static Observable<CharSequence> create(TextView view, Observable<RxLifeCycle> mDestroySubject) {
         return Observable.create(new RxTextWatcher(view)).takeUntil(mDestroySubject);
     }
 

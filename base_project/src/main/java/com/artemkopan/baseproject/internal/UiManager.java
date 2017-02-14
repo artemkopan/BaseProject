@@ -18,6 +18,7 @@ import com.jakewharton.rxrelay2.PublishRelay;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Unbinder;
+import io.reactivex.Observable;
 
 /**
  * Created by Artem Kopan for jabrool
@@ -44,7 +45,11 @@ public interface UiManager {
 
     void onDestroy();
 
-    PublishRelay<Object> getDestroySubject();
+    PublishRelay<RxLifeCycle> getRxLifeCycleSubject();
+
+    Observable<RxLifeCycle> getOnDestroySubject();
+
+    Observable<RxLifeCycle> getOnDestroyViewSubject();
 
     /**
      * If you use custom implementation {@link #onCreateView(LayoutInflater, ViewGroup, Activity, Fragment)}
@@ -113,6 +118,11 @@ public interface UiManager {
      * Set color for status bar with delay. Work only for api21+.
      */
     void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit);
+
+    enum RxLifeCycle {
+        ON_DESTROY,
+        ON_DESTROY_VIEW
+    }
 
     class Factory {
 

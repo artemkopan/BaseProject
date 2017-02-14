@@ -3,6 +3,7 @@ package com.artemkopan.baseproject.rx;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 
+import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 import com.jakewharton.rxrelay2.PublishRelay;
 
 import io.reactivex.Observable;
@@ -26,7 +27,7 @@ public class RxFocusChange implements ObservableOnSubscribe<View> {
         this.view = view;
     }
 
-    public static Observable<View> create(View view, PublishRelay<Object> mDestroySubject) {
+    public static Observable<View> create(View view, Observable<RxLifeCycle> mDestroySubject) {
         return Observable.create(new RxFocusChange(view)).takeUntil(mDestroySubject);
     }
 

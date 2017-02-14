@@ -5,7 +5,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
+import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 import com.jakewharton.rxrelay2.PublishRelay;
+
+import io.reactivex.Observable;
 
 /**
  * Created by Artem Kopan for jabrool
@@ -16,7 +19,11 @@ public interface UiInterface {
 
     FragmentActivity getBaseActivity();
 
-    PublishRelay<Object> getDestroySubject();
+    PublishRelay<RxLifeCycle> getRxLifeCycleSubject();
+
+    Observable<RxLifeCycle> getOnDestroySubject();
+
+    Observable<RxLifeCycle> getOnDestroyViewSubject();
 
     FragmentManager getSupportFragmentManager();
 

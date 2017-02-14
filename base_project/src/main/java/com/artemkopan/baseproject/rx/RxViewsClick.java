@@ -3,7 +3,7 @@ package com.artemkopan.baseproject.rx;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.jakewharton.rxrelay2.PublishRelay;
+import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
@@ -28,11 +28,11 @@ public class RxViewsClick implements ObservableOnSubscribe<View> {
         mViewWeak = new WeakReference<>(view);
     }
 
-    public static Observable<View> create(PublishRelay<Object> mDestroySubject, View... views) {
+    public static Observable<View> create(Observable<RxLifeCycle> mDestroySubject, View... views) {
         return create(mDestroySubject, RxViewClick.TIME_DELAY, views);
     }
 
-    public static Observable<View> create(PublishRelay<Object> mDestroySubject, int milliseconds, View... views) {
+    public static Observable<View> create(Observable<RxLifeCycle> mDestroySubject, int milliseconds, View... views) {
         if (views == null || views.length == 0) return Observable.empty();
 
         return Observable.create(new RxViewsClick(views))

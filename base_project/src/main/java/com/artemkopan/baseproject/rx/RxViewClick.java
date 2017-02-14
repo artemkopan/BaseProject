@@ -3,6 +3,7 @@ package com.artemkopan.baseproject.rx;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.lang.ref.WeakReference;
@@ -31,11 +32,11 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
         mViewWeak = new WeakReference<>(view);
     }
 
-    public static Observable<View> create(View view, PublishRelay<Object> mDestroySubject) {
+    public static Observable<View> create(View view, Observable<RxLifeCycle> mDestroySubject) {
         return create(view, mDestroySubject, TIME_DELAY);
     }
 
-    public static Observable<View> create(View view, PublishRelay<Object> mDestroySubject, int milliseconds) {
+    public static Observable<View> create(View view, Observable<RxLifeCycle> mDestroySubject, int milliseconds) {
         if (view == null) return Observable.empty();
 
         return Observable.create(new RxViewClick(view))
@@ -43,11 +44,11 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
                          .throttleFirst(milliseconds, TimeUnit.MILLISECONDS);
     }
 
-    public static PublishRelay<View> create(Consumer<View> onNext, PublishRelay<Object> mDestroySubject) {
+    public static PublishRelay<View> create(Consumer<View> onNext, Observable<RxLifeCycle> mDestroySubject) {
         return create(onNext, mDestroySubject, TIME_DELAY);
     }
 
-    public static PublishRelay<View> create(Consumer<View> onNext, PublishRelay<Object> mDestroySubject, int millis) {
+    public static PublishRelay<View> create(Consumer<View> onNext, Observable<RxLifeCycle> mDestroySubject, int millis) {
         PublishRelay<View> publishSubject = PublishRelay.create();
         publishSubject
                 .throttleFirst(millis, TimeUnit.MILLISECONDS)

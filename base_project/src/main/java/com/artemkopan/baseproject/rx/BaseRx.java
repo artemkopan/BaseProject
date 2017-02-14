@@ -1,6 +1,6 @@
 package com.artemkopan.baseproject.rx;
 
-import com.jakewharton.rxrelay2.PublishRelay;
+import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 
 import org.reactivestreams.Publisher;
 
@@ -20,9 +20,9 @@ public class BaseRx {
 
     public static final Object TRIGGER = new Object();
     private static final int DEFAULT_DELAY = 1000;
-    protected final PublishRelay<Object> mDestroySubject;
+    protected final Observable<RxLifeCycle> mDestroySubject;
 
-    public BaseRx(PublishRelay<Object> destroySubject) {
+    public BaseRx(Observable<RxLifeCycle> destroySubject) {
         mDestroySubject = destroySubject;
     }
 
@@ -65,10 +65,6 @@ public class BaseRx {
                                            });
             }
         };
-    }
-
-    public PublishRelay<Object> getDestroySubject() {
-        return mDestroySubject;
     }
 
     public <T> ObservableTransformer<T, T> applyLifecycle() {

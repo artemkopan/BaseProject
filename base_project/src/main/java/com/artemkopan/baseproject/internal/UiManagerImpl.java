@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
-import com.artemkopan.baseproject.rx.BaseRx;
 import com.artemkopan.baseproject.utils.ExtraUtils;
 import com.artemkopan.baseproject.utils.Log;
 import com.jakewharton.rxrelay2.PublishRelay;
@@ -32,6 +31,7 @@ import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 
 import static butterknife.ButterKnife.findById;
 import static com.artemkopan.baseproject.utils.ObjectUtils.castObject;
@@ -44,8 +44,22 @@ import static com.artemkopan.baseproject.utils.ObjectUtils.castObject;
 @SuppressWarnings("WeakerAccess")
 public final class UiManagerImpl implements UiManager {
 
+    private static final Predicate<RxLifeCycle> ON_DESTROY_FILTER = new Predicate<RxLifeCycle>() {
+        @Override
+        public boolean test(RxLifeCycle rxLifeCycle) throws Exception {
+            return rxLifeCycle == RxLifeCycle.ON_DESTROY;
+        }
+    };
+
+    private static final Predicate<RxLifeCycle> ON_DESTROY_VIEW_FILTER = new Predicate<RxLifeCycle>() {
+        @Override
+        public boolean test(RxLifeCycle rxLifeCycle) throws Exception {
+            return rxLifeCycle == RxLifeCycle.ON_DESTROY_VIEW;
+        }
+    };
+
     private final UiInterface mUiInterface;
-    public PublishRelay<Object> mDestroySubject;
+    public PublishRelay<RxLifeCycle> mRxLifeCycle;
     private WeakReference<Toolbar> mToolbarReference;
     private Unbinder mUnbinder;
 
@@ -55,7 +69,7 @@ public final class UiManagerImpl implements UiManager {
 
     @Override
     public void onCreate() {
-        mDestroySubject = PublishRelay.create();
+        mRxLifeCycle = PublishRelay.create();
     }
 
     @Override
@@ -75,6 +89,7 @@ public final class UiManagerImpl implements UiManager {
 
     @Override
     public void onDestroyView() {
+        mRxLifeCycle.accept(RxLifeCycle.ON_DESTROY_VIEW);
         if (mUnbinder != null) {
             mUnbinder.unbind();
         }
@@ -82,7 +97,7 @@ public final class UiManagerImpl implements UiManager {
 
     @Override
     public void onDestroy() {
-        mDestroySubject.accept(BaseRx.TRIGGER);
+        mRxLifeCycle.accept(RxLifeCycle.ON_DESTROY);
     }
 
     @Override
@@ -91,8 +106,18 @@ public final class UiManagerImpl implements UiManager {
     }
 
     @Override
-    public PublishRelay<Object> getDestroySubject() {
-        return mDestroySubject;
+    public PublishRelay<RxLifeCycle> getRxLifeCycleSubject() {
+        return mRxLifeCycle;
+    }
+
+    @Override
+    public Observable<RxLifeCycle> getOnDestroySubject() {
+        return mRxLifeCycle.filter(ON_DESTROY_FILTER);
+    }
+
+    @Override
+    public Observable<RxLifeCycle> getOnDestroyViewSubject() {
+        return mRxLifeCycle.filter(ON_DESTROY_VIEW_FILTER);
     }
 
     /**
@@ -240,7 +265,7 @@ public final class UiManagerImpl implements UiManager {
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (ExtraUtils.postLollipop()) {
             Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
-                      .takeUntil(mDestroySubject)
+                      .takeUntil(mRxLifeCycle)
                       .subscribe(new Consumer<Long>() {
                           @Override
                           public void accept(Long aLong) throws Exception {
