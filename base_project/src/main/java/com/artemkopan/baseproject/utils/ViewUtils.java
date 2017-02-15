@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.Px;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,10 +26,10 @@ import java.lang.annotation.RetentionPolicy;
 
 import butterknife.ButterKnife;
 
-import static com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition.DRAWABLE_BOTTOM;
-import static com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition.DRAWABLE_LEFT;
-import static com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition.DRAWABLE_RIGHT;
-import static com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition.DRAWABLE_TOP;
+import static com.artemkopan.baseproject.utils.ViewUtils.DrawableIndex.DRAWABLE_BOTTOM;
+import static com.artemkopan.baseproject.utils.ViewUtils.DrawableIndex.DRAWABLE_LEFT;
+import static com.artemkopan.baseproject.utils.ViewUtils.DrawableIndex.DRAWABLE_RIGHT;
+import static com.artemkopan.baseproject.utils.ViewUtils.DrawableIndex.DRAWABLE_TOP;
 
 public final class ViewUtils {
 
@@ -183,12 +186,66 @@ public final class ViewUtils {
      * because it is work only if event action == {@link MotionEvent#ACTION_UP}
      * </p>
      */
-    public static boolean onDrawableClick(MotionEvent event, TextView view, @DrawablePosition int pos) {
+    public static boolean onDrawableClick(MotionEvent event, TextView view, @DrawableIndex int pos, @Px int fuzz) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            int drawableWidth = view.getCompoundDrawables()[pos].getBounds().width();
-            if (event.getRawX() >= (view.getRight() - drawableWidth)) {
-                return true;
+            Drawable drawable = view.getCompoundDrawables()[pos];
+
+            if (drawable == null) {
+                Log.e("Drawable is null. Please set another position");
+                return false;
             }
+
+            final int x = (int) event.getX();
+            final int y = (int) event.getY();
+            final Rect bounds = drawable.getBounds();
+
+            switch (pos) {
+                case DRAWABLE_LEFT:
+                    if (x >= (view.getPaddingLeft() - fuzz)) {
+                        if (x <= (view.getPaddingLeft() + bounds.width() + fuzz)) {
+                            if (y >= (view.getPaddingTop() - fuzz)) {
+                                if (y <= (view.getHeight() - view.getPaddingBottom() + fuzz)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case DRAWABLE_TOP:
+                    if (x >= (view.getPaddingLeft() - fuzz)) {
+                        if (x <= (view.getWidth() - view.getPaddingRight() + fuzz)) {
+                            if (y >= (view.getPaddingTop() - fuzz)) {
+                                if (y <= (view.getPaddingTop() + bounds.height() + fuzz)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case DRAWABLE_RIGHT:
+                    if (x >= (view.getWidth() - view.getPaddingRight() - bounds.width() - fuzz)) {
+                        if (x <= (view.getWidth() - view.getPaddingRight() + fuzz)) {
+                            if (y >= (view.getPaddingTop() - fuzz)) {
+                                if (y <= (view.getHeight() - view.getPaddingBottom() + fuzz)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case DRAWABLE_BOTTOM:
+                    if (x >= (view.getPaddingLeft() - fuzz)) {
+                        if (x <= (view.getWidth() - view.getPaddingRight() + fuzz)) {
+                            if (y >= (view.getHeight() - view.getPaddingBottom() - bounds.height() - fuzz)) {
+                                if (y <= (view.getHeight() - view.getPaddingBottom() + fuzz)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+
         }
         return false;
     }
@@ -214,7 +271,7 @@ public final class ViewUtils {
 
     @IntDef({DRAWABLE_LEFT, DRAWABLE_TOP, DRAWABLE_RIGHT, DRAWABLE_BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface DrawablePosition {
+    public @interface DrawableIndex {
 
         int DRAWABLE_LEFT = 0;
         int DRAWABLE_TOP = 1;

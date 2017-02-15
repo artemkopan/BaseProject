@@ -83,9 +83,9 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
 
             Fragment fragment = fragmentManager.findFragmentByTag(str);
 
-            if (fragment != null
-                && fragment instanceof BaseFragment
-                && !((BaseFragment) fragment).onBackPressed()) {
+            if (fragment != null &&
+                fragment instanceof BaseFragment &&
+                !((BaseFragment) fragment).onBackPressed()) {
                 return;
             } else {
                 getSupportFragmentManager().popBackStackImmediate();

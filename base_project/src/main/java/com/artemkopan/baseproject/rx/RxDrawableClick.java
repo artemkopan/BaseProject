@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 import com.artemkopan.baseproject.utils.ViewUtils;
-import com.artemkopan.baseproject.utils.ViewUtils.DrawablePosition;
+import com.artemkopan.baseproject.utils.ViewUtils.DrawableIndex;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
@@ -29,19 +29,19 @@ import static com.artemkopan.baseproject.rx.RxViewClick.TIME_DELAY;
 public class RxDrawableClick implements ObservableOnSubscribe<TextView> {
 
     private WeakReference<TextView> viewWeak;
-    private @DrawablePosition int pos;
+    private @DrawableIndex int pos;
 
-    public RxDrawableClick(TextView textView, @DrawablePosition int pos) {
+    public RxDrawableClick(TextView textView, @DrawableIndex int pos) {
         viewWeak = new WeakReference<>(textView);
         this.pos = pos;
     }
 
-    public static Observable<TextView> create(TextView view, @DrawablePosition int pos, Observable<RxLifeCycle>
+    public static Observable<TextView> create(TextView view, @DrawableIndex int pos, Observable<RxLifeCycle>
             mDestroySubject) {
         return create(view, pos, mDestroySubject, TIME_DELAY);
     }
 
-    public static Observable<TextView> create(TextView view, @DrawablePosition int pos,
+    public static Observable<TextView> create(TextView view, @DrawableIndex int pos,
                                               Observable<RxLifeCycle> mDestroySubject,
                                               int milliseconds) {
         if (view == null) return Observable.empty();
@@ -58,7 +58,7 @@ public class RxDrawableClick implements ObservableOnSubscribe<TextView> {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (!subscriber.isDisposed() && viewWeak.get() != null) {
-                    if (ViewUtils.onDrawableClick(event, viewWeak.get(), pos)) {
+                    if (ViewUtils.onDrawableClick(event, viewWeak.get(), pos, 0)) {
                         subscriber.onNext(viewWeak.get());
                         return true;
                     }
