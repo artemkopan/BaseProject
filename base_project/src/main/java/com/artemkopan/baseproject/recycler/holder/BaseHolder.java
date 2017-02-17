@@ -15,7 +15,7 @@ public abstract class BaseHolder<M> extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public abstract void bind(Context context, M item);
+    public abstract void bind(Context context, M item, int position);
 
     public abstract void clear();
 
