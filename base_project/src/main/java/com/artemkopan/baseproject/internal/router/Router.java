@@ -54,6 +54,11 @@ public class Router {
         return new ActivityBuilder(navigateClass);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T extends Activity> ActivityBuilder activity(Intent intent, Class<T> navigateClass) {
+        return new ActivityBuilder(intent, navigateClass);
+    }
+
     public enum Method {
         ADD, REPLACE, SWITCH
     }
@@ -82,6 +87,11 @@ public class Router {
 
         public ActivityBuilder(Class<T> navigateClass) {
             intent = new Intent();
+            this.navigateClass = navigateClass;
+        }
+
+        public ActivityBuilder(Intent intent, Class<T> navigateClass) {
+            this.intent = intent;
             this.navigateClass = navigateClass;
         }
 
@@ -119,6 +129,38 @@ public class Router {
          * @see Intent#FLAG_RECEIVER_REGISTERED_ONLY
          */
         public ActivityBuilder setFlags(int flags) {
+            intent.setFlags(flags);
+            return this;
+        }
+
+        /**
+         * @see Intent#FLAG_GRANT_READ_URI_PERMISSION
+         * @see Intent#FLAG_GRANT_WRITE_URI_PERMISSION
+         * @see Intent#FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+         * @see Intent#FLAG_GRANT_PREFIX_URI_PERMISSION
+         * @see Intent#FLAG_DEBUG_LOG_RESOLUTION
+         * @see Intent#FLAG_FROM_BACKGROUND
+         * @see Intent#FLAG_ACTIVITY_BROUGHT_TO_FRONT
+         * @see Intent#FLAG_ACTIVITY_CLEAR_TASK
+         * @see Intent#FLAG_ACTIVITY_CLEAR_TOP
+         * @see Intent#FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+         * @see Intent#FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+         * @see Intent#FLAG_ACTIVITY_FORWARD_RESULT
+         * @see Intent#FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
+         * @see Intent#FLAG_ACTIVITY_MULTIPLE_TASK
+         * @see Intent#FLAG_ACTIVITY_NEW_DOCUMENT
+         * @see Intent#FLAG_ACTIVITY_NEW_TASK
+         * @see Intent#FLAG_ACTIVITY_NO_ANIMATION
+         * @see Intent#FLAG_ACTIVITY_NO_HISTORY
+         * @see Intent#FLAG_ACTIVITY_NO_USER_ACTION
+         * @see Intent#FLAG_ACTIVITY_PREVIOUS_IS_TOP
+         * @see Intent#FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+         * @see Intent#FLAG_ACTIVITY_REORDER_TO_FRONT
+         * @see Intent#FLAG_ACTIVITY_SINGLE_TOP
+         * @see Intent#FLAG_ACTIVITY_TASK_ON_HOME
+         * @see Intent#FLAG_RECEIVER_REGISTERED_ONLY
+         */
+        public ActivityBuilder addFlags(int flags) {
             intent.addFlags(flags);
             return this;
         }
@@ -197,6 +239,15 @@ public class Router {
         public ActivityBuilder putCharSequenceArrayListExtra(String name, ArrayList<CharSequence> value) {
             intent.putCharSequenceArrayListExtra(name, value);
             return this;
+        }
+
+        public Intent intent() {
+            return intent;
+        }
+
+        public Intent intentWithClass(Context context) {
+            intent.setClass(context, navigateClass);
+            return intent;
         }
 
         public void start(Context context) {
