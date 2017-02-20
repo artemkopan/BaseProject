@@ -1,7 +1,9 @@
 package com.artemkopan.baseproject.recycler.decoration;
 
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.State;
 import android.view.View;
 
 public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
@@ -30,5 +32,10 @@ public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         if (parent.getChildLayoutPosition(view) == 0 && mUseFirstTopSpace) {
             outRect.top = mSpace;
         }
+    }
+
+    @Override
+    public void onDraw(Canvas c, RecyclerView parent, State state) {
+        super.onDraw(c, parent, state);
     }
 }

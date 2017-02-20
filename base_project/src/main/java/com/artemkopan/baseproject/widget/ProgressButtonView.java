@@ -3,54 +3,36 @@ package com.artemkopan.baseproject.widget;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import android.util.Property;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
+import android.view.ViewAnimationUtils;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.Log;
-import com.artemkopan.baseproject.utils.ViewUtils;
 import com.artemkopan.baseproject.utils.animations.AnimUtils;
+import com.artemkopan.baseproject.utils.transitions.CircularRevealTransition;
 import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
-
-import static com.artemkopan.baseproject.utils.ExtraUtils.calculateFactorValue;
 
 public class ProgressButtonView extends AppCompatButton {
 
     private static final int ALPHA_MAX = 255, ALPHA_MIN = 0;
 
-    private CircularProgressDrawable mProgressDrawable;
-    private Rect mBackgroundBounds, mProgressBounds;
-    private ObjectAnimator mAnimator;
-    private Interpolator mAccelerateInterpolator;
-    private Interpolator mDecelerateInterpolator;
-    private int mProgressSize, mProgressPadding;
-    private boolean mShowProgress, mDrawProgress;
-
-    private Property<ProgressButtonView, Float> mBackgroundProperty =
-            new Property<ProgressButtonView, Float>(Float.class, "background") {
-                @Override
-                public Float get(ProgressButtonView object) {
-                    return null;
-                }
-
-                @Override
-                public void set(ProgressButtonView object, Float value) {
-                    object.animate(value);
-                }
-            };
+    private CircularProgressDrawable progressDrawable;
+    private ValueAnimator backgroundAnimator;
+    private int progressSize, progressPadding;
+    private boolean showProgress, drawProgress;
 
     public ProgressButtonView(Context context) {
         this(context, null);
@@ -79,19 +61,18 @@ public class ProgressButtonView extends AppCompatButton {
                         R.styleable.ProgressButtonView_pbv_progressBorderWidth,
                         getResources().getDimensionPixelSize(R.dimen.base_progress_border_width));
 
-                mProgressSize = array.getDimensionPixelSize(R.styleable.ProgressButtonView_pbv_progressSize,
-                        mProgressSize);
-                mProgressPadding = array.getDimensionPixelSize(
+                progressSize = array.getDimensionPixelSize(R.styleable.ProgressButtonView_pbv_progressSize,
+                                                           progressSize);
+                progressPadding = array.getDimensionPixelSize(
                         R.styleable.ProgressButtonView_pbv_progressPadding,
-                        mProgressPadding);
+                        progressPadding);
             } finally {
                 array.recycle();
             }
         }
 
-        mProgressDrawable = new CircularProgressDrawable(color, borderWidth);
-        mProgressDrawable.setCallback(this);
-
+        progressDrawable = new CircularProgressDrawable(color, borderWidth);
+        progressDrawable.setCallback(this);
     }
 
     @Override
@@ -99,85 +80,87 @@ public class ProgressButtonView extends AppCompatButton {
         if (changed) {
             int w = getWidth(), h = getHeight();
 
-            if (mProgressSize == 0) mProgressSize = w > h ? h : w;
+            if (progressSize == 0) progressSize = w > h ? h : w;
 
-            int sizeHalfProgress = (mProgressSize - mProgressPadding) / 2;
+            int sizeHalfProgress = (progressSize - progressPadding) / 2;
 
-            mProgressDrawable.setBounds(
-                    w / 2 - sizeHalfProgress, h / 2 - sizeHalfProgress,
-                    w / 2 + sizeHalfProgress, h / 2 + sizeHalfProgress);
-
-            mProgressBounds = mProgressDrawable.getBounds();
+            progressDrawable.setBounds(w / 2 - sizeHalfProgress, h / 2 - sizeHalfProgress,
+                                       w / 2 + sizeHalfProgress, h / 2 + sizeHalfProgress);
         }
     }
 
-    public void showProgress(boolean show) {
+    public void showProgress(final boolean show) {
+        showProgress(show, true);
+    }
+
+    public void showProgress(final boolean show, boolean animate) {
         Log.d("showProgress: is show " + show);
-        if (show == mShowProgress) {
+        if (show == showProgress) {
             return;
         }
 
-        mShowProgress = show;
+        showProgress = show;
         setEnabled(!show);
 
-        if (!ViewUtils.checkSize(this) || mProgressBounds == null || getBackground() == null) {
-            if (mShowProgress) {
-                mProgressDrawable.setAlpha(ALPHA_MAX);
-                mProgressDrawable.start();
-            } else {
-                mProgressDrawable.setAlpha(ALPHA_MIN);
-                mProgressDrawable.stop();
-            }
-            if (getBackground() != null) {
-                getBackground().setAlpha(mShowProgress ? ALPHA_MIN : ALPHA_MAX);
-            }
-            invalidate();
-        } else {
-            initAnimator();
-            mAnimator.setInterpolator(show ? mAccelerateInterpolator : mDecelerateInterpolator);
-            mAnimator.start();
+        if (animate && getBackground() != null) {
+            showProgressAnim();
+            return;
         }
+
+        showProgressWithoutAnim();
     }
 
     public boolean isShowProgress() {
-        return mShowProgress;
+        return showProgress;
     }
 
-    private void initAnimator() {
-
-        if (mAnimator == null) {
-            mAnimator = ObjectAnimator.ofFloat(this, mBackgroundProperty, 0, 1);
-            mAnimator.setDuration(AnimUtils.VERY_FAST_DURATION);
-            mAnimator.addListener(new AnimatorListenerAdapter() {
+    private void showProgressAnim() {
+        if (backgroundAnimator == null) {
+            backgroundAnimator = ObjectAnimator.ofInt(255, 0);
+            backgroundAnimator.setDuration(AnimUtils.FAST_DURATION);
+            backgroundAnimator.setInterpolator(new LinearOutSlowInInterpolator());
+            backgroundAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (mShowProgress) {
-                        mProgressDrawable.setAlpha(ALPHA_MAX);
-                        mProgressDrawable.start();
-                        mDrawProgress = true;
-                    }
-                }
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int value = (int) animation.getAnimatedValue();
+                    getBackground().setAlpha(value);
 
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mDrawProgress = false;
-                    mProgressDrawable.stop();
-                    mProgressDrawable.setAlpha(0);
-
-                    if (mBackgroundBounds == null && getBackground() != null) {
-                        mBackgroundBounds = new Rect(getBackground().getBounds());
+                    if ((showProgress && value == 0) ||
+                        (!showProgress && value == 255)) {
+                        showProgressWithoutAnim();
                     }
                 }
             });
+            backgroundAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    showProgressWithoutAnim();
+                }
+            });
         }
-        if (mAccelerateInterpolator == null) mAccelerateInterpolator = new AccelerateInterpolator();
-        if (mDecelerateInterpolator == null) mDecelerateInterpolator = new DecelerateInterpolator();
+
+        if (showProgress) {
+            backgroundAnimator.start();
+        } else {
+            backgroundAnimator.reverse();
+        }
+    }
+
+    private void showProgressWithoutAnim() {
+        if (showProgress) {
+            drawProgress = true;
+            progressDrawable.start();
+        } else {
+            drawProgress = false;
+            progressDrawable.stop();
+        }
+        invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mShowProgress && mDrawProgress) {
-            mProgressDrawable.draw(canvas);
+        if (showProgress && drawProgress) {
+            progressDrawable.draw(canvas);
         } else {
             super.onDraw(canvas);
         }
@@ -185,31 +168,7 @@ public class ProgressButtonView extends AppCompatButton {
 
     @Override
     protected boolean verifyDrawable(@NonNull Drawable who) {
-        return who == mProgressDrawable || super.verifyDrawable(who);
-    }
-
-    private void animate(float factor) {
-        Rect from;
-        Rect to;
-        int alpha;
-
-        if (mShowProgress) {
-            from = mBackgroundBounds;
-            to = mProgressBounds;
-            alpha = (int) calculateFactorValue(factor, ALPHA_MAX, ALPHA_MIN);
-        } else {
-            to = mBackgroundBounds;
-            from = mProgressBounds;
-            alpha = (int) calculateFactorValue(factor, ALPHA_MIN, ALPHA_MAX);
-        }
-
-        if (from == null || to == null || getBackground() == null) return;
-
-        getBackground().setAlpha(alpha);
-        getBackground().setBounds((int) calculateFactorValue(factor, from.left, to.left),
-                (int) calculateFactorValue(factor, from.top, to.top),
-                (int) calculateFactorValue(factor, from.right, to.right),
-                (int) calculateFactorValue(factor, from.bottom, to.bottom));
+        return who == progressDrawable || super.verifyDrawable(who);
     }
 
     @Override
@@ -218,8 +177,8 @@ public class ProgressButtonView extends AppCompatButton {
         Parcelable superState = super.onSaveInstanceState();
 
         SavedState ss = new SavedState(superState);
-        ss.showProgress = mShowProgress;
-        ss.drawProgress = mDrawProgress;
+        ss.showProgress = showProgress;
+        ss.drawProgress = drawProgress;
         return ss;
     }
 
@@ -228,7 +187,7 @@ public class ProgressButtonView extends AppCompatButton {
         if (state instanceof SavedState) {
             SavedState ss = (SavedState) state;
             super.onRestoreInstanceState(ss.getSuperState());
-            mDrawProgress = ss.drawProgress;
+            drawProgress = ss.drawProgress;
             showProgress(ss.showProgress);
         } else {
             super.onRestoreInstanceState(state);
@@ -237,19 +196,7 @@ public class ProgressButtonView extends AppCompatButton {
 
     static class SavedState extends BaseSavedState {
 
-        //required field that makes Parcelables from a Parcel
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
-        boolean showProgress;
-        boolean drawProgress;
+        boolean showProgress, drawProgress;
 
         SavedState(Parcel source) {
             super(source);
@@ -267,6 +214,18 @@ public class ProgressButtonView extends AppCompatButton {
             dest.writeByte(this.showProgress ? (byte) 1 : (byte) 0);
             dest.writeByte(this.drawProgress ? (byte) 1 : (byte) 0);
         }
+
+        //required field that makes Parcelables from a Parcel
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 
 }
