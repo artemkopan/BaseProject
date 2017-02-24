@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
 public final class StringUtils {
 
@@ -263,7 +264,7 @@ public final class StringUtils {
      */
     @TargetApi(VERSION_CODES.N)
     public static CharSequence fromHtml(String value) {
-        return fromHtml(value, FROM_HTML_MODE_COMPACT);
+        return fromHtml(value, FROM_HTML_MODE_LEGACY);
     }
 
     public static CharSequence fromHtml(String value, int flags) {

@@ -166,9 +166,11 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         return getItemCount() == 0;
     }
 
+    //// TODO: 24.02.17 remove Model...Because when item click it get copy of model...not actual
     protected void callOnItemClick(View view, int pos, M object, View... transactionViews) {
         if (mOnItemClickListener != null && pos >= 0) {
-            mOnItemClickListener.onItemClickListener(view, pos, object, transactionViews);
+            //// TODO: 24.02.17 right solution getItemByPos(pos)
+            mOnItemClickListener.onItemClickListener(view, pos, getItemByPos(pos), transactionViews);
         }
     }
 
