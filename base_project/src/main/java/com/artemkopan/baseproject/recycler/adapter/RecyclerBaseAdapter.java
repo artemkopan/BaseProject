@@ -2,10 +2,8 @@ package com.artemkopan.baseproject.recycler.adapter;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
 
-import com.artemkopan.baseproject.recycler.holder.BaseHolder;
 import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
 import com.artemkopan.baseproject.utils.Log;
 
@@ -14,12 +12,10 @@ import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> {
+public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder> extends RecyclerAdapter<M, VH> {
 
     private static final String TAG = "RecyclerBaseAdapter";
     protected List<M> mList;
-    private OnItemClickListener<M> mOnItemClickListener;
 
     public RecyclerBaseAdapter() {
     }
@@ -31,13 +27,6 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     @Override
     public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
 
-    @Override
-    public void onBindViewHolder(VH holder, int position) {
-        onBindViewHolder(holder, getItemByPos(position), position);
-    }
-
-    public abstract void onBindViewHolder(VH holder, M model, int position);
-
     @Nullable
     public M removeItem(Object model) {
         int index = mList.indexOf(model);
@@ -46,10 +35,6 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         } else {
             return null;
         }
-    }
-
-    public void setOnItemClickListener(OnItemClickListener<M> onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
     }
 
     public M removeItem(int position) {
@@ -139,14 +124,6 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         setList(new ArrayList<M>());
     }
 
-    @Override
-    public void onViewRecycled(VH holder) {
-        super.onViewRecycled(holder);
-        if (holder != null && holder instanceof BaseHolder) {
-            ((BaseHolder) holder).clear();
-        }
-    }
-
     /***
      * Find item in list;
      *
@@ -164,14 +141,6 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
 
     public boolean isEmpty() {
         return getItemCount() == 0;
-    }
-
-    //// TODO: 24.02.17 remove Model...Because when item click it get copy of model...not actual
-    protected void callOnItemClick(View view, int pos, M object, View... transactionViews) {
-        if (mOnItemClickListener != null && pos >= 0) {
-            //// TODO: 24.02.17 right solution getItemByPos(pos)
-            mOnItemClickListener.onItemClickListener(view, pos, getItemByPos(pos), transactionViews);
-        }
     }
 
 }

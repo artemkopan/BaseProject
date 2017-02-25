@@ -1,7 +1,6 @@
 package com.artemkopan.baseproject.widget.drawable;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
@@ -29,40 +28,16 @@ public class CircularProgressDrawable extends Drawable
     private static final int SWEEP_ANIMATOR_DURATION = 600;
     private static final int MIN_SWEEP_ANGLE = 30;
     private final RectF fBounds = new RectF();
-    private Paint mPaint;
+
     private ObjectAnimator mObjectAnimatorSweep;
     private ObjectAnimator mObjectAnimatorAngle;
     private boolean mModeAppearing;
+    private Paint mPaint;
     private float mCurrentGlobalAngleOffset;
     private float mCurrentGlobalAngle;
     private float mCurrentSweepAngle;
     private float mBorderWidth;
     private boolean mRunning;
-
-    private Property<CircularProgressDrawable, Float> mAngleProperty
-            = new Property<CircularProgressDrawable, Float>(Float.class, "angle") {
-        @Override
-        public Float get(CircularProgressDrawable object) {
-            return object.getCurrentGlobalAngle();
-        }
-
-        @Override
-        public void set(CircularProgressDrawable object, Float value) {
-            object.setCurrentGlobalAngle(value);
-        }
-    };
-    private Property<CircularProgressDrawable, Float> mSweepProperty
-            = new Property<CircularProgressDrawable, Float>(Float.class, "arc") {
-        @Override
-        public Float get(CircularProgressDrawable object) {
-            return object.getCurrentSweepAngle();
-        }
-
-        @Override
-        public void set(CircularProgressDrawable object, Float value) {
-            object.setCurrentSweepAngle(value);
-        }
-    };
 
     public CircularProgressDrawable(int color, float borderWidth) {
         mBorderWidth = borderWidth;
@@ -76,12 +51,11 @@ public class CircularProgressDrawable extends Drawable
         setupAnimations();
     }
 
-
     @Override
     public void draw(@NonNull Canvas canvas) {
+        int count = canvas.save();
         float startAngle = mCurrentGlobalAngle - mCurrentGlobalAngleOffset;
         float sweepAngle = mCurrentSweepAngle;
-
         if (!mModeAppearing) {
             startAngle = startAngle + sweepAngle;
             sweepAngle = 360 - sweepAngle - MIN_SWEEP_ANGLE;
@@ -89,24 +63,12 @@ public class CircularProgressDrawable extends Drawable
             sweepAngle += MIN_SWEEP_ANGLE;
         }
         canvas.drawArc(fBounds, startAngle, sweepAngle, false, mPaint);
+        canvas.restoreToCount(count);
     }
 
     @Override
     public void setAlpha(int alpha) {
         mPaint.setAlpha(alpha);
-    }
-
-    @Override
-    public int getAlpha() {
-        return mPaint.getAlpha();
-    }
-
-    public void setColor(@ColorInt int color) {
-        mPaint.setColor(color);
-    }
-
-    public void setStrokeWidth(int borderWidth) {
-        mPaint.setStrokeWidth(borderWidth);
     }
 
     @Override
@@ -118,9 +80,6 @@ public class CircularProgressDrawable extends Drawable
     public int getOpacity() {
         return PixelFormat.TRANSPARENT;
     }
-
-    //////////////////////////////////////////////////////////////////////////////
-    ////////////////            Animation
 
     private void toggleAppearingMode() {
         mModeAppearing = !mModeAppearing;
@@ -138,6 +97,35 @@ public class CircularProgressDrawable extends Drawable
         fBounds.bottom = bounds.bottom - mBorderWidth / 2f - .5f;
     }
 
+    //////////////////////////////////////////////////////////////////////////////
+    ////////////////            Animation
+
+    private Property<CircularProgressDrawable, Float> mAngleProperty
+            = new Property<CircularProgressDrawable, Float>(Float.class, "angle") {
+        @Override
+        public Float get(CircularProgressDrawable object) {
+            return object.getCurrentGlobalAngle();
+        }
+
+        @Override
+        public void set(CircularProgressDrawable object, Float value) {
+            object.setCurrentGlobalAngle(value);
+        }
+    };
+
+    private Property<CircularProgressDrawable, Float> mSweepProperty
+            = new Property<CircularProgressDrawable, Float>(Float.class, "arc") {
+        @Override
+        public Float get(CircularProgressDrawable object) {
+            return object.getCurrentSweepAngle();
+        }
+
+        @Override
+        public void set(CircularProgressDrawable object, Float value) {
+            object.setCurrentSweepAngle(value);
+        }
+    };
+
     private void setupAnimations() {
         mObjectAnimatorAngle = ObjectAnimator.ofFloat(this, mAngleProperty, 360f);
         mObjectAnimatorAngle.setInterpolator(ANGLE_INTERPOLATOR);
@@ -145,13 +133,27 @@ public class CircularProgressDrawable extends Drawable
         mObjectAnimatorAngle.setRepeatMode(ValueAnimator.RESTART);
         mObjectAnimatorAngle.setRepeatCount(ValueAnimator.INFINITE);
 
-        mObjectAnimatorSweep = ObjectAnimator.ofFloat(this, mSweepProperty,
-                360f - MIN_SWEEP_ANGLE * 2);
+        mObjectAnimatorSweep = ObjectAnimator.ofFloat(this, mSweepProperty, 360f - MIN_SWEEP_ANGLE * 2);
         mObjectAnimatorSweep.setInterpolator(SWEEP_INTERPOLATOR);
         mObjectAnimatorSweep.setDuration(SWEEP_ANIMATOR_DURATION);
         mObjectAnimatorSweep.setRepeatMode(ValueAnimator.RESTART);
         mObjectAnimatorSweep.setRepeatCount(ValueAnimator.INFINITE);
-        mObjectAnimatorSweep.addListener(new AnimatorListenerAdapter() {
+        mObjectAnimatorSweep.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
             @Override
             public void onAnimationRepeat(Animator animation) {
                 toggleAppearingMode();
@@ -167,6 +169,7 @@ public class CircularProgressDrawable extends Drawable
         mRunning = true;
         mObjectAnimatorAngle.start();
         mObjectAnimatorSweep.start();
+        invalidateSelf();
     }
 
     @Override
@@ -177,6 +180,7 @@ public class CircularProgressDrawable extends Drawable
         mRunning = false;
         mObjectAnimatorAngle.cancel();
         mObjectAnimatorSweep.cancel();
+        invalidateSelf();
     }
 
     @Override
@@ -184,17 +188,13 @@ public class CircularProgressDrawable extends Drawable
         return mRunning;
     }
 
-    public float getCurrentGlobalAngle() {
-        return mCurrentGlobalAngle;
-    }
-
     public void setCurrentGlobalAngle(float currentGlobalAngle) {
         mCurrentGlobalAngle = currentGlobalAngle;
         invalidateSelf();
     }
 
-    public float getCurrentSweepAngle() {
-        return mCurrentSweepAngle;
+    public float getCurrentGlobalAngle() {
+        return mCurrentGlobalAngle;
     }
 
     public void setCurrentSweepAngle(float currentSweepAngle) {
@@ -202,23 +202,17 @@ public class CircularProgressDrawable extends Drawable
         invalidateSelf();
     }
 
-    @Override
-    public int getIntrinsicHeight() {
-        //Return the vertical bounds measured, or -1 if none
-        if (fBounds.isEmpty()) {
-            return -1;
-        } else {
-            return (int) (fBounds.bottom - fBounds.top);
-        }
+    public float getCurrentSweepAngle() {
+        return mCurrentSweepAngle;
     }
 
-    @Override
-    public int getIntrinsicWidth() {
-        //Return the horizontal bounds measured, or -1 if none
-        if (fBounds.isEmpty()) {
-            return -1;
-        } else {
-            return (int) (fBounds.right - fBounds.left);
-        }
+    public void setColor(@ColorInt int color) {
+        mPaint.setColor(color);
+        invalidateSelf();
+    }
+
+    public void setStrokeWidth(float borderWidth) {
+        mPaint.setStrokeWidth(borderWidth);
+        invalidateSelf();
     }
 }

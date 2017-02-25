@@ -7,8 +7,7 @@ import android.view.View;
 
 import com.artemkopan.baseproject.activity.BaseActivity;
 import com.artemkopan.baseproject.dialog.DialogProvider;
-import com.artemkopan.baseproject.dialog.MessageDialog;
-
+import com.artemkopan.baseproject.recycler.view.ExRecyclerView;
 import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.widget.ProgressButtonView;
 
@@ -37,8 +36,9 @@ public class Test extends BaseActivity implements OnDismissListener {
 
 //        mProgressButton = (ProgressButtonView) findViewById(R.id.progress_btn);
 
+        ((ExRecyclerView) findViewById(R.id.list)).showProgress();
 
-        MessageDialog.newInstance("", "asdasdas").show(this);
+//        MessageDialog.newInstance("", "asdasdas").show(this);
 //        mCompositeDisposable.add(testObservable("Composite")
 //                        .takeUntil(mDestroySubject).subscribe());
 //

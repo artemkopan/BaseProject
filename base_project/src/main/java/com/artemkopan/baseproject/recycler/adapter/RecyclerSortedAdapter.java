@@ -3,20 +3,16 @@ package com.artemkopan.baseproject.recycler.adapter;
 import android.support.v7.util.SortedList;
 import android.support.v7.util.SortedList.Callback;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
-
-import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
 
 /**
  * Created by Artem Kopan for jabrool
  * 21.02.17
  */
 
-public abstract class RecyclerSortedAdapter<M, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class RecyclerSortedAdapter<M, VH extends RecyclerView.ViewHolder> extends RecyclerAdapter<M, VH> {
 
     private SortedList<M> list;
-    private OnItemClickListener<M> onItemClickListener;
 
     public void initList(Class<M> clazz, Callback<M> callback) {
         list = new SortedList<>(clazz, callback);
@@ -31,10 +27,6 @@ public abstract class RecyclerSortedAdapter<M, VH extends RecyclerView.ViewHolde
     }
 
     public abstract void onBindViewHolder(VH holder, M model, int position);
-
-    public void setOnItemClickListener(OnItemClickListener<M> onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
 
     public SortedList<M> getList() {
         if (list == null) throw new NullPointerException("List is null. Please call iniList() method");
@@ -75,11 +67,5 @@ public abstract class RecyclerSortedAdapter<M, VH extends RecyclerView.ViewHolde
 
     public void clear() {
         getList().clear();
-    }
-
-    protected void callOnItemClick(View view, int pos, M object, View... transactionViews) {
-        if (onItemClickListener != null && pos >= 0) {
-            onItemClickListener.onItemClickListener(view, pos, object, transactionViews);
-        }
     }
 }

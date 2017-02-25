@@ -19,6 +19,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.widget.ProgressBar;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.Log;
@@ -268,9 +269,7 @@ public class ExRecyclerView extends RecyclerView {
         }
 
         if (mDrawProgress) {
-            final int restore = c.save();
             mProgressDrawable.draw(c);
-            c.restoreToCount(restore);
         }
 
         if (mDrawText && mTextLayout != null) {
