@@ -178,6 +178,10 @@ public final class ViewUtils {
         }
     }
 
+    public static boolean onDrawableClick(MotionEvent event, TextView view, @DrawableIndex int pos, @Px int fuzz) {
+        return onDrawableClick(event, MotionEvent.ACTION_UP, view, pos, fuzz);
+    }
+
     /**
      * Handle click on drawable textView; Set listener {@link TextView#onTouchEvent(MotionEvent)} add call this method.
      * If true, then drawable was clicked;
@@ -186,8 +190,8 @@ public final class ViewUtils {
      * because it is work only if event action == {@link MotionEvent#ACTION_UP}
      * </p>
      */
-    public static boolean onDrawableClick(MotionEvent event, TextView view, @DrawableIndex int pos, @Px int fuzz) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
+    public static boolean onDrawableClick(MotionEvent event, int motionEvent, TextView view, @DrawableIndex int pos, @Px int fuzz) {
+        if (event.getAction() == motionEvent) {
             Drawable drawable = view.getCompoundDrawables()[pos];
 
             if (drawable == null) {

@@ -9,6 +9,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -152,7 +153,6 @@ public class ErrorEditText extends TextInputEditText {
         return mError;
     }
 
-
     public void setError(@Nullable CharSequence errorMessage) {
         setError(errorMessage, true);
     }
@@ -247,5 +247,13 @@ public class ErrorEditText extends TextInputEditText {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            clearFocus();
+        }
+        return super.onKeyPreIme(keyCode, event);
     }
 }
