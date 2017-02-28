@@ -68,4 +68,5 @@ public abstract class RecyclerSortedAdapter<M, VH extends RecyclerView.ViewHolde
     public void clear() {
         getList().clear();
     }
+
 }

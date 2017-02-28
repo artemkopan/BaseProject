@@ -21,9 +21,13 @@ public abstract class RecyclerAdapter<M, VH extends RecyclerView.ViewHolder> ext
         onBindViewHolder(holder, getItemByPos(position), position);
     }
 
+    public abstract void onBindViewHolder(VH holder, M model, int position);
+
     public abstract M getItemByPos(int position);
 
-    public abstract void onBindViewHolder(VH holder, M model, int position);
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
 
     public void setOnItemClickListener(OnItemClickListener<M> onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -42,6 +46,5 @@ public abstract class RecyclerAdapter<M, VH extends RecyclerView.ViewHolder> ext
             onItemClickListener.onItemClickListener(view, pos, getItemByPos(pos), transactionViews);
         }
     }
-
 
 }

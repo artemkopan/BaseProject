@@ -1,6 +1,7 @@
 package com.artemkopan.baseproject.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.artemkopan.baseproject.R;
@@ -70,6 +72,12 @@ public final class ExtraUtils {
             InputMethodManager imm = (InputMethodManager) view.getContext()
                                                               .getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        if (activity != null) {
+            activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         }
     }
 

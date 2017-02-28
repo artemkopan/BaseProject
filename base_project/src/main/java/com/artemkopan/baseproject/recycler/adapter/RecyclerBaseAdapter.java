@@ -139,8 +139,5 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         return mList != null ? mList.size() : 0;
     }
 
-    public boolean isEmpty() {
-        return getItemCount() == 0;
-    }
 
 }
