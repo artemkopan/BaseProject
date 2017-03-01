@@ -2,7 +2,6 @@ package com.artemkopan.baseproject.recycler.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.artemkopan.baseproject.recycler.holder.BaseHolder;
 import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
@@ -42,7 +41,7 @@ public abstract class RecyclerAdapter<M, VH extends RecyclerView.ViewHolder> ext
     }
 
     protected void callOnItemClick(View view, int pos, View... transactionViews) {
-        if (onItemClickListener != null && pos >= 0) {
+        if (onItemClickListener != null && pos >= 0 && pos < getItemCount()) {
             onItemClickListener.onItemClickListener(view, pos, getItemByPos(pos), transactionViews);
         }
     }
