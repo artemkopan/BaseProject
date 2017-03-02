@@ -1,6 +1,7 @@
 package com.artemkopan.baseproject.recycler.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 
 import com.artemkopan.baseproject.recycler.holder.BaseHolder;
@@ -40,9 +41,10 @@ public abstract class RecyclerAdapter<M, VH extends RecyclerView.ViewHolder> ext
         }
     }
 
-    protected void callOnItemClick(View view, int pos, View... transactionViews) {
-        if (onItemClickListener != null && pos >= 0 && pos < getItemCount()) {
-            onItemClickListener.onItemClickListener(view, pos, getItemByPos(pos), transactionViews);
+    protected void callOnItemClick(ViewHolder holder, View view, View... transactionViews) {
+        int position = holder.getAdapterPosition();
+        if (onItemClickListener != null && position >= 0 && position < getItemCount()) {
+            onItemClickListener.onItemClickListener(view, position, getItemByPos(position), transactionViews);
         }
     }
 

@@ -17,6 +17,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 24
+        consumerProguardFiles 'proguard-rules.pro'
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
