@@ -42,8 +42,8 @@ public final class ImageUtils {
                     @Override
                     public Observable<String> apply(Bitmap bitmap) throws Exception {
                         ExtraUtils.checkBackgroundThread();
-                        return convertBitmapToBase64(resizeBitmap(rotateBitmap(path, bitmap), width, height),
-                                format, quality);
+                        return convertBitmapToBase64(rotateBitmap(path, resizeBitmap(bitmap, width, height)),
+                                                     format, quality);
                     }
                 })
                 .subscribeOn(Schedulers.io());
@@ -60,7 +60,7 @@ public final class ImageUtils {
                 bitmap.compress(format, quality, baos); //bm is the bitmap object
                 byte[] b = baos.toByteArray();
                 baos.close();
-                bitmap.recycle();
+                if (!bitmap.isRecycled()) bitmap.recycle();
                 e.onNext("data:image/jpeg;base64," + Base64.encodeToString(b, Base64.DEFAULT));
                 e.onComplete();
             }
@@ -117,9 +117,7 @@ public final class ImageUtils {
             } else {
                 finalHeight = (int) ((float) maxWidth / ratioBitmap);
             }
-            Bitmap mImage = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
-            image.recycle();
-            return mImage;
+            return recycleSource(image, Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true));
         } else {
             return image;
         }
@@ -163,10 +161,8 @@ public final class ImageUtils {
         }
 
         try {
-            Bitmap oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                    bitmap.getHeight(), matrix, true);
-            bitmap.recycle();
-            return oriented;
+            Bitmap oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            return recycleSource(bitmap, oriented);
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
             return bitmap;
@@ -187,7 +183,7 @@ public final class ImageUtils {
                 Constructor<?> exifConstructor = exifClass.getConstructor(String.class);
                 Object exifInstance = exifConstructor.newInstance(src);
                 Method getAttributeInt = exifClass.getMethod("getAttributeInt", String.class,
-                        int.class);
+                                                             int.class);
                 Field tagOrientationField = exifClass.getField("TAG_ORIENTATION");
                 String tagOrientation = (String) tagOrientationField.get(null);
                 orientation = (Integer) getAttributeInt.invoke(exifInstance, tagOrientation, 1);
@@ -210,6 +206,13 @@ public final class ImageUtils {
             e.printStackTrace();
         }
         return orientation;
+    }
+
+    private static Bitmap recycleSource(Bitmap src, Bitmap dest) {
+        if (src != dest && !src.isRecycled()) {
+            src.recycle();
+        }
+        return dest;
     }
 
 }

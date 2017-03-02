@@ -13,21 +13,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import android.view.ViewAnimationUtils;
 
 import com.artemkopan.baseproject.R;
 import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.utils.animations.AnimUtils;
-import com.artemkopan.baseproject.utils.transitions.CircularRevealTransition;
 import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
 public class ProgressButtonView extends AppCompatButton {
-
-    private static final int ALPHA_MAX = 255, ALPHA_MIN = 0;
 
     private CircularProgressDrawable progressDrawable;
     private ValueAnimator backgroundAnimator;
@@ -125,8 +120,7 @@ public class ProgressButtonView extends AppCompatButton {
                     int value = (int) animation.getAnimatedValue();
                     getBackground().setAlpha(value);
 
-                    if ((showProgress && value == 0) ||
-                        (!showProgress && value == 255)) {
+                    if ((showProgress && value == 0) || (!showProgress && value == 255)) {
                         showProgressWithoutAnim();
                     }
                 }
