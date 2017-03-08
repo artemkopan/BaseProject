@@ -3,11 +3,11 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.novoda:bintray-release:0.3.4'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
     }
 }
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 25
@@ -26,6 +26,7 @@ android {
         }
     }
     lintOptions {
+        checkReleaseBuilds false
         abortOnError false
     }
     compileOptions {
@@ -34,14 +35,38 @@ android {
     }
 }
 
-publish {
-    groupId = 'com.github.artemkopan'
-    artifactId = 'base-project'
-    publishVersion = '1.0.11'
-    desc = 'A small project containing all base elemnt for start project (Activities, Fragment, Utils and other)'
-    licences = ['Apache-2.0']
-    website = 'https://github.com/artemkopan/BaseProject'
+
+ext {
+
+    //For bintray and jcenter distribution
+    bintrayRepo = 'maven'
+    bintrayName = 'base-project'
+
+    publishedGroupId = 'com.github.artemkopan'
+    libraryName = 'BaseProject'
+    artifact = 'base-project' //This artifact name should be the same with library module name
+
+    libraryDescription = 'A small project containing all base elemnt for start project (Activities, Fragment, Utils and other)'
+
+    siteUrl = 'https://github.com/artemkopan/BaseProject'
+    gitUrl = 'https://github.com/artemkopan/BaseProject.git'
+
+    libraryVersion = '2.0.0'
+
+    developerId = 'artemkopan'
+    developerName = 'Artem Kopan'
+    developerEmail = 'artemkopan@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'  //Example for license
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+
 }
+//These two remote files contain Bintray configuration as described above.
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'
+
+tasks.withType(Javadoc).all { enabled = false } // non ascii characters make it crash
 
 ext {
     supportLibrary = "25.2.0"
@@ -49,6 +74,7 @@ ext {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.android.support:support-annotations:$supportLibrary"
     compile "com.android.support:appcompat-v7:$supportLibrary"
     compile "com.android.support:recyclerview-v7:$supportLibrary"
     compile "com.android.support:design:$supportLibrary"
