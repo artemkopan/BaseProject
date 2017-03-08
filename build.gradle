@@ -5,8 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.0'
+        classpath 'com.android.tools.build:gradle:2.3.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -17,14 +16,9 @@ allprojects {
     repositories {
         jcenter()
     }
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption('encoding', 'UTF-8')
-    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-apply from: "config.gradle"

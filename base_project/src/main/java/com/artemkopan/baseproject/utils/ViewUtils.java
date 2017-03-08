@@ -143,7 +143,7 @@ public final class ViewUtils {
     }
 
     /**
-     * Check view size, if {@link View#getWidth()} or {@link View#getHeight()} > 0, then return true;
+     * Check view size, if {@link View#getWidth()} or {@link View#getHeight()} more then 0, then return true;
      */
     public static boolean checkSize(View view) {
         return view.getWidth() > 0 || view.getHeight() > 0;
@@ -168,7 +168,7 @@ public final class ViewUtils {
     }
 
     /**
-     * Firstly check view size. If size (w ro h) <= 0, then call preDraw.
+     * Firstly check view size. If size {@code (w ro h) <= 0 }, then call preDraw.
      */
     public static void viewSizeInflated(View view, @NonNull Runnable ready) {
         if (checkSize(view)) {

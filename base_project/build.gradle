@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 25
         consumerProguardFiles 'proguard-rules.pro'
         vectorDrawables.useSupportLibrary = true
     }
@@ -37,7 +37,7 @@ android {
 publish {
     groupId = 'com.github.artemkopan'
     artifactId = 'base-project'
-    publishVersion = '1.0.11'
+    publishVersion = '1.0.12'
     desc = 'A small project containing all base elemnt for start project (Activities, Fragment, Utils and other)'
     licences = ['Apache-2.0']
     website = 'https://github.com/artemkopan/BaseProject'
@@ -57,11 +57,7 @@ dependencies {
         exclude module: 'support-annotations'
     }
 
-    compile 'io.reactivex.rxjava2:rxjava:2.0.5'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.6'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
-}
-
-repositories {
-    mavenCentral()
 }
