@@ -98,9 +98,9 @@ public class CircularProgressView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         if (mHeightAccent) {
-            mDrawable.setBounds(0, 0, h, h);
+            mDrawable.setBounds(getPaddingLeft(), getPaddingTop(), h - getPaddingRight(), h - getPaddingBottom());
         } else {
-            mDrawable.setBounds(0, 0, w, w);
+            mDrawable.setBounds(getPaddingLeft(), getPaddingTop(), w - getPaddingRight(), w - getPaddingBottom());
         }
     }
 
