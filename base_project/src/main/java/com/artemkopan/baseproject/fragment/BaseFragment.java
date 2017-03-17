@@ -9,6 +9,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -137,20 +138,24 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
         mUiManager.setUnbinder(unbinder);
     }
 
-    public void onToolbarInit(@IdRes int toolbarId) {
-        mUiManager.onToolbarInit(toolbarId, false);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId) {
+        return mUiManager.onToolbarInit(toolbarId, false);
     }
 
-    public void onToolbarInit(@IdRes int toolbarId, boolean fromActivity) {
-        mUiManager.onToolbarInit(toolbarId, fromActivity);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId, boolean fromActivity) {
+        return mUiManager.onToolbarInit(toolbarId, fromActivity);
     }
 
-    public void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable) {
-        mUiManager.onToolbarInit(toolbarId, homeDrawable, false);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable) {
+        return mUiManager.onToolbarInit(toolbarId, homeDrawable, false);
     }
 
-    public void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
-        mUiManager.onToolbarInit(toolbarId, homeDrawable, fromActivity);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
+        return mUiManager.onToolbarInit(toolbarId, homeDrawable, fromActivity);
     }
 
     public void onToolbarNavigationClickListener(OnClickListener onClickListener) {

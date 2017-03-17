@@ -62,7 +62,8 @@ public interface UiManager {
      *
      * @param toolbarId R.id.{toolbar_id}
      */
-    void onToolbarInit(@IdRes int toolbarId);
+    @Nullable
+    Toolbar onToolbarInit(@IdRes int toolbarId);
 
     /**
      * Find toolbar by id and set to {@link android.support.v7.app.AppCompatActivity#setSupportActionBar(Toolbar)}
@@ -70,7 +71,8 @@ public interface UiManager {
      * @param toolbarId    R.id.{toolbar_id}
      * @param fromActivity if true, then find toolbar was in activity. For activities always true
      */
-    void onToolbarInit(@IdRes int toolbarId, boolean fromActivity);
+    @Nullable
+    Toolbar onToolbarInit(@IdRes int toolbarId, boolean fromActivity);
 
     /**
      * Find toolbar by id and set to {@link android.support.v7.app.AppCompatActivity#setSupportActionBar(Toolbar)}
@@ -78,7 +80,8 @@ public interface UiManager {
      * @param toolbarId    R.id.{toolbar_id}
      * @param homeDrawable set drawable resource for home button (left button)
      */
-    void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable);
+    @Nullable
+    Toolbar onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable);
 
     /**
      * Find toolbar by id and set to {@link android.support.v7.app.AppCompatActivity#setSupportActionBar(Toolbar)}
@@ -87,7 +90,8 @@ public interface UiManager {
      * @param homeDrawable set drawable resource for home button (left button)
      * @param fromActivity if true, then find toolbar was in activity. For activities always true
      */
-    void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity);
+    @Nullable
+    Toolbar onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity);
 
     /**
      * Set click listener for home button

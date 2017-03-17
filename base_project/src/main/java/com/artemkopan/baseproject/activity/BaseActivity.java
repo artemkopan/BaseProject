@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -148,12 +149,14 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         mUiManager.setUnbinder(unbinder);
     }
 
-    public void onToolbarInit(@IdRes int toolbarId) {
-        mUiManager.onToolbarInit(toolbarId, true);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId) {
+        return mUiManager.onToolbarInit(toolbarId, true);
     }
 
-    public void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable) {
-        mUiManager.onToolbarInit(toolbarId, homeDrawable, true);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable) {
+        return mUiManager.onToolbarInit(toolbarId, homeDrawable, true);
     }
 
     public void onToolbarNavigationClickListener(OnClickListener onClickListener) {

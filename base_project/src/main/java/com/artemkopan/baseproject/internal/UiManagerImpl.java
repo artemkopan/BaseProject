@@ -126,8 +126,9 @@ public final class UiManagerImpl implements UiManager {
      * @param toolbarId R.id.{toolbar_id}
      */
     @Override
-    public void onToolbarInit(@IdRes int toolbarId) {
-        onToolbarInit(toolbarId, false);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId) {
+        return onToolbarInit(toolbarId, false);
     }
 
     /**
@@ -137,8 +138,9 @@ public final class UiManagerImpl implements UiManager {
      * @param fromActivity if true, then find toolbar was in activity. For activities always true
      */
     @Override
-    public void onToolbarInit(@IdRes int toolbarId, boolean fromActivity) {
-        onToolbarInit(toolbarId, 0, fromActivity);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId, boolean fromActivity) {
+        return onToolbarInit(toolbarId, 0, fromActivity);
     }
 
     /**
@@ -148,8 +150,9 @@ public final class UiManagerImpl implements UiManager {
      * @param homeDrawable set drawable resource for home button (left button)
      */
     @Override
-    public void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable) {
-        onToolbarInit(toolbarId, homeDrawable, false);
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable) {
+        return onToolbarInit(toolbarId, homeDrawable, false);
     }
 
     /**
@@ -160,7 +163,8 @@ public final class UiManagerImpl implements UiManager {
      * @param fromActivity if true, then find toolbar was in activity. For activities always true
      */
     @Override
-    public void onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
+    @Nullable
+    public Toolbar onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable, boolean fromActivity) {
         Toolbar toolbar;
 
         if (fromActivity) {
@@ -173,7 +177,7 @@ public final class UiManagerImpl implements UiManager {
 
         if (toolbar == null) {
             Log.e("onToolbarInit: Can't find toolbar");
-            return;
+            return null;
         }
 
         setSupportToolbar(toolbar);
@@ -185,6 +189,7 @@ public final class UiManagerImpl implements UiManager {
 
         mToolbarReference = new WeakReference<>(toolbar);
 
+        return toolbar;
     }
 
     /**
