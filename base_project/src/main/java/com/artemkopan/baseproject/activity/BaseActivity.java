@@ -171,9 +171,6 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         mUiManager.onToolbarSetTitle(title);
     }
 
-    public void onToolbarHomeBtn(boolean show) {
-        mUiManager.onToolbarHomeBtn(show);
-    }
 
     public void setStatusBarColor(@ColorInt int color) {
         mUiManager.setStatusBarColor(color);

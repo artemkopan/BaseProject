@@ -180,12 +180,11 @@ public final class UiManagerImpl implements UiManager {
             return null;
         }
 
-        setSupportToolbar(toolbar);
-
         if (homeDrawable > 0) {
             toolbar.setNavigationIcon(ContextCompat.getDrawable(mUiInterface.getBaseActivity(), homeDrawable));
-            onToolbarHomeBtn(true);
         }
+
+        setSupportToolbar(toolbar);
 
         mToolbarReference = new WeakReference<>(toolbar);
 
@@ -232,18 +231,7 @@ public final class UiManagerImpl implements UiManager {
         }
     }
 
-    /**
-     * Enable home button
-     */
-    @Override
-    public void onToolbarHomeBtn(boolean show) {
-        if (mUiInterface.getBaseActivity() instanceof AppCompatActivity) {
-            ActionBar supportActionBar = ((AppCompatActivity) mUiInterface.getBaseActivity()).getSupportActionBar();
-            if (supportActionBar != null) {
-                supportActionBar.setDisplayHomeAsUpEnabled(show);
-            }
-        }
-    }
+
 
     private void setSupportToolbar(Toolbar toolbar) {
         if (mUiInterface.getBaseActivity() instanceof AppCompatActivity) {

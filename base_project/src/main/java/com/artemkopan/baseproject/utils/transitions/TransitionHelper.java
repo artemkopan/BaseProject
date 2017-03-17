@@ -119,7 +119,6 @@ public class TransitionHelper {
         }
     }
 
-    @TargetApi(VERSION_CODES.LOLLIPOP)
     public static void waitStartTransition(final Activity activity) {
         if (!(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) || activity == null)
             return;
@@ -127,7 +126,6 @@ public class TransitionHelper {
         waitStartTransition(activity, decor);
     }
 
-    @TargetApi(VERSION_CODES.LOLLIPOP)
     public static void waitStartTransition(final Activity activity, final View view) {
         if (!(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) || activity == null)
             return;

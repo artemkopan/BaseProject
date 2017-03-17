@@ -109,11 +109,6 @@ public interface UiManager {
     void onToolbarSetTitle(CharSequence title);
 
     /**
-     * Enable home button
-     */
-    void onToolbarHomeBtn(boolean show);
-
-    /**
      * Set color for status bar. Work only for api21+
      */
     void setStatusBarColor(@ColorInt int color);
