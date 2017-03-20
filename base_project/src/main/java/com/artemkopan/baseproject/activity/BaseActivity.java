@@ -127,7 +127,11 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
         return mUiManager.getOnDestroySubject();
     }
 
+    /**
+     * @deprecated Don't use for activity. Use {@link #getOnDestroySubject()}
+     */
     @Override
+    @Deprecated
     public Observable<RxLifeCycle> getOnDestroyViewSubject() {
         return mUiManager.getOnDestroyViewSubject();
     }
