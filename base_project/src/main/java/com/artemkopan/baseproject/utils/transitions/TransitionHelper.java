@@ -104,13 +104,13 @@ public class TransitionHelper {
 
     @SafeVarargs
     @Nullable
-    public static Bundle generateBundle(Activity activity, Pair<View, String>... elements) {
+    public static Bundle generateBundle(Activity activity, Pair<? extends View, String>... elements) {
         return generateBundle(activity, true, elements);
     }
 
     @SafeVarargs
     @Nullable
-    public static Bundle generateBundle(Activity activity, boolean includeStatusBar, Pair<View, String>... elements) {
+    public static Bundle generateBundle(Activity activity, boolean includeStatusBar, Pair<? extends View, String>... elements) {
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             Pair<View, String>[] pairs = createSafeTransitionParticipants(activity, includeStatusBar, elements);
             return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pairs).toBundle();

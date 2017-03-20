@@ -277,7 +277,7 @@ public class Router {
         }
 
         @SafeVarargs
-        public final void startWithTransition(Activity activity, Pair<View, String>... shared) {
+        public final void startWithTransition(Activity activity, Pair<? extends View, String>... shared) {
             intent.setClass(activity, navigateClass);
             if (resultCode > 0) {
                 startActivityForResult(activity, intent, resultCode, TransitionHelper.generateBundle(activity, shared));
