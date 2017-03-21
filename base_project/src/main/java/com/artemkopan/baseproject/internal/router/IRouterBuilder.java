@@ -47,6 +47,9 @@ public interface IRouterBuilder {
     }
 
     interface FragmentBuilder {
+
+        FragmentAnim animation();
+
         FragmentBuilder setIdRes(@IdRes int idRes);
 
         FragmentBuilder setFragment(Fragment fragment);

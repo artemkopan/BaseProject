@@ -119,16 +119,13 @@ public class TransitionHelper {
         }
     }
 
-    public static void waitStartTransition(final Activity activity) {
-        if (!(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) || activity == null)
-            return;
-        final View decor = activity.getWindow().getDecorView();
-        waitStartTransition(activity, decor);
+    public static void waitStartEnterTransition(final Activity activity) {
+        if (activity == null) return;
+        waitStartEnterTransition(activity, activity.getWindow().getDecorView());
     }
 
-    public static void waitStartTransition(final Activity activity, final View view) {
-        if (!(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) || activity == null)
-            return;
+    public static void waitStartEnterTransition(final Activity activity, final View view) {
+        if (activity == null) return;
         ActivityCompat.postponeEnterTransition(activity);
         view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -142,14 +139,12 @@ public class TransitionHelper {
         });
     }
 
-    public static void waitStartTransition(final Fragment fragment) {
-        if (fragment == null)
-            return;
-        final View decor = fragment.getView();
-        waitStartTransition(fragment, decor);
+    public static void waitStartEnterTransition(final Fragment fragment) {
+        if (fragment == null) return;
+        waitStartEnterTransition(fragment,  fragment.getView());
     }
 
-    public static void waitStartTransition(final Fragment fragment, final View view) {
+    public static void waitStartEnterTransition(final Fragment fragment, final View view) {
         fragment.postponeEnterTransition();
         view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override

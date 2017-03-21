@@ -273,7 +273,12 @@ public class Router {
         }
 
         public void startWithTransition(Activity activity) {
-            startWithTransition(activity, (Pair<View, String>[]) null);
+            startWithTransition(activity, (Pair<? extends View, String>) null);
+        }
+
+        @SuppressWarnings("unchecked")
+        public void startWithTransition(Activity activity, Pair<? extends View, String> shared) {
+            startWithTransition(activity, new Pair[]{shared});
         }
 
         @SafeVarargs
@@ -416,6 +421,11 @@ public class Router {
         @Override
         public IRouterBuilder.FragmentBuilder setFragment(Fragment fragment) {
             mFragment = fragment;
+            return this;
+        }
+
+        @Override
+        public FragmentAnim animation() {
             return this;
         }
 
