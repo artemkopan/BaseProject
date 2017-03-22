@@ -57,4 +57,11 @@
         <attr name="centerOn" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="FontTextView">
+        <attr name="font" format="string"/>
+        <attr name="textStyle" format="integer"/>
+    </declare-styleable>
+
+
+
 </resources>

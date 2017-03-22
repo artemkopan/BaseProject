@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="font_style_light">10</integer>
+    <integer name="font_style_extra_light">11</integer>
+    <integer name="font_style_extra_bold">12</integer>
+
+</resources>
