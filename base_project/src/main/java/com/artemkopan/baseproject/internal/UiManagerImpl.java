@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -44,43 +43,45 @@ import static com.artemkopan.baseproject.utils.ObjectUtils.castObject;
 @SuppressWarnings("WeakerAccess")
 public final class UiManagerImpl implements UiManager {
 
-    private static final Predicate<RxLifeCycle> ON_DESTROY_FILTER = new Predicate<RxLifeCycle>() {
-        @Override
-        public boolean test(RxLifeCycle rxLifeCycle) throws Exception {
-            return rxLifeCycle == RxLifeCycle.ON_DESTROY;
-        }
-    };
+    private final Predicate<RxLifeCycle> onDestroyFilter;
+    private final Predicate<RxLifeCycle> onDestroyViewFilter;
+    private final UiInterface uiInterface;
 
-    private static final Predicate<RxLifeCycle> ON_DESTROY_VIEW_FILTER = new Predicate<RxLifeCycle>() {
-        @Override
-        public boolean test(RxLifeCycle rxLifeCycle) throws Exception {
-            return rxLifeCycle == RxLifeCycle.ON_DESTROY_VIEW;
-        }
-    };
+    public PublishRelay<RxLifeCycle> rxLifeCycle;
 
-    private final UiInterface mUiInterface;
-    public PublishRelay<RxLifeCycle> mRxLifeCycle;
-    private WeakReference<Toolbar> mToolbarReference;
-    private Unbinder mUnbinder;
+    private WeakReference<Toolbar> toolbarReference;
+    private Unbinder unbinder;
 
     public UiManagerImpl(@NonNull UiInterface uiInterface) {
-        this.mUiInterface = uiInterface;
+        this.uiInterface = uiInterface;
+        onDestroyFilter = new Predicate<RxLifeCycle>() {
+            @Override
+            public boolean test(RxLifeCycle rxLifeCycle) throws Exception {
+                return rxLifeCycle == RxLifeCycle.ON_DESTROY;
+            }
+        };
+        onDestroyViewFilter = new Predicate<RxLifeCycle>() {
+            @Override
+            public boolean test(RxLifeCycle rxLifeCycle) throws Exception {
+                return rxLifeCycle == RxLifeCycle.ON_DESTROY_VIEW;
+            }
+        };
     }
 
     @Override
     public void onCreate() {
-        mRxLifeCycle = PublishRelay.create();
+        rxLifeCycle = PublishRelay.create();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Activity activity, Fragment fragment) {
-        if (mUiInterface.onInflateLayout() > 0) {
+        if (uiInterface.onInflateLayout() > 0) {
             if (activity != null) {
-                mUiInterface.getBaseActivity().setContentView(mUiInterface.onInflateLayout());
-                mUnbinder = ButterKnife.bind(activity);
+                uiInterface.getBaseActivity().setContentView(uiInterface.onInflateLayout());
+                unbinder = ButterKnife.bind(activity);
             } else if (fragment != null) {
-                View view = inflater.inflate(mUiInterface.onInflateLayout(), container, false);
-                mUnbinder = ButterKnife.bind(fragment, view);
+                View view = inflater.inflate(uiInterface.onInflateLayout(), container, false);
+                unbinder = ButterKnife.bind(fragment, view);
                 return view;
             }
         }
@@ -89,35 +90,35 @@ public final class UiManagerImpl implements UiManager {
 
     @Override
     public void onDestroyView() {
-        mRxLifeCycle.accept(RxLifeCycle.ON_DESTROY_VIEW);
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
+        rxLifeCycle.accept(RxLifeCycle.ON_DESTROY_VIEW);
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 
     @Override
     public void onDestroy() {
-        mRxLifeCycle.accept(RxLifeCycle.ON_DESTROY);
+        rxLifeCycle.accept(RxLifeCycle.ON_DESTROY);
     }
 
     @Override
     public void setUnbinder(Unbinder unbinder) {
-        mUnbinder = unbinder;
+        this.unbinder = unbinder;
     }
 
     @Override
     public PublishRelay<RxLifeCycle> getRxLifeCycleSubject() {
-        return mRxLifeCycle;
+        return rxLifeCycle;
     }
 
     @Override
     public Observable<RxLifeCycle> getOnDestroySubject() {
-        return mRxLifeCycle.filter(ON_DESTROY_FILTER);
+        return rxLifeCycle.filter(onDestroyFilter);
     }
 
     @Override
     public Observable<RxLifeCycle> getOnDestroyViewSubject() {
-        return mRxLifeCycle.filter(ON_DESTROY_VIEW_FILTER);
+        return rxLifeCycle.filter(onDestroyViewFilter);
     }
 
     /**
@@ -168,9 +169,9 @@ public final class UiManagerImpl implements UiManager {
         Toolbar toolbar;
 
         if (fromActivity) {
-            toolbar = findById(mUiInterface.getBaseActivity(), toolbarId);
-        } else if (mUiInterface.getView() != null) {
-            toolbar = findById(mUiInterface.getView(), toolbarId);
+            toolbar = findById(uiInterface.getBaseActivity(), toolbarId);
+        } else if (uiInterface.getView() != null) {
+            toolbar = findById(uiInterface.getView(), toolbarId);
         } else {
             toolbar = null;
         }
@@ -181,12 +182,12 @@ public final class UiManagerImpl implements UiManager {
         }
 
         if (homeDrawable > 0) {
-            toolbar.setNavigationIcon(ContextCompat.getDrawable(mUiInterface.getBaseActivity(), homeDrawable));
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(uiInterface.getBaseActivity(), homeDrawable));
         }
 
         setSupportToolbar(toolbar);
 
-        mToolbarReference = new WeakReference<>(toolbar);
+        toolbarReference = new WeakReference<>(toolbar);
 
         return toolbar;
     }
@@ -196,8 +197,8 @@ public final class UiManagerImpl implements UiManager {
      */
     @Override
     public void onToolbarNavigationClickListener(OnClickListener onClickListener) {
-        if (mToolbarReference != null && mToolbarReference.get() != null) {
-            mToolbarReference.get().setNavigationOnClickListener(onClickListener);
+        if (toolbarReference != null && toolbarReference.get() != null) {
+            toolbarReference.get().setNavigationOnClickListener(onClickListener);
         } else {
             Log.e("onToolbarNavigationClickListener: toolbar is null");
         }
@@ -208,11 +209,11 @@ public final class UiManagerImpl implements UiManager {
      */
     @Override
     public void onToolbarSetTitle(@StringRes int titleRes) {
-        AppCompatActivity activity = castObject(mUiInterface.getBaseActivity(), AppCompatActivity.class);
+        AppCompatActivity activity = castObject(uiInterface.getBaseActivity(), AppCompatActivity.class);
         if (activity != null && activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(titleRes);
         } else {
-            Log.e("onToolbarSetTitle: wrong instance activity " + mUiInterface.getBaseActivity() + " or action bar is" +
+            Log.e("onToolbarSetTitle: wrong instance activity " + uiInterface.getBaseActivity() + " or action bar is" +
                   " null");
         }
     }
@@ -222,20 +223,18 @@ public final class UiManagerImpl implements UiManager {
      */
     @Override
     public void onToolbarSetTitle(CharSequence title) {
-        AppCompatActivity activity = castObject(mUiInterface.getBaseActivity(), AppCompatActivity.class);
+        AppCompatActivity activity = castObject(uiInterface.getBaseActivity(), AppCompatActivity.class);
         if (activity != null && activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(title);
         } else {
-            Log.e("onToolbarSetTitle: wrong instance activity " + mUiInterface.getBaseActivity() + " or action bar is" +
+            Log.e("onToolbarSetTitle: wrong instance activity " + uiInterface.getBaseActivity() + " or action bar is" +
                   " null");
         }
     }
 
-
-
     private void setSupportToolbar(Toolbar toolbar) {
-        if (mUiInterface.getBaseActivity() instanceof AppCompatActivity) {
-            ((AppCompatActivity) mUiInterface.getBaseActivity()).setSupportActionBar(toolbar);
+        if (uiInterface.getBaseActivity() instanceof AppCompatActivity) {
+            ((AppCompatActivity) uiInterface.getBaseActivity()).setSupportActionBar(toolbar);
         }
     }
 
@@ -245,7 +244,7 @@ public final class UiManagerImpl implements UiManager {
     @Override
     public void setStatusBarColor(@ColorInt int color) {
         if (ExtraUtils.postLollipop()) {
-            Window window = mUiInterface.getBaseActivity().getWindow();
+            Window window = uiInterface.getBaseActivity().getWindow();
             window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(color);
         }
@@ -258,7 +257,7 @@ public final class UiManagerImpl implements UiManager {
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (ExtraUtils.postLollipop()) {
             Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
-                      .takeUntil(mRxLifeCycle)
+                      .takeUntil(rxLifeCycle)
                       .subscribe(new Consumer<Long>() {
                           @Override
                           public void accept(Long aLong) throws Exception {

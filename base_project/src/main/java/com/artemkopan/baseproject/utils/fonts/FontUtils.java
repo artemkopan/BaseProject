@@ -58,7 +58,7 @@ public class FontUtils {
         attributeArray.recycle();
     }
 
-    private static Typeface selectTypeface(Context context, int textStyle) {
+    public static Typeface selectTypeface(Context context, int textStyle) {
 
         if (FONTS.size() == 0) {
             throw new ArrayIndexOutOfBoundsException("For use custom fonts, firstly you must call addFont()");
