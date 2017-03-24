@@ -41,7 +41,7 @@ public interface IRouterBuilder {
 
         FragmentAnim setSharedElements(Pair<View, String>... sharedElements);
 
-        FragmentAnim useCustomAnim(boolean isUse);
+        FragmentBuilder useCustomAnim(boolean isUse);
 
         FragmentBuilder setFragment(Fragment fragment);
     }

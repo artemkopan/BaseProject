@@ -1,9 +1,12 @@
 package com.artemkopan.baseproject.recycler.adapter;
 
+import android.support.annotation.Nullable;
 import android.support.v7.util.SortedList;
 import android.support.v7.util.SortedList.Callback;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+
+import com.artemkopan.baseproject.utils.Log;
 
 /**
  * Created by Artem Kopan for jabrool
@@ -33,7 +36,12 @@ public abstract class RecyclerSortedAdapter<M, VH extends RecyclerView.ViewHolde
         return list;
     }
 
+    @Nullable
     public M getItemByPos(int position) {
+        if (position >= getList().size() || position < 0) {
+            Log.w("Position is out of bound");
+            return null;
+        }
         return getList().get(position);
     }
 

@@ -10,4 +10,5 @@ public interface BasePresenter<V extends MvpView> {
     void attachView(V mvpView);
 
     void detachView();
+
 }

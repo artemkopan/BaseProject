@@ -19,6 +19,7 @@ import android.transition.Fade;
 import android.view.View;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.internal.router.IRouterBuilder.FragmentBuilder;
 import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.utils.animations.DetailsTransition;
 import com.artemkopan.baseproject.utils.transitions.TransitionHelper;
@@ -407,7 +408,7 @@ public class Router {
         }
 
         @Override
-        public FragmentAnim useCustomAnim(boolean isUse) {
+        public IRouterBuilder.FragmentBuilder useCustomAnim(boolean isUse) {
             mUseCustomAnim = isUse;
             return this;
         }
