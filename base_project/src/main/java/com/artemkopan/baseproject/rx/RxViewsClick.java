@@ -28,15 +28,18 @@ public class RxViewsClick implements ObservableOnSubscribe<View> {
         mViewWeak = new WeakReference<>(view);
     }
 
-    public static Observable<View> create(Observable<RxLifeCycle> mDestroySubject, View... views) {
-        return create(mDestroySubject, RxViewClick.TIME_DELAY, views);
+    public static Observable<View> create(Observable<RxLifeCycle> destroySubject, View... views) {
+        return create(RxViewClick.TIME_DELAY, views).takeUntil(destroySubject);
     }
 
-    public static Observable<View> create(Observable<RxLifeCycle> mDestroySubject, int milliseconds, View... views) {
+    public static Observable<View> create(View... views) {
+        return create(RxViewClick.TIME_DELAY, views);
+    }
+
+    public static Observable<View> create(int milliseconds, View... views) {
         if (views == null || views.length == 0) return Observable.empty();
 
         return Observable.create(new RxViewsClick(views))
-                         .takeUntil(mDestroySubject)
                          .throttleFirst(milliseconds, TimeUnit.MILLISECONDS);
     }
 

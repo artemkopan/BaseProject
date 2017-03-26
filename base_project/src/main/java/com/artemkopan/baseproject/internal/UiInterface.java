@@ -9,6 +9,7 @@ import com.artemkopan.baseproject.internal.UiManager.RxLifeCycle;
 import com.jakewharton.rxrelay2.PublishRelay;
 
 import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by Artem Kopan for jabrool
@@ -19,11 +20,7 @@ public interface UiInterface {
 
     FragmentActivity getBaseActivity();
 
-    PublishRelay<RxLifeCycle> getRxLifeCycleSubject();
-
-    Observable<RxLifeCycle> getOnDestroySubject();
-
-    Observable<RxLifeCycle> getOnDestroyViewSubject();
+    CompositeDisposable getOnDestroyDisposable();
 
     FragmentManager getSupportFragmentManager();
 

@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Unbinder;
 import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView> extends Fragment
         implements MvpView, UiInterface {
@@ -115,18 +116,8 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends MvpView
     }
 
     @Override
-    public PublishRelay<RxLifeCycle> getRxLifeCycleSubject() {
-        return mUiManager.getRxLifeCycleSubject();
-    }
-
-    @Override
-    public Observable<RxLifeCycle> getOnDestroySubject() {
-        return mUiManager.getOnDestroySubject();
-    }
-
-    @Override
-    public Observable<RxLifeCycle> getOnDestroyViewSubject() {
-        return mUiManager.getOnDestroyViewSubject();
+    public CompositeDisposable getOnDestroyDisposable() {
+        return mUiManager.getOnDestroyDisposable();
     }
 
     @Override

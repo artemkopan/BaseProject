@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Unbinder;
 import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by Artem Kopan for jabrool
@@ -45,11 +46,7 @@ public interface UiManager {
 
     void onDestroy();
 
-    PublishRelay<RxLifeCycle> getRxLifeCycleSubject();
-
-    Observable<RxLifeCycle> getOnDestroySubject();
-
-    Observable<RxLifeCycle> getOnDestroyViewSubject();
+    CompositeDisposable getOnDestroyDisposable();
 
     /**
      * If you use custom implementation {@link #onCreateView(LayoutInflater, ViewGroup, Activity, Fragment)}

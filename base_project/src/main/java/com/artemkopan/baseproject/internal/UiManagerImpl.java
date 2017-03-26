@@ -20,7 +20,6 @@ import android.view.WindowManager.LayoutParams;
 
 import com.artemkopan.baseproject.utils.ExtraUtils;
 import com.artemkopan.baseproject.utils.Log;
-import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +28,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 
 import static butterknife.ButterKnife.findById;
 import static com.artemkopan.baseproject.utils.ObjectUtils.castObject;
@@ -43,34 +42,21 @@ import static com.artemkopan.baseproject.utils.ObjectUtils.castObject;
 @SuppressWarnings("WeakerAccess")
 public final class UiManagerImpl implements UiManager {
 
-    private final Predicate<RxLifeCycle> onDestroyFilter;
-    private final Predicate<RxLifeCycle> onDestroyViewFilter;
     private final UiInterface uiInterface;
 
-    public PublishRelay<RxLifeCycle> rxLifeCycle;
-
     private WeakReference<Toolbar> toolbarReference;
+    private CompositeDisposable destroyDisposable;
     private Unbinder unbinder;
 
     public UiManagerImpl(@NonNull UiInterface uiInterface) {
         this.uiInterface = uiInterface;
-        onDestroyFilter = new Predicate<RxLifeCycle>() {
-            @Override
-            public boolean test(RxLifeCycle rxLifeCycle) throws Exception {
-                return rxLifeCycle == RxLifeCycle.ON_DESTROY;
-            }
-        };
-        onDestroyViewFilter = new Predicate<RxLifeCycle>() {
-            @Override
-            public boolean test(RxLifeCycle rxLifeCycle) throws Exception {
-                return rxLifeCycle == RxLifeCycle.ON_DESTROY_VIEW;
-            }
-        };
+
+        destroyDisposable = new CompositeDisposable();
     }
 
     @Override
     public void onCreate() {
-        rxLifeCycle = PublishRelay.create();
+
     }
 
     @Override
@@ -90,7 +76,6 @@ public final class UiManagerImpl implements UiManager {
 
     @Override
     public void onDestroyView() {
-        rxLifeCycle.accept(RxLifeCycle.ON_DESTROY_VIEW);
         if (unbinder != null) {
             unbinder.unbind();
         }
@@ -98,7 +83,7 @@ public final class UiManagerImpl implements UiManager {
 
     @Override
     public void onDestroy() {
-        rxLifeCycle.accept(RxLifeCycle.ON_DESTROY);
+        destroyDisposable.clear();
     }
 
     @Override
@@ -107,18 +92,8 @@ public final class UiManagerImpl implements UiManager {
     }
 
     @Override
-    public PublishRelay<RxLifeCycle> getRxLifeCycleSubject() {
-        return rxLifeCycle;
-    }
-
-    @Override
-    public Observable<RxLifeCycle> getOnDestroySubject() {
-        return rxLifeCycle.filter(onDestroyFilter);
-    }
-
-    @Override
-    public Observable<RxLifeCycle> getOnDestroyViewSubject() {
-        return rxLifeCycle.filter(onDestroyViewFilter);
+    public CompositeDisposable getOnDestroyDisposable() {
+        return destroyDisposable;
     }
 
     /**
@@ -256,14 +231,13 @@ public final class UiManagerImpl implements UiManager {
     @Override
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (ExtraUtils.postLollipop()) {
-            Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
-                      .takeUntil(rxLifeCycle)
-                      .subscribe(new Consumer<Long>() {
-                          @Override
-                          public void accept(Long aLong) throws Exception {
-                              setStatusBarColor(color);
-                          }
-                      });
+            destroyDisposable.add(Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
+                                            .subscribe(new Consumer<Long>() {
+                                                @Override
+                                                public void accept(Long aLong) throws Exception {
+                                                    setStatusBarColor(color);
+                                                }
+                                            }));
         }
     }
 }

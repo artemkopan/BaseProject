@@ -23,12 +23,16 @@ public class RxTextWatcher implements ObservableOnSubscribe<CharSequence> {
 
     final TextView view;
 
-    RxTextWatcher(TextView view) {
+    private RxTextWatcher(TextView view) {
         this.view = view;
     }
 
-    public static Observable<CharSequence> create(TextView view, Observable<RxLifeCycle> mDestroySubject) {
-        return Observable.create(new RxTextWatcher(view)).takeUntil(mDestroySubject);
+    public static Observable<CharSequence> create(TextView view, Observable<RxLifeCycle> destroySubject) {
+        return create(view).takeUntil(destroySubject);
+    }
+
+    public static Observable<CharSequence> create(TextView view) {
+        return Observable.create(new RxTextWatcher(view));
     }
 
     @Override
@@ -55,7 +59,7 @@ public class RxTextWatcher implements ObservableOnSubscribe<CharSequence> {
         subscriber.setDisposable(new MainThreadDisposable() {
             @Override
             protected void onDispose() {
-               view.removeTextChangedListener(watcher);
+                view.removeTextChangedListener(watcher);
             }
         });
 

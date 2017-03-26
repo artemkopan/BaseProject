@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Unbinder;
 import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends MvpView> extends AppCompatDialogFragment
         implements MvpView, UiInterface {
@@ -73,7 +74,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     }
 
     @Override
-    public void show(FragmentManager manager, String tag) {
+    public void show(@Nullable FragmentManager manager, String tag) {
         if (manager == null) {
             Log.e("show: Fragment Manager is null!!!");
             return;
@@ -215,18 +216,8 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends M
     }
 
     @Override
-    public PublishRelay<RxLifeCycle> getRxLifeCycleSubject() {
-        return mUiManager.getRxLifeCycleSubject();
-    }
-
-    @Override
-    public Observable<RxLifeCycle> getOnDestroySubject() {
-        return mUiManager.getOnDestroySubject();
-    }
-
-    @Override
-    public Observable<RxLifeCycle> getOnDestroyViewSubject() {
-        return mUiManager.getOnDestroyViewSubject();
+    public CompositeDisposable getOnDestroyDisposable() {
+        return mUiManager.getOnDestroyDisposable();
     }
 
     @Override

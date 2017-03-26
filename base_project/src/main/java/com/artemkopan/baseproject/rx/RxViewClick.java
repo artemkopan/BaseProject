@@ -32,27 +32,49 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
         mViewWeak = new WeakReference<>(view);
     }
 
-    public static Observable<View> create(View view, Observable<RxLifeCycle> mDestroySubject) {
-        return create(view, mDestroySubject, TIME_DELAY);
+    public static Observable<View> create(View view, Observable<RxLifeCycle> destroySubject) {
+        return create(view, TIME_DELAY).takeUntil(destroySubject);
     }
 
-    public static Observable<View> create(View view, Observable<RxLifeCycle> mDestroySubject, int milliseconds) {
+    public static Observable<View> create(View view, Observable<RxLifeCycle> destroySubject, int milliseconds) {
+        return create(view, milliseconds).takeUntil(destroySubject);
+
+    }
+
+    public static Observable<View> create(View view) {
+        return create(view, TIME_DELAY);
+    }
+
+    public static Observable<View> create(View view, int milliseconds) {
         if (view == null) return Observable.empty();
 
         return Observable.create(new RxViewClick(view))
-                         .takeUntil(mDestroySubject)
+
                          .throttleFirst(milliseconds, TimeUnit.MILLISECONDS);
     }
 
-    public static PublishRelay<View> create(Consumer<View> onNext, Observable<RxLifeCycle> mDestroySubject) {
-        return create(onNext, mDestroySubject, TIME_DELAY);
+    public static PublishRelay<View> create(Consumer<View> onNext, Observable<RxLifeCycle> destroySubject) {
+        return create(onNext, destroySubject, TIME_DELAY);
     }
 
-    public static PublishRelay<View> create(Consumer<View> onNext, Observable<RxLifeCycle> mDestroySubject, int millis) {
+    public static PublishRelay<View> create(Consumer<View> onNext, Observable<RxLifeCycle> destroySubject, int millis) {
         PublishRelay<View> publishSubject = PublishRelay.create();
         publishSubject
                 .throttleFirst(millis, TimeUnit.MILLISECONDS)
-                .takeUntil(mDestroySubject)
+                .takeUntil(destroySubject)
+                .subscribe(onNext);
+
+        return publishSubject;
+    }
+
+    public static PublishRelay<View> create(Consumer<View> onNext) {
+        return create(onNext, TIME_DELAY);
+    }
+
+    public static PublishRelay<View> create(Consumer<View> onNext, int millis) {
+        PublishRelay<View> publishSubject = PublishRelay.create();
+        publishSubject
+                .throttleFirst(millis, TimeUnit.MILLISECONDS)
                 .subscribe(onNext);
 
         return publishSubject;
@@ -60,8 +82,6 @@ public class RxViewClick implements ObservableOnSubscribe<View> {
 
     @Override
     public void subscribe(final ObservableEmitter<View> subscriber) throws Exception {
-
-//        ExtraUtils.checkUiThread();
 
         final View.OnClickListener listener = new OnClickListener() {
             @Override

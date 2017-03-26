@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Unbinder;
 import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView>
         extends AppCompatActivity
@@ -118,22 +119,8 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends MvpView
     }
 
     @Override
-    public PublishRelay<RxLifeCycle> getRxLifeCycleSubject() {
-        return mUiManager.getRxLifeCycleSubject();
-    }
-
-    @Override
-    public Observable<RxLifeCycle> getOnDestroySubject() {
-        return mUiManager.getOnDestroySubject();
-    }
-
-    /**
-     * @deprecated Don't use for activity. Use {@link #getOnDestroySubject()}
-     */
-    @Override
-    @Deprecated
-    public Observable<RxLifeCycle> getOnDestroyViewSubject() {
-        return mUiManager.getOnDestroyViewSubject();
+    public CompositeDisposable getOnDestroyDisposable() {
+        return mUiManager.getOnDestroyDisposable();
     }
 
     @Override
