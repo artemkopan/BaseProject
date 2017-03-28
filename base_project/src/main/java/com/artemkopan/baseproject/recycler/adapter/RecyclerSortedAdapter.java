@@ -36,17 +36,18 @@ public abstract class RecyclerSortedAdapter<M, VH extends RecyclerView.ViewHolde
         return list;
     }
 
+    @Override
     @Nullable
-    public M getItemByPos(int position) {
+    protected M getListItemByPos(int position) {
         if (position >= getList().size() || position < 0) {
-            Log.w("Position is out of bound");
+            Log.w("Index is out of bounds");
             return null;
         }
         return getList().get(position);
     }
 
     @Override
-    public int getItemCount() {
+    public int getListSize() {
         return list == null ? 0 : list.size();
     }
 

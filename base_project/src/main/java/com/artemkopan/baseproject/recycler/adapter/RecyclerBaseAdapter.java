@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.artemkopan.baseproject.recycler.listeners.OnItemClickListener;
 import com.artemkopan.baseproject.utils.Log;
 
 import java.util.ArrayList;
@@ -76,19 +75,6 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
         }
     }
 
-    @Nullable
-    public M getItemByPos(int position) {
-        if (mList == null) {
-            Log.e("getItemByPos: ", new NullPointerException("mList is null"));
-            return null;
-        } else if (position >= mList.size() || position < 0) {
-            Log.e("getItemByPos: ", new ArrayIndexOutOfBoundsException(
-                    "position " + position + " mList size " + mList.size()));
-            return null;
-        }
-
-        return mList.get(position);
-    }
 
     public List<M> getList() {
         return mList;
@@ -135,9 +121,18 @@ public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder>
     }
 
     @Override
-    public int getItemCount() {
+    public int getListSize() {
         return mList != null ? mList.size() : 0;
     }
 
+    @Override
+    @Nullable
+    protected M getListItemByPos(int position) {
+        if (position >= getList().size() || position < 0) {
+            Log.w("Index is out of bounds");
+            return null;
+        }
+        return mList.get(position);
+    }
 
 }

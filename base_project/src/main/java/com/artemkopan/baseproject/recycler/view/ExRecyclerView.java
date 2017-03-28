@@ -11,7 +11,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -19,13 +18,11 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.ProgressBar;
 
 import com.artemkopan.baseproject.R;
-import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener;
 import com.artemkopan.baseproject.recycler.listeners.OnRecyclerPaginationListener.OnRecyclerPaginationResult;
-import com.artemkopan.baseproject.utils.ObjectUtils;
+import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.utils.ViewUtils;
 import com.artemkopan.baseproject.widget.drawable.CircularProgressDrawable;
 
@@ -38,17 +35,19 @@ import io.reactivex.functions.Consumer;
 public class ExRecyclerView extends RecyclerView {
 
     private static final int NO_VALUE = -1;
+    private static final int BACKGROUND_DURATION = 2000;
 
-    private StaticLayout mTextLayout;
-    private TextPaint mTextPaint;
-    private CircularProgressDrawable mProgressDrawable;
-    private Drawable mBackgroundDrawable;
-    private OnRecyclerPaginationListener mPaginationListener;
-    private Disposable mErrorTimer;
-    private String mTextDefault;
-    private int mProgressSize = NO_VALUE;
-    private int mTextPadding = NO_VALUE;
-    private boolean mDrawText, mDrawProgress;
+    private StaticLayout staticLayout;
+    private TextPaint textPaint;
+    private CircularProgressDrawable progressDrawable;
+    private Drawable backgroundDrawable;
+    private OnRecyclerPaginationListener paginationListener;
+    private Disposable errorTimer;
+    private String textDefault;
+    private int progressSize = NO_VALUE;
+    private int textPadding = NO_VALUE;
+    private int backgroundDuration = BACKGROUND_DURATION;
+    private boolean drawText, drawProgress;
 
     public ExRecyclerView(Context context) {
         this(context, null, 0);
@@ -67,31 +66,29 @@ public class ExRecyclerView extends RecyclerView {
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.ExRecyclerView);
             try {
-                mProgressSize = array.getDimensionPixelSize(
+                progressSize = array.getDimensionPixelSize(
                         R.styleable.ExRecyclerView_erv_progressSize,
                         context.getResources().getDimensionPixelSize(R.dimen.base_progress_size));
                 borderWidth = array.getDimensionPixelSize(
                         R.styleable.ExRecyclerView_erv_progressBorderWidth,
-                        context.getResources()
-                               .getDimensionPixelSize(R.dimen.base_progress_border_width));
-                progressColor = array.getColor(R.styleable.ExRecyclerView_erv_progressColor,
-                                               NO_VALUE);
+                        context.getResources().getDimensionPixelSize(R.dimen.base_progress_border_width));
 
-                textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize,
-                                                       textSize);
+                progressColor = array.getColor(R.styleable.ExRecyclerView_erv_progressColor, NO_VALUE);
+
+                textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize, textSize);
                 textColor = array.getColor(R.styleable.ExRecyclerView_erv_textColor, textColor);
-                mTextDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
-                mTextPadding = array.getDimensionPixelSize(
-                        R.styleable.ExRecyclerView_erv_textPadding, mTextPadding);
+                textDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
+                textPadding = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textPadding, textPadding);
 
-                mBackgroundDrawable = array.getDrawable(
-                        R.styleable.ExRecyclerView_erv_backgroundDrawable);
+                backgroundDrawable = array.getDrawable(R.styleable.ExRecyclerView_erv_backgroundDrawable);
+                backgroundDuration = array.getInt(R.styleable.ExRecyclerView_erv_background_duration,
+                                                  BACKGROUND_DURATION);
             } finally {
                 array.recycle();
             }
         } else {
-            mProgressSize = context.getResources()
-                                   .getDimensionPixelSize(R.dimen.base_progress_size);
+            progressSize = context.getResources()
+                                  .getDimensionPixelSize(R.dimen.base_progress_size);
             borderWidth = context.getResources()
                                  .getDimensionPixelSize(R.dimen.base_progress_border_width);
         }
@@ -104,46 +101,46 @@ public class ExRecyclerView extends RecyclerView {
             textSize = getContext().getResources()
                                    .getDimensionPixelSize(R.dimen.base_recycler_text_size);
         }
-        if (mTextPadding == NO_VALUE) {
-            mTextPadding = context.getResources()
-                                  .getDimensionPixelSize(R.dimen.base_recycler_text_padding);
+        if (textPadding == NO_VALUE) {
+            textPadding = context.getResources()
+                                 .getDimensionPixelSize(R.dimen.base_recycler_text_padding);
         }
 
-        if (mBackgroundDrawable == null) {
-            mBackgroundDrawable = new ColorDrawable(getThemeBackgroundColor());
+        if (backgroundDrawable == null) {
+            backgroundDrawable = new ColorDrawable(getThemeBackgroundColor());
         }
 
-        if (TextUtils.isEmpty(mTextDefault)) {
-            mTextDefault = context.getString(R.string.base_info_items_not_found);
+        if (TextUtils.isEmpty(textDefault)) {
+            textDefault = context.getString(R.string.base_info_items_not_found);
         }
 
-        mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setColor(textColor);
-        mTextPaint.setTextSize(textSize);
+        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setColor(textColor);
+        textPaint.setTextSize(textSize);
 
-        mProgressDrawable = new CircularProgressDrawable(progressColor, borderWidth);
-        mProgressDrawable.setCallback(this);
+        progressDrawable = new CircularProgressDrawable(progressColor, borderWidth);
+        progressDrawable.setCallback(this);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mBackgroundDrawable.setBounds(0, 0, w, h);
-        mProgressDrawable.setBounds(
-                w / 2 - mProgressSize / 2, h / 2 - mProgressSize / 2,
-                w / 2 + mProgressSize / 2, h / 2 + mProgressSize / 2);
+        backgroundDrawable.setBounds(0, 0, w, h);
+        progressDrawable.setBounds(
+                w / 2 - progressSize / 2, h / 2 - progressSize / 2,
+                w / 2 + progressSize / 2, h / 2 + progressSize / 2);
     }
 
     public OnRecyclerPaginationListener createPaginationListener(OnRecyclerPaginationResult listener) {
         setPaginationListener(new OnRecyclerPaginationListener(getLayoutManager(),
                                                                OnRecyclerPaginationListener.VERTICAL,
                                                                listener));
-        return mPaginationListener;
+        return paginationListener;
     }
 
     public void setPaginationListener(OnRecyclerPaginationListener scrollListener) {
-        if (mPaginationListener != null) removeOnScrollListener(mPaginationListener);
-        mPaginationListener = scrollListener;
+        if (paginationListener != null) removeOnScrollListener(paginationListener);
+        paginationListener = scrollListener;
         addOnScrollListener(scrollListener);
     }
 
@@ -156,23 +153,23 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     public void enablePagination() {
-        if (mPaginationListener != null) {
-            mPaginationListener.enablePagination();
+        if (paginationListener != null) {
+            paginationListener.enablePagination();
         }
     }
 
     public void disablePagination() {
-        if (mPaginationListener != null) {
-            mPaginationListener.disablePagination();
+        if (paginationListener != null) {
+            paginationListener.disablePagination();
         }
     }
 
     public void setProgressColor(@ColorInt int color) {
-        mProgressDrawable.setColor(color);
+        progressDrawable.setColor(color);
     }
 
     public void setTextPadding(int textPadding) {
-        mTextPadding = textPadding;
+        this.textPadding = textPadding;
     }
 
     public void showText(@StringRes int textRes, Object... arguments) {
@@ -202,14 +199,14 @@ public class ExRecyclerView extends RecyclerView {
             return;
         }
 
-        mDrawText = true;
-        mDrawProgress = false;
+        drawText = true;
+        drawProgress = false;
 
         postInvalidate();
 
         if (getAdapter() != null && getAdapter().getItemCount() != 0) {
-            if (mErrorTimer != null) mErrorTimer.dispose();
-            mErrorTimer = Observable.timer(1_500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
+            if (errorTimer != null) errorTimer.dispose();
+            errorTimer = Observable.timer(backgroundDuration, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
                 @Override
                 public void accept(Long aLong) throws Exception {
                     hideText();
@@ -219,26 +216,26 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     public void hideText() {
-        mDrawText = false;
+        drawText = false;
         postInvalidate();
     }
 
     public void showProgress() {
-        mDrawProgress = true;
-        mDrawText = false;
-        mProgressDrawable.start();
+        drawProgress = true;
+        drawText = false;
+        progressDrawable.start();
         postInvalidate();
     }
 
     public void hideProgress() {
-        mDrawProgress = false;
-        mProgressDrawable.stop();
+        drawProgress = false;
+        progressDrawable.stop();
         postInvalidate();
     }
 
     public void hideAll() {
-        mDrawProgress = false;
-        mDrawText = false;
+        drawProgress = false;
+        drawText = false;
         postInvalidate();
     }
 
@@ -246,10 +243,10 @@ public class ExRecyclerView extends RecyclerView {
      * Create StaticLayout {@link StaticLayout}
      */
     private void createTextLayout(CharSequence text) {
-        mTextLayout = new StaticLayout(
+        staticLayout = new StaticLayout(
                 text,
-                mTextPaint,
-                getWidth() - mTextPadding * 2,
+                textPaint,
+                getWidth() - textPadding * 2,
                 Layout.Alignment.ALIGN_CENTER,
                 1,
                 0,
@@ -260,31 +257,31 @@ public class ExRecyclerView extends RecyclerView {
     public void draw(Canvas c) {
         super.draw(c);
 
-        if ((mDrawProgress || mDrawText)
+        if ((drawProgress || drawText)
             && getAdapter() != null && getAdapter().getItemCount() > 0) {
 
             final int restore = c.save();
-            mBackgroundDrawable.draw(c);
+            backgroundDrawable.draw(c);
             c.restoreToCount(restore);
         }
 
-        if (mDrawProgress) {
-            mProgressDrawable.draw(c);
+        if (drawProgress) {
+            progressDrawable.draw(c);
         }
 
-        if (mDrawText && mTextLayout != null) {
+        if (drawText && staticLayout != null) {
             final int restore = c.save();
             c.translate(
-                    (c.getWidth() / 2) - (mTextLayout.getWidth() / 2),
-                    (c.getHeight() / 2) - ((mTextLayout.getHeight() / 2)));
-            mTextLayout.draw(c);
+                    (c.getWidth() / 2) - (staticLayout.getWidth() / 2),
+                    (c.getHeight() / 2) - ((staticLayout.getHeight() / 2)));
+            staticLayout.draw(c);
             c.restoreToCount(restore);
         }
     }
 
     @Override
     protected boolean verifyDrawable(@NonNull Drawable who) {
-        return who == mProgressDrawable || super.verifyDrawable(who);
+        return who == progressDrawable || super.verifyDrawable(who);
     }
 
     @Override

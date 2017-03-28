@@ -16,6 +16,7 @@
         <attr name="erv_textColor" format="color"/>
         <attr name="erv_textDefault" format="string"/>
         <attr name="erv_textPadding" format="dimension"/>
+        <attr name="erv_background_duration" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="ProgressButtonView">
@@ -61,7 +62,5 @@
         <attr name="font" format="string"/>
         <attr name="textStyle" format="integer"/>
     </declare-styleable>
-
-
 
 </resources>
