@@ -16,6 +16,7 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
     protected OnRecyclerPaginationResult onRecyclerPaginationResult;
     protected boolean loading = true;
     protected int type = VERTICAL;
+    private int offset;
 
     public OnRecyclerPaginationListener(RecyclerView.LayoutManager mLayoutManager,
                                         @TypePagination int type,
@@ -57,6 +58,22 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
 
     public void disablePagination() {
         loading = false;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    /**
+     * Increment offset
+     * @param value Value for inc
+     */
+    public void incOffset(int value) {
+        this.offset += value;
     }
 
     public RecyclerView.LayoutManager getLayoutManager() {

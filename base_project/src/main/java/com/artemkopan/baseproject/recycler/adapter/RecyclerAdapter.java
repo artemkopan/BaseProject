@@ -39,16 +39,16 @@ public abstract class RecyclerAdapter<M, VH extends RecyclerView.ViewHolder> ext
     public abstract int getListSize();
 
     public boolean isEmpty() {
-        return getItemCount() == 0;
+        return getListSize() == 0;
     }
 
     @Override
     final public int getItemCount() {
-        return getListSize() + (isShowHeader ? 1 : 0) + (isShowFooter ? 1 : 0);
+        return getListSize() + getPosOffset() + (isShowFooter ? 1 : 0);
     }
 
     final public M getItemByPos(int position) {
-        return getListItemByPos(position - (isShowHeader ? 1 : 0));
+        return getListItemByPos(position - getPosOffset());
     }
 
     @Override
@@ -96,5 +96,13 @@ public abstract class RecyclerAdapter<M, VH extends RecyclerView.ViewHolder> ext
         if (show) notifyItemInserted(getItemCount());
         else notifyItemRemoved(getItemCount() + 1); //remove with footer
     }
+
+    public int getPosOffset() {
+        return isShowHeader ? 1 : 0;
+    }
+
+
+
+
 
 }
