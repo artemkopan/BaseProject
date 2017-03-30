@@ -430,6 +430,11 @@ public class Router {
             return this;
         }
 
+        @Override
+        public IRouterBuilder.FragmentBuilder main() {
+            return this;
+        }
+
         /**
          * Default <b>{@link Method#REPLACE}</b>
          */

@@ -60,16 +60,22 @@ public class OnRecyclerPaginationListener extends RecyclerView.OnScrollListener 
         loading = false;
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
     public int getOffset() {
         return offset;
     }
 
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public void incOffset(int value, boolean enablePagination) {
+        incOffset(value);
+        loading = enablePagination;
+    }
+
     /**
      * Increment offset
+     *
      * @param value Value for inc
      */
     public void incOffset(int value) {

@@ -44,6 +44,8 @@ public interface IRouterBuilder {
         FragmentBuilder useCustomAnim(boolean isUse);
 
         FragmentBuilder setFragment(Fragment fragment);
+
+        FragmentBuilder main();
     }
 
     interface FragmentBuilder {
