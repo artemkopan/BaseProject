@@ -102,7 +102,4 @@ public abstract class RecyclerAdapter<M, VH extends RecyclerView.ViewHolder> ext
     }
 
 
-
-
-
 }
