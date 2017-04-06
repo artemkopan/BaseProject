@@ -44,7 +44,7 @@ publish {
 }
 
 ext {
-    supportLibrary = "25.3.0"
+    supportLibrary = "25.3.1"
 }
 
 dependencies {

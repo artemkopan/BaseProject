@@ -43,11 +43,11 @@ public abstract class RecyclerAdapter<M, VH extends RecyclerView.ViewHolder> ext
     }
 
     @Override
-    final public int getItemCount() {
+    public int getItemCount() {
         return getListSize() + getPosOffset() + (isShowFooter ? 1 : 0);
     }
 
-    final public M getItemByPos(int position) {
+    public M getItemByPos(int position) {
         return getListItemByPos(position - getPosOffset());
     }
 
