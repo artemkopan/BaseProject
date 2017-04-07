@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import com.artemkopan.baseproject.utils.Log;
 
+import java.util.Collection;
+
 /**
  * Created by Artem Kopan for jabrool
  * 21.02.17
@@ -76,6 +78,13 @@ public abstract class RecyclerSortedAdapter<M, VH extends RecyclerView.ViewHolde
 
     public void clear() {
         getList().clear();
+    }
+
+    public void replaceItems(Collection<M> items) {
+        getList().beginBatchedUpdates();
+        getList().clear();
+        getList().addAll(items);
+        getList().endBatchedUpdates();
     }
 
 }
