@@ -26,6 +26,7 @@ public class FontUtils {
     public static final int LIGHT = 10;
     public static final int EXTRA_LIGHT = 11;
     public static final int EXTRA_BOLD = 12;
+    public static final int MEDIUM = 13;
 
     private static final SparseArray<String> FONTS = new SparseArray<>();
 
@@ -77,7 +78,7 @@ public class FontUtils {
         return FontCache.getTypeface(fontNewPath, context);
     }
 
-    @IntDef({Typeface.BOLD, Typeface.ITALIC, Typeface.BOLD_ITALIC, EXTRA_BOLD, EXTRA_LIGHT, LIGHT, Typeface.NORMAL})
+    @IntDef({Typeface.BOLD, Typeface.ITALIC, Typeface.BOLD_ITALIC, EXTRA_BOLD, EXTRA_LIGHT, LIGHT, MEDIUM, Typeface.NORMAL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TextStyle {
 

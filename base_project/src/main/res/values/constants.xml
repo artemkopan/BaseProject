@@ -4,5 +4,7 @@
     <integer name="font_style_light">10</integer>
     <integer name="font_style_extra_light">11</integer>
     <integer name="font_style_extra_bold">12</integer>
+    <integer name="font_style_medium">13</integer>
+
 
 </resources>
