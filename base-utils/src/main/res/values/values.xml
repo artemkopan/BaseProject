@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <fraction name="dialog_width">80%</fraction>
+
+    <item name="view_touch_x" type="id"/>
+    <item name="view_touch_y" type="id"/>
+
+</resources>

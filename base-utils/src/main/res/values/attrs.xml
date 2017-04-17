@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CircularRevealTransition">
+        <attr name="startRadius" format="dimension"/>
+        <attr name="endRadius" format="dimension"/>
+        <attr name="centerOn" format="reference"/>
+    </declare-styleable>
+
+</resources>

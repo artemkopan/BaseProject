@@ -1,1 +1,1 @@
-include ':app', ':base_project'
+include /*, ':base_project'*/ ':base-mvp', ':base-utils', ':base-widget', ':base-recycler'

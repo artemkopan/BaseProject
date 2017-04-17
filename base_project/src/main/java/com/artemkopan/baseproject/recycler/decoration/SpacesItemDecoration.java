@@ -7,30 +7,33 @@ import android.support.v7.widget.RecyclerView.State;
 import android.view.View;
 
 public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-    private int mSpace;
-    private boolean mUseFirstTopSpace = true;
+
+    private int space;
+    private boolean addFirst = true;
+    private boolean addLast = true;
+    private boolean addL = true;
 
     public SpacesItemDecoration(int space) {
-        this.mSpace = space;
+        this.space = space;
     }
 
     public SpacesItemDecoration(int space, boolean useFirstTopSpace) {
-        mSpace = space;
-        mUseFirstTopSpace = useFirstTopSpace;
+        space = space;
+        addFirst = useFirstTopSpace;
     }
 
     public void setUseFirstTopSpace(boolean useFirstTopSpace) {
-        mUseFirstTopSpace = useFirstTopSpace;
+        addFirst = useFirstTopSpace;
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.left = mSpace;
-        outRect.right = mSpace;
-        outRect.bottom = mSpace;
-        // Add top margin only for the first item to avoid double mSpace between items
-        if (parent.getChildLayoutPosition(view) == 0 && mUseFirstTopSpace) {
-            outRect.top = mSpace;
+        outRect.left = space;
+        outRect.right = space;
+        outRect.bottom = space;
+        // Add top margin only for the first item to avoid double space between items
+        if (parent.getChildLayoutPosition(view) == 0 && addFirst) {
+            outRect.top = space;
         }
     }
 
