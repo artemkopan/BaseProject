@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-          package="com.artemkopan.base_recycler"
+          package="com.artemkopan.recycler"
 >
 
     <application android:allowBackup="true"

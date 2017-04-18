@@ -30,8 +30,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
     compile libraries.supportV7
 
     compile libraries.rxJava

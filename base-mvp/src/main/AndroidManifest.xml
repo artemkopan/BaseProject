@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-          package="com.artemkopan.base_mvp"
+          package="com.artemkopan.mvp"
 >
 
     <application android:allowBackup="true"

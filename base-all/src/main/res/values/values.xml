@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="dialog_progress_background">#48000000</color>
+
+    <dimen name="base_dialog_24">24dp</dimen>
+    <dimen name="base_dialog_8">8dp</dimen>
+
+</resources>

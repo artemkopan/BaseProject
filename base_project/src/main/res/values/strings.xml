@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name" translatable="false">BaseProject</string>
-    <string name="base_info_items_not_found">Items not found</string>
-    <string name="base_info_loading">Loading. Please wait…</string>
-    <string name="base_info_something_wrong">Something went wrong…</string>
-</resources>

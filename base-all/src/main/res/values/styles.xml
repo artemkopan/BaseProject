@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DialogAnimationUpDown">
+        <item name="android:windowEnterAnimation">@anim/dialog_up</item>
+        <item name="android:windowExitAnimation">@anim/dialog_down</item>
+    </style>
+
+    <style name="DialogAnimationAlpha">
+        <item name="android:windowEnterAnimation">@anim/alpha_enter</item>
+        <item name="android:windowExitAnimation">@anim/alpha_exit</item>
+    </style>
+
+    <style name="DialogAnimationAlphaFast">
+        <item name="android:windowEnterAnimation">@anim/alpha_enter_fast</item>
+        <item name="android:windowExitAnimation">@anim/alpha_exit_fast</item>
+    </style>
+
+</resources>
