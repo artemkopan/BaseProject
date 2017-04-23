@@ -19,8 +19,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 @SuppressWarnings("WeakerAccess")
-public class CircularProgressDrawable extends Drawable
-        implements Animatable {
+public class CircularProgressDrawable extends Drawable implements Animatable {
 
     private static final Interpolator ANGLE_INTERPOLATOR = new LinearInterpolator();
     private static final Interpolator SWEEP_INTERPOLATOR = new DecelerateInterpolator();
@@ -87,6 +86,7 @@ public class CircularProgressDrawable extends Drawable
             currentGlobalAngleOffset = (currentGlobalAngleOffset + MIN_SWEEP_ANGLE * 2) % 360;
         }
     }
+
 
     @Override
     protected void onBoundsChange(Rect bounds) {
