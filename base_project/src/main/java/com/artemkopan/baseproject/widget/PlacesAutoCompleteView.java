@@ -22,7 +22,6 @@ import com.artemkopan.baseproject.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -30,6 +29,8 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -176,19 +177,31 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
             findItem = new Function<String, ObservableSource<List<Address>>>() {
                 @Override
                 public ObservableSource<List<Address>> apply(final String s) throws Exception {
-                    return Observable.create(new ObservableOnSubscribe<List<Address>>() {
-                        @Override
-                        public void subscribe(ObservableEmitter<List<Address>> e) throws Exception {
-                            if (loadingListener != null) loadingListener.startLoad();
-                            try {
-                                e.onNext(geocoder.getFromLocationName(s, maxResult));
-                            } catch (Exception ex) {
-                                if (loadingListener != null) loadingListener.error(ex);
-                            }
-                            if (loadingListener != null) loadingListener.stopLoad();
-                            e.onComplete();
-                        }
-                    });
+                    return Observable
+                            .create(new ObservableOnSubscribe<List<Address>>() {
+                                @Override
+                                public void subscribe(ObservableEmitter<List<Address>> e) throws Exception {
+                                    ExtraUtils.checkBackgroundThread();
+                                    AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (loadingListener != null) loadingListener.startLoad();
+                                        }
+                                    });
+                                    try {
+                                        e.onNext(geocoder.getFromLocationName(s, maxResult));
+                                    } catch (Exception ex) {
+                                        if (loadingListener != null) loadingListener.error(ex);
+                                    }
+                                    AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (loadingListener != null) loadingListener.stopLoad();
+                                        }
+                                    });
+                                    e.onComplete();
+                                }
+                            });
                 }
             };
         }
