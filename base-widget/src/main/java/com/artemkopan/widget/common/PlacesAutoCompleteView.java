@@ -176,19 +176,30 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
             findItem = new Function<String, ObservableSource<List<Address>>>() {
                 @Override
                 public ObservableSource<List<Address>> apply(final String s) throws Exception {
-                    return Observable.create(new ObservableOnSubscribe<List<Address>>() {
-                        @Override
-                        public void subscribe(ObservableEmitter<List<Address>> e) throws Exception {
-                            if (loadingListener != null) loadingListener.startLoad();
-                            try {
-                                e.onNext(geocoder.getFromLocationName(s, maxResult));
-                            } catch (Exception ex) {
-                                if (loadingListener != null) loadingListener.error(ex);
-                            }
-                            if (loadingListener != null) loadingListener.stopLoad();
-                            e.onComplete();
-                        }
-                    });
+                    return Observable
+                            .create(new ObservableOnSubscribe<List<Address>>() {
+                                @Override
+                                public void subscribe(ObservableEmitter<List<Address>> e) throws Exception {
+                                    AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (loadingListener != null) loadingListener.startLoad();
+                                        }
+                                    });
+                                    try {
+                                        e.onNext(geocoder.getFromLocationName(s, maxResult));
+                                    } catch (Exception ex) {
+                                        if (loadingListener != null) loadingListener.error(ex);
+                                    }
+                                    AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (loadingListener != null) loadingListener.stopLoad();
+                                        }
+                                    });
+                                    e.onComplete();
+                                }
+                            });
                 }
             };
         }
