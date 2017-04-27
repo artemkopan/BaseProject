@@ -1,2 +1,2 @@
-include ':base-all'
+include ':base-all', ':test'
 include /*, ':base_project'*/ ':base-mvp', ':base-utils', ':base-widget', ':base-recycler'
