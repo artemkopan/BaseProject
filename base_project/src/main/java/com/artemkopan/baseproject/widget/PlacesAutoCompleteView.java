@@ -16,6 +16,7 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.artemkopan.baseproject.R;
+import com.artemkopan.baseproject.rx.SimpleDisposable;
 import com.artemkopan.baseproject.utils.ExtraUtils;
 import com.artemkopan.baseproject.utils.Log;
 import com.artemkopan.baseproject.utils.StringUtils;
@@ -29,6 +30,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -53,6 +55,7 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     private Function<String, ObservableSource<List<Address>>> findItem;
     private @Nullable ArrayAdapter<Address> addressAdapter;
     private OnLocationListener loadingListener;
+    private Disposable findDisposable;
     private String oldValue;
     private int debounce = DEBOUNCE;
     private int minStartSearch = MIN_START_SEARCH;
@@ -118,11 +121,12 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
+        if (findDisposable != null) findDisposable.dispose();
         if (text.length() >= minStartSearch && textChangeSubject != null && !blocked) {
-            Log.i("onNext " + text + " " + oldValue);
+            Log.d("onNext " + text + " " + oldValue);
             textChangeSubject.onNext(StringUtils.trim(text));
         } else if (resetResult && !blocked && addressAdapter != null) {
-            Log.i("clear");
+            Log.d("clear");
             addressAdapter.clear();
         }
     }
@@ -161,7 +165,7 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     }
 
     /**
-     * @param ignoreThreshold if true -> enoughToFilter() was return true.
+     * @param ignoreThreshold enoughToFilter() was return true if argument set true.
      *                        It's allow show popup when input text is empty
      */
     public void setIgnoreThreshold(boolean ignoreThreshold) {
@@ -204,24 +208,40 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
                                 @Override
                                 public void subscribe(ObservableEmitter<List<Address>> e) throws Exception {
                                     ExtraUtils.checkBackgroundThread();
+                                    e.setDisposable(new SimpleDisposable() {
+                                        @Override
+                                        protected void onDispose() {
+                                            Log.d("dispose find");
+                                        }
+                                    });
                                     AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
                                         @Override
                                         public void run() {
+                                            Log.d("Start loading");
                                             if (loadingListener != null) loadingListener.startLoad();
                                         }
                                     });
                                     try {
-                                        e.onNext(geocoder.getFromLocationName(s, maxResult));
+                                        List<Address> fromLocationName = geocoder.getFromLocationName(s, maxResult);
+                                        if (!e.isDisposed()) e.onNext(fromLocationName);
                                     } catch (Exception ex) {
+                                        Log.e(ex.getMessage(), ex);
                                         if (loadingListener != null) loadingListener.error(ex);
                                     }
                                     AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
                                         @Override
                                         public void run() {
+                                            Log.d("Stop loading");
                                             if (loadingListener != null) loadingListener.stopLoad();
                                         }
                                     });
                                     e.onComplete();
+                                }
+                            })
+                            .doOnSubscribe(new Consumer<Disposable>() {
+                                @Override
+                                public void accept(Disposable disposable) throws Exception {
+                                    findDisposable = disposable;
                                 }
                             });
                 }
