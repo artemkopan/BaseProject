@@ -29,8 +29,6 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -60,6 +58,8 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     private int minStartSearch = MIN_START_SEARCH;
     private int maxResult = MAX_RESULT;
     private boolean initAdapter = true;
+    private boolean resetResult = true;
+    private boolean ignoreThreshold = false;
     private boolean blocked;
 
     public PlacesAutoCompleteView(Context context) {
@@ -121,7 +121,7 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
         if (text.length() >= minStartSearch && textChangeSubject != null && !blocked) {
             Log.i("onNext " + text + " " + oldValue);
             textChangeSubject.onNext(StringUtils.trim(text));
-        } else if (!blocked && addressAdapter != null) {
+        } else if (resetResult && !blocked && addressAdapter != null) {
             Log.i("clear");
             addressAdapter.clear();
         }
@@ -149,6 +149,28 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
     public void setAdapter(ArrayAdapter<Address> adapter) {
         super.setAdapter(adapter);
         addressAdapter = adapter;
+    }
+
+    /**
+     * Reset result if input is empty
+     *
+     * @param resetResult -
+     */
+    public void setResetResult(boolean resetResult) {
+        this.resetResult = resetResult;
+    }
+
+    /**
+     * @param ignoreThreshold if true -> enoughToFilter() was return true.
+     *                        It's allow show popup when input text is empty
+     */
+    public void setIgnoreThreshold(boolean ignoreThreshold) {
+        this.ignoreThreshold = ignoreThreshold;
+    }
+
+    @Override
+    public boolean enoughToFilter() {
+        return ignoreThreshold || super.enoughToFilter();
     }
 
     public void setLoadingListener(OnLocationListener loadingListener) {
@@ -230,7 +252,9 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
                 @Override
                 public void accept(List<Address> addresses) throws Exception {
                     if (addressAdapter == null) return;
+                    addressAdapter.setNotifyOnChange(false);
                     addressAdapter.clear();
+                    addressAdapter.setNotifyOnChange(true);
                     addressAdapter.addAll(addresses);
                 }
             };
