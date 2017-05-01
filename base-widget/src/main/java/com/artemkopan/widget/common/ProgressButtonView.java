@@ -14,14 +14,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.util.Log;
 
 import com.artemkopan.widget.R;
 import com.artemkopan.widget.drawable.CircularProgressDrawable;
+import com.artemkopan.widget.fonts.FontButton;
 
-public class ProgressButtonView extends AppCompatButton {
+public class ProgressButtonView extends FontButton {
 
     private static final String TAG = "ProgressButtonView";
     private CircularProgressDrawable progressDrawable;
