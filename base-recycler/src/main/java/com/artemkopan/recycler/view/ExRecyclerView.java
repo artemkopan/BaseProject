@@ -216,21 +216,27 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     public void hideText() {
-        drawText = false;
-        postInvalidate();
+        if (drawText) {
+            drawText = false;
+            postInvalidate();
+        }
     }
 
     public void showProgress() {
-        drawProgress = true;
-        drawText = false;
-        progressDrawable.start();
-        postInvalidate();
+        if (!drawProgress) {
+            drawProgress = true;
+            drawText = false;
+            progressDrawable.start();
+            postInvalidate();
+        }
     }
 
     public void hideProgress() {
-        drawProgress = false;
-        progressDrawable.stop();
-        postInvalidate();
+        if (drawProgress) {
+            drawProgress = false;
+            progressDrawable.stop();
+            postInvalidate();
+        }
     }
 
     public void hideAll() {

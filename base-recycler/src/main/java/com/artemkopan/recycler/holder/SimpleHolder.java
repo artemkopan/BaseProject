@@ -26,6 +26,7 @@ public class SimpleHolder extends BaseHolder {
 
     }
 
+
     @Override
     public void clear() {
 
