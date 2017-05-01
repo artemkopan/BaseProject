@@ -11,7 +11,7 @@ import android.view.ViewGroup;
  * by Kopan Artem on 31.10.2016.
  */
 
-public class SimpleHolder extends BaseHolder {
+public class SimpleHolder<M> extends BaseHolder<M> {
 
     public SimpleHolder(View itemView) {
         super(itemView);
@@ -22,10 +22,9 @@ public class SimpleHolder extends BaseHolder {
     }
 
     @Override
-    public void bind(Context context, Object item, int position) {
+    public void bind(Context context, M item, int position) {
 
     }
-
 
     @Override
     public void clear() {
