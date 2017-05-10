@@ -3,20 +3,31 @@
 <b>Dependency:</b>
 
 ```java
-compile 'com.github.artemkopan:base-project:x.y.z'
+compile 'com.github.artemkopan:base-utils:x.y.z'
+compile 'com.github.artemkopan:base-recycler:x.y.z'
+compile 'com.github.artemkopan:base-widget:x.y.z'
+compile 'com.github.artemkopan:base-mvp:x.y.z'
+compile 'com.github.artemkopan:base-all:x.y.z'
 ```
 
-<b>App Settigns:</b>
+<b>Router Settigns:</b>
 
 ```java 
 Router.setIdResDefault(R.id.fragment_container); 
-
-FontUtils.addFont(Typeface.NORMAL, getString(R.string.font_raleway_regular))
-FontUtils.addFont(Typeface.ITALIC, getString(R.string.font_raleway_italic))
-FontUtils.addFont(Typeface.BOLD, getString(R.string.font_raleway_bold))
-FontUtils.addFont(Typeface.BOLD_ITALIC, getString(R.string.font_raleway_bold_italic))
-FontUtils.addFont(LIGHT, getString(R.string.font_raleway_light))
 ```
+
+<b>Font Settings (Example):</b>
+```java 
+FontUtils.addFont(Typeface.NORMAL, *font path*)
+FontUtils.addFont(Typeface.ITALIC, *font path*)
+FontUtils.addFont(Typeface.BOLD, *font path*)
+FontUtils.addFont(Typeface.BOLD_ITALIC, *font path*)
+FontUtils.addFont(LIGHT, *font path*)
+FontUtils.addFont(EXTRA_LIGHT, *font path*)
+FontUtils.addFont(EXTRA_BOLD, *font path*)
+FontUtils.addFont(MEDIUM, *font path*)
+```
+
 
 # Other
 * File Template for Android Studio:
