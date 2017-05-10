@@ -10,13 +10,13 @@ compile 'com.github.artemkopan:base-mvp:x.y.z'
 compile 'com.github.artemkopan:base-all:x.y.z'
 ```
 
-<b>Router Settigns:</b>
+<b>Base MVP - Router Settigns:</b>
 
 ```java 
 Router.setIdResDefault(R.id.fragment_container); 
 ```
 
-<b>Font Settings (Example):</b>
+<b>Base Widget - Font Settings (Example):</b>
 ```java 
 FontUtils.addFont(Typeface.NORMAL, /*font path*/)
 FontUtils.addFont(Typeface.ITALIC, /*font path*/)
