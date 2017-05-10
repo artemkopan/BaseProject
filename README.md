@@ -18,14 +18,14 @@ Router.setIdResDefault(R.id.fragment_container);
 
 <b>Font Settings (Example):</b>
 ```java 
-FontUtils.addFont(Typeface.NORMAL, *font path*)
-FontUtils.addFont(Typeface.ITALIC, *font path*)
-FontUtils.addFont(Typeface.BOLD, *font path*)
-FontUtils.addFont(Typeface.BOLD_ITALIC, *font path*)
-FontUtils.addFont(LIGHT, *font path*)
-FontUtils.addFont(EXTRA_LIGHT, *font path*)
-FontUtils.addFont(EXTRA_BOLD, *font path*)
-FontUtils.addFont(MEDIUM, *font path*)
+FontUtils.addFont(Typeface.NORMAL, /*font path*/)
+FontUtils.addFont(Typeface.ITALIC, /*font path*/)
+FontUtils.addFont(Typeface.BOLD, /*font path*/)
+FontUtils.addFont(Typeface.BOLD_ITALIC, /*font path*/)
+FontUtils.addFont(LIGHT, /*font path*/)
+FontUtils.addFont(EXTRA_LIGHT, /*font path*/)
+FontUtils.addFont(EXTRA_BOLD, /*font path*/)
+FontUtils.addFont(MEDIUM, /*font path*/)
 ```
 
 
