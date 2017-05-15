@@ -1,10 +1,12 @@
 package com.artemkopan.test;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 
-import com.artemkopan.recycler.view.ExRecyclerView;
+import com.artemkopan.widget.drawable.CircularProgressDrawable;
+import com.bumptech.glide.Glide;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -12,9 +14,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        final ExRecyclerView view = (ExRecyclerView) findViewById(R.id.test);
-        view.showText("asdasdokaspodkasdasdasdklnaskdnaklsndasnkdnaskldnlasnddlsadalksnklndsandsankdsandsankldklsanlkndasoaskdoaskokdasopkdsao");
-
     }
 }

@@ -8,7 +8,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,43 +35,29 @@ public final class PresentationManagerImpl implements PresentationManager {
     private final Presentation presentation;
 
     private WeakReference<Toolbar> toolbarReference;
-    private CompositeDisposable destroyDisposable;
+    private CompositeDisposable stopDisposable;
 
     public PresentationManagerImpl(@NonNull Presentation presentation) {
         this.presentation = presentation;
-        destroyDisposable = new CompositeDisposable();
+        stopDisposable = new CompositeDisposable();
     }
 
     @Override
-    public void onCreate() {
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Activity activity, Fragment fragment) {
+    public View inflateLayout(LayoutInflater inflater, @Nullable ViewGroup container) {
         if (presentation.onInflateLayout() > 0) {
-            if (activity != null) {
-                presentation.getBaseActivity().setContentView(presentation.onInflateLayout());
-            } else if (fragment != null) {
-                return inflater.inflate(presentation.onInflateLayout(), container, false);
-            }
+            return inflater.inflate(presentation.onInflateLayout(), container, false);
         }
         return null;
     }
 
     @Override
-    public void onDestroyView() {
-
+    public void onStop() {
+        stopDisposable.clear();
     }
 
     @Override
-    public void onDestroy() {
-        destroyDisposable.clear();
-    }
-
-    @Override
-    public CompositeDisposable getOnDestroyDisposable() {
-        return destroyDisposable;
+    public CompositeDisposable onStopDisposable() {
+        return stopDisposable;
     }
 
     /**
@@ -211,13 +196,13 @@ public final class PresentationManagerImpl implements PresentationManager {
     @Override
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            destroyDisposable.add(Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
-                                            .subscribe(new Consumer<Long>() {
-                                                @Override
-                                                public void accept(Long aLong) throws Exception {
-                                                    setStatusBarColor(color);
-                                                }
-                                            }));
+            stopDisposable.add(Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
+                                         .subscribe(new Consumer<Long>() {
+                                             @Override
+                                             public void accept(Long aLong) throws Exception {
+                                                 setStatusBarColor(color);
+                                             }
+                                         }));
         }
     }
 

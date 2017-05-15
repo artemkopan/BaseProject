@@ -35,7 +35,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
     public static final int REQ_CODE = 343;
     private static final String TAG = "BaseDialogFragment";
 
-    protected P presenter;
+    @Nullable protected P presenter;
     private PresentationManager manager;
 
     //==============================================================================================
@@ -155,36 +155,31 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
     public void onCreate(@Nullable Bundle savedInstanceState) {
         manager = PresentationManager.Factory.create(this);
         super.onCreate(savedInstanceState);
-        manager.onCreate();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return manager.onCreateView(inflater, container, null, this);
+        return manager.inflateLayout(inflater, container);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onStart() {
+        super.onStart();
         if (presenter != null) {
-            presenter.attachView((V) this);
+            //noinspection unchecked
+            presenter.onViewAttached((V) this);
         }
     }
 
     @Override
-    public void onDestroyView() {
+    public void onStop() {
         if (presenter != null) {
-            presenter.detachView();
+            presenter.onViewDetached();
         }
-        manager.onDestroyView();
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        manager.onDestroy();
-        super.onDestroy();
+        manager.onStop();
+        super.onStop();
     }
 
     public boolean isShowing() {
@@ -227,7 +222,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
 
     @Override
     public CompositeDisposable getOnDestroyDisposable() {
-        return manager.getOnDestroyDisposable();
+        return manager.onStopDisposable();
     }
 
     @Override
