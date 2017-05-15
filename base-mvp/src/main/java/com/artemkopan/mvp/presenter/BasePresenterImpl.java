@@ -15,13 +15,18 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
     @Nullable private T view;
 
     @Override
-    public void attachView(T view) {
+    public void onViewAttached(T view) {
         this.view = view;
     }
 
     @Override
-    public void detachView() {
-        view = null;
+    public void onViewDetached() {
+        this.view = null;
+    }
+
+    @Override
+    public void onDestroyed() {
+        // Nothing to clean up
     }
 
     @Nullable

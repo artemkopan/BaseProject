@@ -13,4 +13,9 @@
         android:layout_height="match_parent"
         />
 
+    <com.artemkopan.test.Test
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        />
+
 </FrameLayout>

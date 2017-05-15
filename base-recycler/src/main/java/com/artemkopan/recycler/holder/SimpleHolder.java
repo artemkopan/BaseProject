@@ -17,8 +17,8 @@ public class SimpleHolder<M> extends BaseHolder<M> {
         super(itemView);
     }
 
-    public static SimpleHolder create(ViewGroup parent, @LayoutRes int res) {
-        return new SimpleHolder(LayoutInflater.from(parent.getContext()).inflate(res, parent, false));
+    public static <M> SimpleHolder create(ViewGroup parent, @LayoutRes int res) {
+        return new SimpleHolder<>(LayoutInflater.from(parent.getContext()).inflate(res, parent, false));
     }
 
     @Override
@@ -30,4 +30,5 @@ public class SimpleHolder<M> extends BaseHolder<M> {
     public void clear() {
 
     }
+
 }

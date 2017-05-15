@@ -1,6 +1,7 @@
 package com.artemkopan.widget.fonts;
 
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.support.annotation.IntDef;
@@ -65,7 +66,6 @@ public class FontUtils {
         if (FONTS.size() == 0) {
             throw new ArrayIndexOutOfBoundsException("For use custom fonts, firstly you must call addFont()");
         }
-
         String fontNewPath = FONTS.get(textStyle);
 
         if (TextUtils.isEmpty(fontNewPath)) {

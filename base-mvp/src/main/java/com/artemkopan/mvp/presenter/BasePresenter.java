@@ -9,8 +9,10 @@ import com.artemkopan.mvp.view.BaseView;
 @SuppressWarnings("WeakerAccess")
 public interface BasePresenter<V extends BaseView> {
 
-    void attachView(V mvpView);
+    void onViewAttached(V view);
 
-    void detachView();
+    void onViewDetached();
+
+    void onDestroyed();
 
 }
