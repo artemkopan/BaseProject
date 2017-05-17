@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
@@ -15,15 +17,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 
 import com.artemkopan.recycler.R;
 import com.artemkopan.recycler.listeners.OnRecyclerPaginationListener;
 import com.artemkopan.recycler.listeners.OnRecyclerPaginationListener.OnRecyclerPaginationResult;
-import com.artemkopan.utils.ViewUtils;
 import com.artemkopan.widget.drawable.CircularProgressDrawable;
 
 import java.util.concurrent.TimeUnit;
@@ -37,15 +37,16 @@ public class ExRecyclerView extends RecyclerView {
     private static final int NO_VALUE = -1;
     private static final int BACKGROUND_DURATION = 2000;
     private static final String TAG = "ExRecyclerView";
-    private StaticLayout staticLayout;
+    private StaticLayout textLayout;
     private TextPaint textPaint;
     private CircularProgressDrawable progressDrawable;
     private Drawable backgroundDrawable;
     private OnRecyclerPaginationListener paginationListener;
     private Disposable errorTimer;
-    private String textDefault;
+    private CharSequence textCurrent;
     private int progressSize = NO_VALUE;
-    private int textPadding = NO_VALUE;
+    private int textGravity = Gravity.CENTER;
+    private Rect textMargin = new Rect();
     private int backgroundDuration = BACKGROUND_DURATION;
     private boolean drawText, drawProgress;
 
@@ -77,8 +78,12 @@ public class ExRecyclerView extends RecyclerView {
 
                 textSize = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textSize, textSize);
                 textColor = array.getColor(R.styleable.ExRecyclerView_erv_textColor, textColor);
-                textDefault = array.getString(R.styleable.ExRecyclerView_erv_textDefault);
-                textPadding = array.getDimensionPixelSize(R.styleable.ExRecyclerView_erv_textPadding, textPadding);
+                textGravity = array.getInteger(R.styleable.ExRecyclerView_erv_textGravity, textGravity);
+                int textMarginLeft = array.getDimensionPixelOffset(R.styleable.ExRecyclerView_erv_textMarginLeft, 0);
+                int textMarginTop = array.getDimensionPixelOffset(R.styleable.ExRecyclerView_erv_textMarginTop, 0);
+                int textMarginRight = array.getDimensionPixelOffset(R.styleable.ExRecyclerView_erv_textMarginRight, 0);
+                int textMarginBottom = array.getDimensionPixelOffset(R.styleable.ExRecyclerView_erv_textMarginBottom, 0);
+                setTextMargin(textMarginLeft, textMarginTop, textMarginRight, textMarginBottom);
 
                 backgroundDrawable = array.getDrawable(R.styleable.ExRecyclerView_erv_backgroundDrawable);
                 backgroundDuration = array.getInt(R.styleable.ExRecyclerView_erv_background_duration,
@@ -101,17 +106,9 @@ public class ExRecyclerView extends RecyclerView {
             textSize = getContext().getResources()
                                    .getDimensionPixelSize(R.dimen.base_recycler_text_size);
         }
-        if (textPadding == NO_VALUE) {
-            textPadding = context.getResources()
-                                 .getDimensionPixelSize(R.dimen.base_recycler_text_padding);
-        }
 
         if (backgroundDrawable == null) {
             backgroundDrawable = new ColorDrawable(getThemeBackgroundColor());
-        }
-
-        if (TextUtils.isEmpty(textDefault)) {
-            textDefault = context.getString(R.string.base_info_items_not_found);
         }
 
         textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -123,12 +120,16 @@ public class ExRecyclerView extends RecyclerView {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        backgroundDrawable.setBounds(0, 0, w, h);
-        progressDrawable.setBounds(
-                w / 2 - progressSize / 2, h / 2 - progressSize / 2,
-                w / 2 + progressSize / 2, h / 2 + progressSize / 2);
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (changed) {
+            int w = getWidth();
+            int h = getHeight();
+            backgroundDrawable.setBounds(0, 0, w, h);
+            progressDrawable.setBounds(
+                    w / 2 - progressSize / 2, h / 2 - progressSize / 2,
+                    w / 2 + progressSize / 2, h / 2 + progressSize / 2);
+        }
     }
 
     public OnRecyclerPaginationListener createPaginationListener(OnRecyclerPaginationResult listener) {
@@ -168,8 +169,19 @@ public class ExRecyclerView extends RecyclerView {
         progressDrawable.setColor(color);
     }
 
-    public void setTextPadding(int textPadding) {
-        this.textPadding = textPadding;
+    public void setTextMargin(int left, int top, int right, int bottom) {
+        textMargin.set(left, top, right, bottom);
+        textLayout = null;
+        invalidate();
+    }
+
+    public void setTextGravity(int textGravity) {
+        this.textGravity = textGravity;
+        invalidate();
+    }
+
+    public void setTextTypeface(Typeface textTypeface) {
+        textPaint.setTypeface(textTypeface);
     }
 
     public void showText(@StringRes int textRes, Object... arguments) {
@@ -180,28 +192,11 @@ public class ExRecyclerView extends RecyclerView {
         showText(getContext().getString(textRes));
     }
 
-    public void showText(final String text) {
-        if (ViewUtils.checkSize(this)) {
-            createTextLayout(text);
-            Log.w(TAG, "showText: Recycler not init yet");
-        } else {
-            ViewUtils.preDrawListener(this, new Runnable() {
-                @Override
-                public void run() {
-                    if (!ViewUtils.checkSize(ExRecyclerView.this)) {
-                        Log.e(TAG, "showText: show text forbidden, because width or height == 0");
-                        return;
-                    }
-                    createTextLayout(text);
-                    showText(text);
-                }
-            });
-            return;
-        }
-
+    public void showText(final CharSequence text) {
         drawText = true;
         drawProgress = false;
-
+        textCurrent = text;
+        textLayout = null;
         postInvalidate();
 
         if (getAdapter() != null && getAdapter().getItemCount() != 0) {
@@ -245,44 +240,67 @@ public class ExRecyclerView extends RecyclerView {
         postInvalidate();
     }
 
-    /**
-     * Create StaticLayout {@link StaticLayout}
-     */
-    private void createTextLayout(CharSequence text) {
-        staticLayout = new StaticLayout(
-                text,
-                textPaint,
-                getWidth() - textPadding * 2,
-                Layout.Alignment.ALIGN_CENTER,
-                1,
-                0,
-                true);
-    }
-
     @Override
     public void draw(Canvas c) {
         super.draw(c);
+        drawBackground(c);
+        drawProgress(c);
+        drawText(c);
+    }
 
-        if ((drawProgress || drawText)
-            && getAdapter() != null && getAdapter().getItemCount() > 0) {
-
+    private void drawBackground(Canvas c) {
+        if ((drawProgress || drawText) && getAdapter() != null && getAdapter().getItemCount() > 0) {
             final int restore = c.save();
             backgroundDrawable.draw(c);
             c.restoreToCount(restore);
         }
+    }
 
+    private void drawProgress(Canvas c) {
         if (drawProgress) {
             progressDrawable.draw(c);
         }
+    }
 
-        if (drawText && staticLayout != null) {
+    private void drawText(Canvas c) {
+        if (drawText) {
+            if (textLayout == null) createTextLayout();
+
             final int restore = c.save();
-            c.translate(
-                    (c.getWidth() / 2) - (staticLayout.getWidth() / 2),
-                    (c.getHeight() / 2) - ((staticLayout.getHeight() / 2)));
-            staticLayout.draw(c);
+            //half sizes
+            final int xHalf = c.getWidth() / 2;
+            final int yHalf = c.getHeight() / 2;
+            //start point
+            final int xStart = xHalf - (textLayout.getWidth() / 2) + textMargin.left;
+
+            switch (textGravity) {
+                case Gravity.TOP:
+                    c.translate(xStart, 0);
+                    break;
+                case Gravity.BOTTOM:
+                    c.translate(xStart, c.getHeight() - textLayout.getHeight() - textMargin.bottom);
+                    break;
+                default:
+                    c.translate(xStart, yHalf - ((textLayout.getHeight() / 2)) + textMargin.top);
+            }
+
+            textLayout.draw(c);
             c.restoreToCount(restore);
         }
+    }
+
+    /**
+     * Create StaticLayout {@link StaticLayout}
+     */
+    private void createTextLayout() {
+        textLayout = new StaticLayout(
+                textCurrent,
+                textPaint,
+                getWidth() + (textMargin.left + textMargin.right),
+                Layout.Alignment.ALIGN_CENTER,
+                1,
+                0,
+                true);
     }
 
     @Override
