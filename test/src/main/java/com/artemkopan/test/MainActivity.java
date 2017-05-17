@@ -1,6 +1,7 @@
 package com.artemkopan.test;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.artemkopan.recycler.view.ExRecyclerView;
@@ -12,7 +13,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ExRecyclerView view = (ExRecyclerView) findViewById(R.id.test);
+        final ExRecyclerView view = (ExRecyclerView) findViewById(R.id.test);
         view.showText("asdasdokaspodkasdasdasdklnaskdnaklsndasnkdnaskldnlasnddlsadalksnklndsandsankdsandsankldklsanlkndasoaskdoaskokdasopkdsao");
+
     }
 }

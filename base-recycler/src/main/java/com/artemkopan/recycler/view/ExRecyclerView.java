@@ -175,6 +175,16 @@ public class ExRecyclerView extends RecyclerView {
         invalidate();
     }
 
+    /**
+     * Set the paint's text size. This value must more than 0
+     *
+     * @param textSize set the paint's text size.
+     */
+    public void setTextSize(float textSize) {
+        textPaint.setTextSize(textSize);
+        invalidate();
+    }
+
     public void setTextGravity(int textGravity) {
         this.textGravity = textGravity;
         invalidate();
@@ -271,11 +281,11 @@ public class ExRecyclerView extends RecyclerView {
             final int xHalf = c.getWidth() / 2;
             final int yHalf = c.getHeight() / 2;
             //start point
-            final int xStart = xHalf - (textLayout.getWidth() / 2) + textMargin.left;
+            final int xStart = xHalf - (textLayout.getWidth() / 2);
 
             switch (textGravity) {
                 case Gravity.TOP:
-                    c.translate(xStart, 0);
+                    c.translate(xStart, textMargin.top);
                     break;
                 case Gravity.BOTTOM:
                     c.translate(xStart, c.getHeight() - textLayout.getHeight() - textMargin.bottom);
@@ -296,7 +306,7 @@ public class ExRecyclerView extends RecyclerView {
         textLayout = new StaticLayout(
                 textCurrent,
                 textPaint,
-                getWidth() + (textMargin.left + textMargin.right),
+                getWidth() - (textMargin.left + textMargin.right),
                 Layout.Alignment.ALIGN_CENTER,
                 1,
                 0,

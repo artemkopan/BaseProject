@@ -12,7 +12,7 @@
         android:id="@+id/test"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:erv_textGravity="bottom"
+        app:erv_textGravity="top"
         app:erv_textMarginBottom="20dp"
         app:erv_textMarginLeft="20dp"
         app:erv_textMarginRight="20dp"

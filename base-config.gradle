@@ -14,7 +14,7 @@ ext.versions = [
         kotlin        : '1.1.1'
 ]
 
-ext.bintrayVersion = '2.0.4'
+ext.bintrayVersion = '2.0.5'
 
 ext.libraries = [
 
