@@ -2,6 +2,6 @@
 <resources>
 
     <dimen name="base_recycler_text_size">14sp</dimen>
-    <dimen name="base_recycler_text_padding">10dp</dimen>
+    <dimen name="base_recycler_text_margin">10dp</dimen>
 
 </resources>

@@ -8,8 +8,15 @@
         <attr name="erv_progressSize" format="dimension"/>
         <attr name="erv_textSize" format="dimension"/>
         <attr name="erv_textColor" format="color"/>
-        <attr name="erv_textDefault" format="string"/>
-        <attr name="erv_textPadding" format="dimension"/>
+        <attr name="erv_textGravity">
+            <flag name="bottom" value="80" />
+            <flag name="center" value="17" />
+            <flag name="top" value="48" />
+        </attr>
+        <attr name="erv_textMarginLeft" format="dimension"/>
+        <attr name="erv_textMarginTop" format="dimension"/>
+        <attr name="erv_textMarginRight" format="dimension"/>
+        <attr name="erv_textMarginBottom" format="dimension"/>
         <attr name="erv_background_duration" format="integer"/>
     </declare-styleable>
 
