@@ -1,19 +1,26 @@
 package com.artemkopan.test.mvp;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.artemkopan.mvp.activity.BaseActivity;
-import com.artemkopan.mvp.presenter.PresenterFactory;
+import com.artemkopan.mvp.presenter.BasePresenter;
+import com.artemkopan.mvp.presenter.lifecycle.PresenterProvider.Factory;
+import com.artemkopan.mvp.presenter.lifecycle.PresentersProvider;
+import com.artemkopan.mvp.view.BaseView;
 import com.artemkopan.test.R;
+import com.artemkopan.utils.router.ActivityBuilder;
+import com.artemkopan.utils.router.Router;
 
 public class RotateActivity extends BaseActivity<RotatePresenter, RotateView> implements RotateView {
+
+    public static ActivityBuilder route() {
+        return Router.activity(RotateActivity.class);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        injectPresenter();
     }
 
     @Override
@@ -31,15 +38,16 @@ public class RotateActivity extends BaseActivity<RotatePresenter, RotateView> im
         super.hideProgress(tag);
     }
 
-    @NonNull
+    @Nullable
     @Override
-    public PresenterFactory<RotatePresenter, RotateView> getPresenterFactory() {
-        return new RotatePresenterFactory();
-    }
-
-    @Override
-    public void onPresenterCreatedOrRestored(@NonNull RotatePresenter presenter) {
-
+    public RotatePresenter getPresenter() {
+        return PresentersProvider.of(this, new Factory() {
+            @Override
+            public <T extends BasePresenter<? extends BaseView>> T create(Class<T> modelClass) {
+                //noinspection unchecked
+                return (T) new RotatePresenter();
+            }
+        }).get(RotatePresenter.class);
     }
 
     @Override

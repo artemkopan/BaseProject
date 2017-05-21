@@ -7,15 +7,10 @@
     tools:context="com.artemkopan.test.MainActivity"
     >
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
-    <com.artemkopan.test.Test
+    <Button
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:text="Open"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
         />
-
 </FrameLayout>

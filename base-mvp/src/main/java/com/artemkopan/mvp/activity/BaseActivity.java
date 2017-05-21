@@ -4,19 +4,15 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.BackStackEntry;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -24,9 +20,6 @@ import com.artemkopan.mvp.fragment.BaseFragment;
 import com.artemkopan.mvp.presentation.Presentation;
 import com.artemkopan.mvp.presentation.PresentationManager;
 import com.artemkopan.mvp.presenter.BasePresenter;
-import com.artemkopan.mvp.presenter.PresenterFactory;
-import com.artemkopan.mvp.presenter.PresenterLoader;
-import com.artemkopan.mvp.presenter.PresenterLoaderManager;
 import com.artemkopan.mvp.view.BaseView;
 
 import java.util.concurrent.TimeUnit;
@@ -35,9 +28,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseView>
         extends AppCompatActivity
-        implements BaseView, Presentation, PresenterLoaderManager<P, V> {
-
-    private static final String TAG = "BaseActivity";
+        implements BaseView, Presentation {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -52,24 +43,16 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseVie
         manager = PresentationManager.Factory.create(this);
         super.onCreate(savedInstanceState);
         setContentView(onInflateLayout());
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            //noinspection unchecked
+        presenter = getPresenter();
+        if (presenter != null) //noinspection unchecked
             presenter.onViewAttached((V) this);
-        }
     }
 
     @Override
-    protected void onStop() {
-        if (presenter != null) {
-            presenter.onViewDetached();
-        }
-        manager.onStop();
-        super.onStop();
+    protected void onDestroy() {
+        if (presenter != null) presenter.onViewDetached();
+        manager.onDetach();
+        super.onDestroy();
     }
 
     @Override
@@ -94,6 +77,16 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseVie
     }
 
     @Override
+    public void showError(@Nullable Object tag, @StringRes int errorRes, Object... formatArgs) {
+        showError(tag, getString(errorRes, formatArgs));
+    }
+
+    @Override
+    public void showError(@Nullable Object tag, @StringRes int errorRes) {
+        showError(tag, getString(errorRes));
+    }
+
+    @Override
     public void showError(@Nullable Object tag, String error) {
 
     }
@@ -108,66 +101,8 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseVie
 
     }
 
-    //==============================================================================================
-    // PresenterLoader
-    //==============================================================================================
-    //region methods
-    public void injectPresenter() {
-        Loader<P> loader = getSupportLoaderManager().getLoader(loaderId());
-        if (loader == null) {
-            initLoader();
-        } else {
-            this.presenter = ((PresenterLoader<P, V>) loader).getPresenter();
-            onPresenterCreatedOrRestored(presenter);
-        }
-    }
-
-    private void initLoader() {
-        // LoaderCallbacks as an object, so no hint regarding Loader will be leak to the subclasses.
-        getSupportLoaderManager().initLoader(loaderId(), null, new LoaderManager.LoaderCallbacks<P>() {
-            @Override
-            public final Loader<P> onCreateLoader(int id, Bundle args) {
-                Log.i(TAG, "onCreateLoader");
-                return new PresenterLoader<>(BaseActivity.this, getPresenterFactory());
-            }
-
-            @Override
-            public final void onLoadFinished(Loader<P> loader, P presenter) {
-                Log.i(TAG, "onLoadFinished");
-                BaseActivity.this.presenter = presenter;
-                onPresenterCreatedOrRestored(presenter);
-            }
-
-            @Override
-            public final void onLoaderReset(Loader<P> loader) {
-                Log.i(TAG, "onLoaderReset");
-                BaseActivity.this.presenter = null;
-            }
-        });
-    }
-
-    /**
-     * Instance of {@link PresenterFactory} use to create a Presenter when needed. This instance should
-     * not contain {@link android.app.Activity} context reference since it will be keep on rotations.
-     */
-    @NonNull
-    public abstract PresenterFactory<P, V> getPresenterFactory();
-
-    /**
-     * Hook for subclasses that deliver the {@link BasePresenter} before its View is attached.
-     * Can be use to initialize the Presenter or simple hold a reference to it.
-     */
-    public abstract void onPresenterCreatedOrRestored(@NonNull P presenter);
-
-    /**
-     * Use this method in case you want to specify a spefic ID for the {@link PresenterLoader}.
-     * By default its value would be {@link #LOADER_ID}.
-     */
-    public int loaderId() {
-        return LOADER_ID;
-    }
-
-    //endregion
+    @Nullable
+    public abstract P getPresenter();
 
     //==============================================================================================
     // PresentationManagerImpl
@@ -181,7 +116,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseVie
 
     @Override
     public CompositeDisposable getOnDestroyDisposable() {
-        return manager.onStopDisposable();
+        return manager.getDetachDisposable();
     }
 
     @Override

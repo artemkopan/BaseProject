@@ -13,6 +13,6 @@ public interface BasePresenter<V extends BaseView> {
 
     void onViewDetached();
 
-    void onDestroyed();
+    void onCleared();
 
 }

@@ -1,10 +1,12 @@
 package com.artemkopan.mvp.presentation;
 
+import android.app.Activity;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.disposables.CompositeDisposable;
 
-
 @SuppressWarnings("ALL")
 public interface PresentationManager {
 
@@ -25,13 +26,18 @@ public interface PresentationManager {
      */
     View inflateLayout(LayoutInflater inflater, @Nullable ViewGroup container);
 
-    void onStop();
+    /**
+     * In {@link android.app.Activity} call before {@link Activity#onDestroy()}
+     * In {@link android.support.v4.app.Fragment} or {@link android.support.v4.app.DialogFragment} call befor {@link Fragment#onDestroyView()}
+     */
+    void onDetach();
 
     /**
-     * Call {@link CompositeDisposable#clear()} before onStop
-     * @return
+     * Call {@link CompositeDisposable#clear()} with {@code onDetach} method
+     *
+     * @return a {@link CompositeDisposable}
      */
-    CompositeDisposable onStopDisposable();
+    CompositeDisposable getDetachDisposable();
 
     /**
      * Find toolbar by id and set to {@link android.support.v7.app.AppCompatActivity#setSupportActionBar(Toolbar)}

@@ -35,6 +35,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         manager = PresentationManager.Factory.create(this);
         super.onCreate(savedInstanceState);
+        presenter = getPresenter();
     }
 
     @Nullable
@@ -44,21 +45,27 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            //noinspection unchecked
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if (presenter != null) //noinspection unchecked
             presenter.onViewAttached((V) this);
-        }
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
-    public void onStop() {
-        if (presenter != null) {
-            presenter.onViewDetached();
-        }
-        manager.onStop();
-        super.onStop();
+    public void onDestroyView() {
+        if (presenter != null) presenter.onViewDetached();
+        manager.onDetach();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void showError(@Nullable Object tag, @StringRes int errorRes, Object... formatArgs) {
+        showError(tag, getString(errorRes, formatArgs));
+    }
+
+    @Override
+    public void showError(@Nullable Object tag, @StringRes int errorRes) {
+        showError(tag, getString(errorRes));
     }
 
     @Override
@@ -66,15 +73,8 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
 
     }
 
-    @Override
-    public void showProgress(@Nullable Object tag) {
-
-    }
-
-    @Override
-    public void hideProgress(@Nullable Object tag) {
-
-    }
+    @Nullable
+    public abstract P getPresenter();
 
     /**
      * @return if true = {@link com.artemkopan.mvp.activity.BaseActivity#onBackPressed()} was called;
@@ -107,7 +107,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
 
     @Override
     public CompositeDisposable getOnDestroyDisposable() {
-        return manager.onStopDisposable();
+        return manager.getDetachDisposable();
     }
 
     @Override
