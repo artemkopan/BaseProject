@@ -1,6 +1,7 @@
 package com.artemkopan.mvp.view;
 
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.annotation.UiThread;
 
 /**
@@ -9,6 +10,12 @@ import android.support.annotation.UiThread;
  * that then usually will be implemented by an Activity or Fragment.
  */
 public interface BaseView {
+
+    @UiThread
+    void showError(@Nullable Object tag, @StringRes int errorRes, Object... formatArgs);
+
+    @UiThread
+    void showError(@Nullable Object tag, @StringRes int errorRes);
 
     @UiThread
     void showError(@Nullable Object tag, String error);

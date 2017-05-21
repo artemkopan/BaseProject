@@ -5,8 +5,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
-import io.reactivex.disposables.CompositeDisposable;
+import com.artemkopan.mvp.presenter.BasePresenter;
+import com.artemkopan.mvp.view.BaseView;
 
+import io.reactivex.disposables.CompositeDisposable;
 
 public interface Presentation {
 
@@ -25,4 +27,6 @@ public interface Presentation {
 
     @Nullable
     View getView();
+
+
 }

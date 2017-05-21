@@ -35,11 +35,11 @@ public final class PresentationManagerImpl implements PresentationManager {
     private final Presentation presentation;
 
     private WeakReference<Toolbar> toolbarReference;
-    private CompositeDisposable stopDisposable;
+    private CompositeDisposable detachDisposable;
 
     public PresentationManagerImpl(@NonNull Presentation presentation) {
         this.presentation = presentation;
-        stopDisposable = new CompositeDisposable();
+        detachDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -51,13 +51,13 @@ public final class PresentationManagerImpl implements PresentationManager {
     }
 
     @Override
-    public void onStop() {
-        stopDisposable.clear();
+    public void onDetach() {
+        detachDisposable.clear();
     }
 
     @Override
-    public CompositeDisposable onStopDisposable() {
-        return stopDisposable;
+    public CompositeDisposable getDetachDisposable() {
+        return detachDisposable;
     }
 
     /**
@@ -196,13 +196,13 @@ public final class PresentationManagerImpl implements PresentationManager {
     @Override
     public void setStatusBarColor(@ColorInt final int color, long delay, TimeUnit timeUnit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            stopDisposable.add(Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
-                                         .subscribe(new Consumer<Long>() {
-                                             @Override
-                                             public void accept(Long aLong) throws Exception {
-                                                 setStatusBarColor(color);
-                                             }
-                                         }));
+            detachDisposable.add(Observable.timer(delay, timeUnit, AndroidSchedulers.mainThread())
+                                           .subscribe(new Consumer<Long>() {
+                                               @Override
+                                               public void accept(Long aLong) throws Exception {
+                                                   setStatusBarColor(color);
+                                               }
+                                           }));
         }
     }
 

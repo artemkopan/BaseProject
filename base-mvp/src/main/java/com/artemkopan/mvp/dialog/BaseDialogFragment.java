@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -155,6 +156,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
     public void onCreate(@Nullable Bundle savedInstanceState) {
         manager = PresentationManager.Factory.create(this);
         super.onCreate(savedInstanceState);
+        presenter = getPresenter();
     }
 
     @Nullable
@@ -165,21 +167,17 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) {
-            //noinspection unchecked
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if (presenter != null) //noinspection unchecked
             presenter.onViewAttached((V) this);
-        }
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
-    public void onStop() {
-        if (presenter != null) {
-            presenter.onViewDetached();
-        }
-        manager.onStop();
-        super.onStop();
+    public void onDestroyView() {
+        if (presenter != null) presenter.onViewDetached();
+        manager.onDetach();
+        super.onDestroyView();
     }
 
     public boolean isShowing() {
@@ -187,7 +185,18 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
     }
 
     @Override
+    public void showError(@Nullable Object tag, @StringRes int errorRes, Object... formatArgs) {
+        showError(tag, getString(errorRes, formatArgs));
+    }
+
+    @Override
+    public void showError(@Nullable Object tag, @StringRes int errorRes) {
+        showError(tag, getString(errorRes));
+    }
+
+    @Override
     public void showError(@Nullable Object tag, String error) {
+
     }
 
     @Override
@@ -197,6 +206,9 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
     @Override
     public void hideProgress(@Nullable Object tag) {
     }
+
+    @Nullable
+    public abstract P getPresenter();
 
     /**
      * @return Check implemented class and return them. If fragment was started from another
@@ -222,7 +234,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
 
     @Override
     public CompositeDisposable getOnDestroyDisposable() {
-        return manager.onStopDisposable();
+        return manager.getDetachDisposable();
     }
 
     @Override

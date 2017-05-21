@@ -4,25 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.artemkopan.test.MainActivity"
     >
 
-    <com.artemkopan.recycler.view.ExRecyclerView
-        android:id="@+id/test"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:erv_textGravity="top"
-        app:erv_textMarginBottom="20dp"
-        app:erv_textMarginLeft="20dp"
-        app:erv_textMarginRight="20dp"
-        app:erv_textMarginTop="20dp"
-        app:erv_textColor="@android:color/black"
-        />
-
-    <com.artemkopan.test.Test
+    <Button
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:text="Open"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
         />
-
 </FrameLayout>
