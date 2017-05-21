@@ -24,12 +24,15 @@ import android.view.WindowManager;
 import com.artemkopan.mvp.presentation.Presentation;
 import com.artemkopan.mvp.presentation.PresentationManager;
 import com.artemkopan.mvp.presenter.BasePresenter;
+import com.artemkopan.mvp.presenter.lifecycle.PresenterProvider;
+import com.artemkopan.mvp.presenter.lifecycle.PresentersProvider;
 import com.artemkopan.mvp.view.BaseView;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.disposables.CompositeDisposable;
 
+@SuppressWarnings({"unchecked", "unused"})
 public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends BaseView> extends AppCompatDialogFragment
         implements BaseView, Presentation {
 
@@ -38,6 +41,90 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
 
     @Nullable protected P presenter;
     private PresentationManager manager;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        manager = PresentationManager.Factory.create(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return manager.inflateLayout(inflater, container);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Window window = getDialog().getWindow();
+        onBaseDialogAnim(window);
+        onBaseDialogBackground(window);
+        onBaseDialogGravity(window);
+        onBaseDialogSize(window);
+        if (presenter != null) presenter.onViewAttached((V) this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (presenter != null) presenter.onViewDetached();
+        manager.onDetach();
+        super.onDestroyView();
+    }
+
+    public void setPresenter(@NonNull PresenterProvider.Factory factory,
+                             Class<? extends BasePresenter<? extends BaseView>> clazz, boolean attach) {
+        setPresenter((P) PresentersProvider.of(this, factory).get(clazz), attach);
+    }
+
+    public void setPresenter(@Nullable P presenter, boolean attach) {
+        this.presenter = presenter;
+        if (attach && presenter != null) presenter.onViewAttached((V) this);
+    }
+
+    public boolean isShowing() {
+        return getDialog() != null && getDialog().isShowing();
+    }
+
+    @Override
+    public void showError(@Nullable Object tag, @StringRes int errorRes, Object... formatArgs) {
+        showError(tag, getString(errorRes, formatArgs));
+    }
+
+    @Override
+    public void showError(@Nullable Object tag, @StringRes int errorRes) {
+        showError(tag, getString(errorRes));
+    }
+
+    @Override
+    public void showError(@Nullable Object tag, String error) {
+    }
+
+    @Override
+    public void showProgress(@Nullable Object tag) {
+    }
+
+    @Override
+    public void hideProgress(@Nullable Object tag) {
+    }
+
+    /**
+     * @return Check implemented class and return them. If fragment was started from another
+     * fragment {@link #getTargetFragment()} or {@link #getParentFragment()},
+     * then used {@link #getParentFragment()} , else {@link #getActivity()}
+     */
+    @Nullable
+    public <T> T getRootClass(Class<T> clazz) {
+        if (getTargetFragment() != null && clazz.isInstance(getTargetFragment())) {
+            return clazz.cast(getTargetFragment());
+        } else if (getParentFragment() != null && clazz.isInstance(getParentFragment())) {
+            return clazz.cast(getParentFragment());
+        } else if (getActivity() != null && clazz.isInstance(getActivity())) {
+            return clazz.cast(getActivity());
+        }
+        return null;
+    }
 
     //==============================================================================================
     // Show dialog methods
@@ -95,16 +182,6 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
         return dialog;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Window window = getDialog().getWindow();
-        onBaseDialogAnim(window);
-        onBaseDialogBackground(window);
-        onBaseDialogGravity(window);
-        onBaseDialogSize(window);
-    }
-
     /**
      * Example: <p>{@code window.getAttributes().windowAnimations = R.style.DialogAnimationUpDown;}</p>
      *
@@ -152,80 +229,10 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
 
     //endregion
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        manager = PresentationManager.Factory.create(this);
-        super.onCreate(savedInstanceState);
-        presenter = getPresenter();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return manager.inflateLayout(inflater, container);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (presenter != null) //noinspection unchecked
-            presenter.onViewAttached((V) this);
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onDestroyView() {
-        if (presenter != null) presenter.onViewDetached();
-        manager.onDetach();
-        super.onDestroyView();
-    }
-
-    public boolean isShowing() {
-        return getDialog() != null && getDialog().isShowing();
-    }
-
-    @Override
-    public void showError(@Nullable Object tag, @StringRes int errorRes, Object... formatArgs) {
-        showError(tag, getString(errorRes, formatArgs));
-    }
-
-    @Override
-    public void showError(@Nullable Object tag, @StringRes int errorRes) {
-        showError(tag, getString(errorRes));
-    }
-
-    @Override
-    public void showError(@Nullable Object tag, String error) {
-
-    }
-
-    @Override
-    public void showProgress(@Nullable Object tag) {
-    }
-
-    @Override
-    public void hideProgress(@Nullable Object tag) {
-    }
-
-    @Nullable
-    public abstract P getPresenter();
-
-    /**
-     * @return Check implemented class and return them. If fragment was started from another
-     * fragment {@link #getTargetFragment()} or {@link #getParentFragment()},
-     * then used {@link #getParentFragment()} , else {@link #getActivity()}
-     */
-    @Nullable
-    public <T> T getRootClass(Class<T> clazz) {
-        if (getTargetFragment() != null && clazz.isInstance(getTargetFragment())) {
-            return clazz.cast(getTargetFragment());
-        } else if (getParentFragment() != null && clazz.isInstance(getParentFragment())) {
-            return clazz.cast(getParentFragment());
-        } else if (getActivity() != null && clazz.isInstance(getActivity())) {
-            return clazz.cast(getActivity());
-        }
-        return null;
-    }
+    //==============================================================================================
+    // PresentationManagerImpl
+    //==============================================================================================
+    //region methods
 
     @Override
     public FragmentActivity getBaseActivity() {
@@ -249,4 +256,5 @@ public abstract class BaseDialogFragment<P extends BasePresenter<V>, V extends B
     public void setStatusBarColor(@ColorInt int color, long delay, TimeUnit timeUnit) {
         manager.setStatusBarColor(color, delay, timeUnit);
     }
+    //endregion
 }

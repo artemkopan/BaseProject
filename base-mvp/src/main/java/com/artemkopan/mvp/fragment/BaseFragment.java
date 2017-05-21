@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 import com.artemkopan.mvp.presentation.Presentation;
 import com.artemkopan.mvp.presentation.PresentationManager;
 import com.artemkopan.mvp.presenter.BasePresenter;
+import com.artemkopan.mvp.presenter.lifecycle.PresenterProvider;
+import com.artemkopan.mvp.presenter.lifecycle.PresentersProvider;
 import com.artemkopan.mvp.view.BaseView;
 
 import java.util.concurrent.TimeUnit;
@@ -28,6 +31,8 @@ import io.reactivex.disposables.CompositeDisposable;
 public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseView> extends Fragment
         implements BaseView, Presentation {
 
+    private static final String TAG = "BaseFragment";
+
     @Nullable protected P presenter;
     protected PresentationManager manager;
 
@@ -35,7 +40,6 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         manager = PresentationManager.Factory.create(this);
         super.onCreate(savedInstanceState);
-        presenter = getPresenter();
     }
 
     @Nullable
@@ -45,10 +49,10 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         if (presenter != null) //noinspection unchecked
             presenter.onViewAttached((V) this);
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -56,6 +60,16 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
         if (presenter != null) presenter.onViewDetached();
         manager.onDetach();
         super.onDestroyView();
+    }
+
+    public void setPresenter(@NonNull PresenterProvider.Factory factory,
+                             Class<? extends BasePresenter<? extends BaseView>> clazz, boolean attach) {
+        setPresenter((P) PresentersProvider.of(this, factory).get(clazz), attach);
+    }
+
+    public void setPresenter(@Nullable P presenter, boolean attach) {
+        this.presenter = presenter;
+        if (attach && presenter != null) presenter.onViewAttached((V) this);
     }
 
     @Override
@@ -72,9 +86,6 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
     public void showError(@Nullable Object tag, String error) {
 
     }
-
-    @Nullable
-    public abstract P getPresenter();
 
     /**
      * @return if true = {@link com.artemkopan.mvp.activity.BaseActivity#onBackPressed()} was called;
@@ -99,6 +110,11 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
         }
         return null;
     }
+
+    //==============================================================================================
+    // PresentationManagerImpl
+    //==============================================================================================
+    //region methods
 
     @Override
     public FragmentActivity getBaseActivity() {
@@ -154,5 +170,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V extends BaseVie
     public void setStatusBarColor(@ColorInt int color, long delay, TimeUnit timeUnit) {
         manager.setStatusBarColor(color, delay, timeUnit);
     }
+
+    //endregion
 
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
@@ -20,21 +21,22 @@ import com.artemkopan.mvp.fragment.BaseFragment;
 import com.artemkopan.mvp.presentation.Presentation;
 import com.artemkopan.mvp.presentation.PresentationManager;
 import com.artemkopan.mvp.presenter.BasePresenter;
+import com.artemkopan.mvp.presenter.lifecycle.PresenterProvider;
+import com.artemkopan.mvp.presenter.lifecycle.PresentersProvider;
 import com.artemkopan.mvp.view.BaseView;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.disposables.CompositeDisposable;
 
-public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseView>
-        extends AppCompatActivity
+@SuppressWarnings({"unchecked", "unused"})
+public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseView> extends AppCompatActivity
         implements BaseView, Presentation {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    @SuppressWarnings("SpellCheckingInspection")
     @Nullable protected P presenter;
     protected PresentationManager manager;
 
@@ -43,9 +45,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseVie
         manager = PresentationManager.Factory.create(this);
         super.onCreate(savedInstanceState);
         setContentView(onInflateLayout());
-        presenter = getPresenter();
-        if (presenter != null) //noinspection unchecked
-            presenter.onViewAttached((V) this);
+        if (presenter != null) presenter.onViewAttached((V) this);
     }
 
     @Override
@@ -76,6 +76,16 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseVie
         super.onBackPressed();
     }
 
+    public void setPresenter(@NonNull PresenterProvider.Factory factory,
+                             Class<? extends BasePresenter<? extends BaseView>> clazz, boolean attach) {
+        setPresenter((P) PresentersProvider.of(this, factory).get(clazz), attach);
+    }
+
+    public void setPresenter(@Nullable P presenter, boolean attach) {
+        this.presenter = presenter;
+        if (attach && presenter != null) presenter.onViewAttached((V) this);
+    }
+
     @Override
     public void showError(@Nullable Object tag, @StringRes int errorRes, Object... formatArgs) {
         showError(tag, getString(errorRes, formatArgs));
@@ -100,9 +110,6 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseVie
     public void hideProgress(@Nullable Object tag) {
 
     }
-
-    @Nullable
-    public abstract P getPresenter();
 
     //==============================================================================================
     // PresentationManagerImpl
