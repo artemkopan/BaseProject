@@ -8,13 +8,11 @@ ext.versions = [
         supportLibrary: '25.3.1',
 
         // Rx
-        rxJava        : '2.0.9',
+        rxJava        : '2.1.0',
         rxAndroid     : '2.0.1',
-
-        kotlin        : '1.1.1'
 ]
 
-ext.bintrayVersion = '2.0.5'
+ext.bintrayVersion = '2.0.6'
 
 ext.libraries = [
 
