@@ -21,6 +21,13 @@ public class RotateActivity extends BaseActivity<RotatePresenter, RotateView> im
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setPresenter(PresentersProvider.of(this, new Factory() {
+            @Override
+            public <T extends BasePresenter<? extends BaseView>> T create(Class<T> modelClass) {
+                //noinspection unchecked
+                return (T) new RotatePresenter();
+            }
+        }).get(RotatePresenter.class), true);
     }
 
     @Override
@@ -36,18 +43,6 @@ public class RotateActivity extends BaseActivity<RotatePresenter, RotateView> im
     @Override
     public void hideProgress(@Nullable Object tag) {
         super.hideProgress(tag);
-    }
-
-    @Nullable
-    @Override
-    public RotatePresenter getPresenter() {
-        return PresentersProvider.of(this, new Factory() {
-            @Override
-            public <T extends BasePresenter<? extends BaseView>> T create(Class<T> modelClass) {
-                //noinspection unchecked
-                return (T) new RotatePresenter();
-            }
-        }).get(RotatePresenter.class);
     }
 
     @Override

@@ -3,7 +3,6 @@ package co.inteza.all.dialog;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
 import com.artemkopan.mvp.dialog.BaseDialogFragment;
-import com.artemkopan.mvp.presenter.BasePresenter;
 
 import co.inteza.all.R;
 
@@ -71,12 +69,6 @@ public class ProgressDialog extends BaseDialogFragment {
         progressTxt = (TextView) rootView.findViewById(R.id.progress_txt);
         progressTxt.setText(description);
         return rootView;
-    }
-
-    @Nullable
-    @Override
-    public BasePresenter getPresenter() {
-        return null;
     }
 
     public void setDescription(String description) {

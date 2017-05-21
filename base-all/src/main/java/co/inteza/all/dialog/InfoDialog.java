@@ -10,7 +10,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.artemkopan.mvp.dialog.BaseDialogFragment;
-import com.artemkopan.mvp.presenter.BasePresenter;
 import com.artemkopan.utils.ExtraUtils;
 
 import co.inteza.all.R;
@@ -63,12 +62,6 @@ public class InfoDialog extends BaseDialogFragment {
         Bundle args = getArguments();
         showProgress(args.getBoolean(KEY_PROGRESS, true));
         setDescription(args.getString(KEY_DESCRIPTION));
-    }
-
-    @Nullable
-    @Override
-    public BasePresenter getPresenter() {
-        return null;
     }
 
     public void showProgress(boolean show) {

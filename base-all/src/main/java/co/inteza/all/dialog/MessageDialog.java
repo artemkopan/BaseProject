@@ -5,7 +5,6 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
 import com.artemkopan.mvp.dialog.BaseDialogFragment;
-import com.artemkopan.mvp.presenter.BasePresenter;
 
 import co.inteza.all.R;
 
@@ -74,12 +72,6 @@ public class MessageDialog extends BaseDialogFragment {
         setTitle(title);
         setDescription(description);
         return rootView;
-    }
-
-    @Nullable
-    @Override
-    public BasePresenter getPresenter() {
-        return null;
     }
 
     public void setTitle(String title) {
