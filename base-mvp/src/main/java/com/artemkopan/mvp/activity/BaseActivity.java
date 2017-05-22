@@ -44,7 +44,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V extends BaseVie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         manager = PresentationManager.Factory.create(this);
         super.onCreate(savedInstanceState);
-        setContentView(onInflateLayout());
+        if (onInflateLayout() != View.NO_ID) setContentView(onInflateLayout());
         if (presenter != null) presenter.onViewAttached((V) this);
     }
 

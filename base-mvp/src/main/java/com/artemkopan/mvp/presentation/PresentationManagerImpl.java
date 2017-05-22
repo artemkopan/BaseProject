@@ -44,7 +44,7 @@ public final class PresentationManagerImpl implements PresentationManager {
 
     @Override
     public View inflateLayout(LayoutInflater inflater, @Nullable ViewGroup container) {
-        if (presentation.onInflateLayout() > 0) {
+        if (presentation.onInflateLayout() != View.NO_ID) {
             return inflater.inflate(presentation.onInflateLayout(), container, false);
         }
         return null;
