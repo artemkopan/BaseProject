@@ -1,7 +1,8 @@
 package com.artemkopan.widget.vector;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatCheckedTextView;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 /**
@@ -9,18 +10,18 @@ import android.util.AttributeSet;
  * 30.12.16
  */
 
-public class VectorCompatButton extends AppCompatButton {
+public class VectorCompatCheckedTextView extends AppCompatCheckedTextView {
 
-    public VectorCompatButton(Context context) {
+    public VectorCompatCheckedTextView(Context context) {
         super(context);
     }
 
-    public VectorCompatButton(Context context, AttributeSet attrs) {
+    public VectorCompatCheckedTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public VectorCompatButton(Context context, AttributeSet attrs, int defStyle) {
+    public VectorCompatCheckedTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
     }

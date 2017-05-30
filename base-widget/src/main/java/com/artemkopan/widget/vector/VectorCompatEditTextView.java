@@ -12,6 +12,10 @@ import com.artemkopan.widget.common.ErrorEditText;
 
 public class VectorCompatEditTextView extends ErrorEditText {
 
+    public VectorCompatEditTextView(Context context) {
+        super(context);
+    }
+
     public VectorCompatEditTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);

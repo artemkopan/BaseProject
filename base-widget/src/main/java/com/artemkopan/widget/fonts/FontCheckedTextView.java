@@ -1,16 +1,16 @@
 package com.artemkopan.widget.fonts;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatCheckedTextView;
 import android.util.AttributeSet;
+
+import com.artemkopan.widget.vector.VectorCompatCheckedTextView;
 
 /**
  * Created by Artem Kopan for BaseProject
  * 30.05.17
  */
 
-public class FontCheckedTextView extends AppCompatCheckedTextView {
+public class FontCheckedTextView extends VectorCompatCheckedTextView {
 
     public FontCheckedTextView(Context context) {
         super(context);

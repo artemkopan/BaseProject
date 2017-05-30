@@ -11,6 +11,10 @@ import android.util.AttributeSet;
 
 public class VectorCompatTextView extends AppCompatTextView {
 
+    public VectorCompatTextView(Context context) {
+        super(context);
+    }
+
     public VectorCompatTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
