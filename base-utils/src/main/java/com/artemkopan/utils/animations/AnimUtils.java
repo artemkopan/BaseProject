@@ -21,10 +21,10 @@ import java.util.ArrayList;
 @SuppressWarnings("unused")
 public final class AnimUtils {
 
-    public static final int VERY_FAST_DURATION = 150;
-    public static final int FAST_DURATION = 200;
-    public static final int MIDDLE_DURATION = 400;
-    public static final int SLOW_DURATION = 700;
+    public static final long VERY_FAST_DURATION = 150L;
+    public static final long FAST_DURATION = 200L;
+    public static final long MIDDLE_DURATION = 400L;
+    public static final long SLOW_DURATION = 700L;
 
     public static final Property<View, Integer> BACKGROUND_TINT_LIST =
             new Property<View, Integer>(Integer.class, "backgroundTint") {
@@ -43,7 +43,7 @@ public final class AnimUtils {
                 }
             };
 
-    public static ObjectAnimator alpha(int duration, float... values) {
+    public static ObjectAnimator alpha(long duration, float... values) {
         ObjectAnimator objectAnimator = new ObjectAnimator();
         objectAnimator.setPropertyName("alpha");
         objectAnimator.setFloatValues(values);
@@ -54,7 +54,7 @@ public final class AnimUtils {
     /**
      * You can use with {@link android.graphics.drawable.GradientDrawable}
      */
-    public static ObjectAnimator color(int duration, int... colors) {
+    public static ObjectAnimator color(long duration, int... colors) {
         ObjectAnimator animator = new ObjectAnimator();
         animator.setIntValues(colors);
         animator.setDuration(duration);
@@ -63,7 +63,7 @@ public final class AnimUtils {
         return animator;
     }
 
-    public static ObjectAnimator textColor(int duration, int... colors) {
+    public static ObjectAnimator textColor(long duration, int... colors) {
         ObjectAnimator textColorAnimator = new ObjectAnimator();
         textColorAnimator.setPropertyName("textColor");
         textColorAnimator.setIntValues(colors);
@@ -72,7 +72,7 @@ public final class AnimUtils {
         return textColorAnimator;
     }
 
-    public static ObjectAnimator backgroundColor(int duration, int... colors) {
+    public static ObjectAnimator backgroundColor(long duration, int... colors) {
         ObjectAnimator textColorAnimator = new ObjectAnimator();
         textColorAnimator.setPropertyName("backgroundColor");
         textColorAnimator.setIntValues(colors);
@@ -81,14 +81,13 @@ public final class AnimUtils {
         return textColorAnimator;
     }
 
-    public static ObjectAnimator textColorAndBackgroundColor(int duration,
+    public static ObjectAnimator textColorAndBackgroundColor(long duration,
                                                              int textStartColor,
                                                              int textEndColor,
                                                              int backgroundStartColor,
                                                              int backgroundEndColor) {
 
-        PropertyValuesHolder textColor = PropertyValuesHolder.ofInt("textColor", textStartColor,
-                                                                    textEndColor);
+        PropertyValuesHolder textColor = PropertyValuesHolder.ofInt("textColor", textStartColor, textEndColor);
         PropertyValuesHolder backgroundColor = PropertyValuesHolder.ofInt("backgroundColor",
                                                                           backgroundStartColor, backgroundEndColor);
 
@@ -106,7 +105,7 @@ public final class AnimUtils {
     /**
      * You can use in {@link android.widget.ImageView#setColorFilter(ColorFilter)} (tint image);
      */
-    public static ObjectAnimator colorFilter(int duration, int... colors) {
+    public static ObjectAnimator colorFilter(long duration, int... colors) {
         ObjectAnimator textColorAnimator = new ObjectAnimator();
         textColorAnimator.setPropertyName("colorFilter");
         textColorAnimator.setIntValues(colors);
@@ -115,7 +114,7 @@ public final class AnimUtils {
         return textColorAnimator;
     }
 
-    public static ObjectAnimator rotation(int duration, float... angles) {
+    public static ObjectAnimator rotation(long duration, float... angles) {
         ObjectAnimator textColorAnimator = new ObjectAnimator();
         textColorAnimator.setPropertyName("rotation");
         textColorAnimator.setFloatValues(angles);
@@ -123,7 +122,7 @@ public final class AnimUtils {
         return textColorAnimator;
     }
 
-    public static ObjectAnimator shake(int duration) {
+    public static ObjectAnimator shake(long duration) {
         ObjectAnimator shakeAnim = new ObjectAnimator();
         shakeAnim.setPropertyName("translationX");
         shakeAnim.setFloatValues(0, 25, -25, 25, -25, 15, -15, 6, -6, 0);

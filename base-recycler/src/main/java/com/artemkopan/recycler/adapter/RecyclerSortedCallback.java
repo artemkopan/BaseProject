@@ -3,15 +3,13 @@ package com.artemkopan.recycler.adapter;
 import android.support.v7.util.SortedList;
 
 /**
- * Created by Artem Kopan for MyMoodAndMe
- * 29.03.17
+ * Adapted RecyclerSorted Callback for {@link RecyclerSortedAdapter}. You can safely use {@link RecyclerBaseAdapter#showHeader(boolean)}} or {@link RecyclerBaseAdapter#showFooter(boolean)}
  */
-
 public abstract class RecyclerSortedCallback<T2> extends SortedList.Callback<T2> {
 
-    private final RecyclerAdapter adapter;
+    private final RecyclerBaseAdapter adapter;
 
-    public RecyclerSortedCallback(RecyclerAdapter adapter) {
+    public RecyclerSortedCallback(RecyclerBaseAdapter adapter) {
         this.adapter = adapter;
     }
 

@@ -1,136 +1,109 @@
 package com.artemkopan.recycler.adapter;
 
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.artemkopan.recycler.holder.BaseHolder;
+import com.artemkopan.recycler.listeners.OnItemClickListener;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
-public abstract class RecyclerBaseAdapter<M, VH extends RecyclerView.ViewHolder> extends RecyclerAdapter<M, VH> {
+/**
+ * Created by Artem Kopan for jabrool
+ * 25.02.2017
+ */
 
-    private static final String TAG = "RecyclerBaseAdapter";
-    protected List<M> mList;
+public abstract class RecyclerBaseAdapter<M, VH extends ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    public RecyclerBaseAdapter() {
-    }
-
-    public RecyclerBaseAdapter(List<M> list) {
-        this.mList = list;
-    }
+    public static final int HEADER = 98, FOOTER = 99;
+    private boolean isShowHeader = false, isShowFooter = false;
+    private OnItemClickListener<M> onItemClickListener;
 
     @Override
     public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
 
-    @Nullable
-    public M removeItem(Object model) {
-        int index = mList.indexOf(model);
-        if (index != -1) {
-            return removeItem(index);
-        } else {
-            return null;
-        }
+    @Override
+    public void onBindViewHolder(VH holder, int position) {
+        onBindViewHolder(holder, getItemByPos(position), position);
     }
 
-    public M removeItem(int position) {
-        final M model = mList.remove(position);
-        notifyItemRemoved(position);
-        return model;
-    }
+    public abstract void onBindViewHolder(VH holder, M model, int position);
 
-    public void addItem(M model) {
-        mList.add(model);
-        notifyItemInserted(mList.size() - 1);
-    }
+    protected abstract M getListItemByPos(int pos);
 
-    public void addItem(int position, M model) {
-        mList.add(position, model);
-        notifyItemInserted(position);
-    }
+    protected abstract int getListSize();
 
-    public void addItemRanged(Collection<M> collection) {
-        if (collection == null) {
-            Log.e(TAG, "Collection is empty");
-            return;
-        }
-        int size = mList.size();
-        mList.addAll(collection);
-        notifyItemRangeInserted(size, mList.size() - size);
-    }
-
-    public void moveItem(int fromPosition, int toPosition) {
-        final M model = mList.remove(fromPosition);
-        mList.add(toPosition, model);
-        notifyItemMoved(fromPosition, toPosition);
-    }
-
-    public void clear() {
-        if (mList != null) {
-            mList.clear();
-            notifyDataSetChanged();
-        }
-    }
-
-    public List<M> getList() {
-        return mList;
-    }
-
-    public void setList(List<M> list) {
-        setList(list, true);
-    }
-
-    public void setList(List<M> list, boolean notify) {
-        if (mList != null && mList.isEmpty()) {
-            mList.clear();
-        }
-        this.mList = list;
-        if (notify) {
-            notifyDataSetChanged();
-        }
-    }
-
-    public void setList(Collection<M> list, boolean notify) {
-        if (mList == null) {
-            mList = new ArrayList<>();
-            mList.addAll(list);
-        } else {
-            mList.clear();
-            mList.addAll(list);
-        }
-        notifyDataSetChanged();
-    }
-
-    public void createList(boolean dropList) {
-        if (mList != null && !dropList) return;
-        setList(new ArrayList<M>());
-    }
-
-    /***
-     * Find item in list;
-     *
-     * @param object object which has been found;
-     * @return return object index in list; If item not found return -1;
-     */
-    public int getItemIndex(Object object) {
-        return mList != null ? mList.indexOf(object) : -1;
+    public boolean isEmpty() {
+        return getListSize() == 0;
     }
 
     @Override
-    public int getListSize() {
-        return mList != null ? mList.size() : 0;
+    public void onViewRecycled(VH holder) {
+        super.onViewRecycled(holder);
+        if (holder != null && holder instanceof BaseHolder) {
+            ((BaseHolder) holder).clear();
+        }
     }
 
     @Override
-    @Nullable
-    protected M getListItemByPos(int position) {
-        if (position >= getList().size() || position < 0) {
-            Log.w(TAG, "Index is out of bounds");
-            return null;
+    public int getItemCount() {
+        return getListSize() + getPosOffset() + (isShowFooter ? 1 : 0);
+    }
+
+    public M getItemByPos(int position) {
+        return getListItemByPos(position - getPosOffset());
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isShowHeader && position == 0) {
+            return HEADER;
+        } else if (isShowFooter && getItemCount() - 1 == position) {
+            return FOOTER;
+        } else {
+            return super.getItemViewType(position);
         }
-        return mList.get(position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener<M> onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    protected void callOnItemClick(ViewHolder holder, View view, View... transactionViews) {
+        int position = holder.getAdapterPosition();
+        callOnItemClick(view, position, getItemByPos(position), transactionViews);
+    }
+
+    protected void callOnItemClick(View view, int pos, M item, View... transactionViews) {
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClickListener(view, pos, item, transactionViews);
+        }
+    }
+
+    public boolean isShowHeader() {
+        return isShowHeader;
+    }
+
+    public void showHeader(boolean show) {
+        if (isShowHeader == show) return;
+        isShowHeader = show;
+        if (show) notifyItemInserted(0);
+        else notifyItemRemoved(0);
+    }
+
+    public boolean isShowFooter() {
+        return isShowFooter;
+    }
+
+    public void showFooter(boolean show) {
+        if (isShowFooter == show) return;
+        isShowFooter = show;
+        if (show) notifyItemInserted(getItemCount());
+        else notifyItemRemoved(getItemCount() + 1); //remove with footer
+    }
+
+    public int getPosOffset() {
+        return isShowHeader ? 1 : 0;
     }
 
 }
