@@ -20,10 +20,6 @@ public abstract class RecyclerListAdapter<M, VH extends RecyclerView.ViewHolder>
         this.list = list;
     }
 
-    public List<M> getList() {
-        return list;
-    }
-
     @Override
     protected M getListItemByPos(int pos) {
         return get(pos);
@@ -57,6 +53,10 @@ public abstract class RecyclerListAdapter<M, VH extends RecyclerView.ViewHolder>
             this.list.addAll(list);
         }
         notifyDataSetChanged();
+    }
+
+    public List<M> getList() {
+        return list;
     }
 
     public void moveItem(int fromPosition, int toPosition) {

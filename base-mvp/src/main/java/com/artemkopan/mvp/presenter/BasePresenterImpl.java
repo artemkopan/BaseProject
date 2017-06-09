@@ -4,7 +4,10 @@ import android.support.annotation.Nullable;
 
 import com.artemkopan.mvp.view.BaseView;
 
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Base class that implements the BasePresenter interface and provides a base implementation for
@@ -15,6 +18,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public abstract class BasePresenterImpl<T extends BaseView> implements BasePresenter<T> {
 
     protected CompositeDisposable clearedDisposable = new CompositeDisposable();
+    protected CompositeDisposable detachedDisposable = new CompositeDisposable();
 
     @Nullable private T view;
 
@@ -25,9 +29,13 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
 
     @Override
     public void onViewDetached() {
+        detachedDisposable.clear();
         this.view = null;
     }
 
+    /**
+     * Method onCleared was call only if you use LifeCycle presenter {@link com.artemkopan.mvp.presenter.lifecycle.PresenterProvider#get(Class)}
+     */
     @Override
     public void onCleared() {
         clearedDisposable.clear();
@@ -36,6 +44,24 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
     @Nullable
     public T getMvpView() {
         return view;
+    }
+
+    protected Consumer<? super Disposable> onDetachSubscribe() {
+        return new Consumer<Disposable>() {
+            @Override
+            public void accept(@NonNull Disposable disposable) throws Exception {
+                detachedDisposable.add(disposable);
+            }
+        };
+    }
+
+    protected Consumer<? super Disposable> onClearSubscribe() {
+        return new Consumer<Disposable>() {
+            @Override
+            public void accept(@NonNull Disposable disposable) throws Exception {
+                clearedDisposable.add(disposable);
+            }
+        };
     }
 
     public void onShowProgress() {
