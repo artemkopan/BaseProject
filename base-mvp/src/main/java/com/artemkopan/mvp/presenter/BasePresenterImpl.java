@@ -55,7 +55,7 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
         };
     }
 
-    protected Consumer<? super Disposable> onClearSubscribe() {
+    protected Consumer<? super Disposable> onClearedSubscribe() {
         return new Consumer<Disposable>() {
             @Override
             public void accept(@NonNull Disposable disposable) throws Exception {

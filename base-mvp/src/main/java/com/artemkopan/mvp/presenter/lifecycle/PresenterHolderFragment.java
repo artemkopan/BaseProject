@@ -79,7 +79,7 @@ public class PresenterHolderFragment extends Fragment {
                     public void onActivityDestroyed(Activity activity) {
                         PresenterHolderFragment fragment = notCommittedActivityHolders.remove(activity);
                         if (fragment != null) {
-                            Log.e(LOG_TAG, "Failed to save a ViewModel for " + activity);
+                            Log.e(LOG_TAG, "Failed to save a Presenter for " + activity);
                         }
                     }
                 };
@@ -92,20 +92,19 @@ public class PresenterHolderFragment extends Fragment {
                     public void onFragmentDestroyed(FragmentManager fm, Fragment parentFragment) {
                         PresenterHolderFragment fragment = notCommittedFragmentHolders.remove(parentFragment);
                         if (fragment != null) {
-                            Log.e(LOG_TAG, "Failed to save a ViewModel for " + parentFragment);
+                            Log.e(LOG_TAG, "Failed to save a Presenter for " + parentFragment);
                         }
                     }
                 };
 
         private static PresenterHolderFragment findHolderFragment(FragmentManager manager) {
             if (manager.isDestroyed()) {
-                throw new IllegalStateException("Can't access ViewModels from onDetach");
+                throw new IllegalStateException("Can't access Presenters from onDetach");
             }
 
             Fragment fragmentByTag = manager.findFragmentByTag(HOLDER_TAG);
             if (fragmentByTag != null && !(fragmentByTag instanceof PresenterHolderFragment)) {
-                throw new IllegalStateException("Unexpected "
-                                                + "fragment instance was returned by HOLDER_TAG");
+                throw new IllegalStateException("Unexpected fragment instance was returned by HOLDER_TAG");
             }
             return (PresenterHolderFragment) fragmentByTag;
         }
