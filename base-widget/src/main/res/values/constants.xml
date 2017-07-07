@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="font_style_light">10</integer>
-    <integer name="font_style_extra_light">11</integer>
-    <integer name="font_style_extra_bold">12</integer>
+    <integer name="font_style_normal">0</integer>
+    <integer name="font_style_italic">2</integer>
+    <integer name="font_style_bold">1</integer>
+    <integer name="font_style_bold_italic">3</integer>
+
     <integer name="font_style_medium">13</integer>
+    <integer name="font_style_semi_bold">14</integer>
+    <integer name="font_style_semi_bold_italic">15</integer>
+    <integer name="font_style_light">10</integer>
+    <integer name="font_style_light_bold">11</integer>
+    <integer name="font_style_light_italic">12</integer>
+    <integer name="font_style_extra_bold">16</integer>
+    <integer name="font_style_extra_bold_italic">17</integer>
 
 
 </resources>

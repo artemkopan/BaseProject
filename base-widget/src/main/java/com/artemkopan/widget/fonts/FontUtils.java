@@ -1,10 +1,10 @@
 package com.artemkopan.widget.fonts;
 
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,10 +25,27 @@ import java.lang.annotation.RetentionPolicy;
 public class FontUtils {
 
     public static final String ANDROID_SCHEMA = "http://schemas.android.com/apk/res/android";
-    public static final int LIGHT = 10;
-    public static final int EXTRA_LIGHT = 11;
-    public static final int EXTRA_BOLD = 12;
+
+    public static final int NORMAL = Typeface.NORMAL;
+
     public static final int MEDIUM = 13;
+
+    public static final int ITALIC = Typeface.ITALIC;
+
+    public static final int BOLD = Typeface.BOLD;
+    public static final int BOLD_ITALIC = Typeface.BOLD_ITALIC;
+
+    public static final int SEMI_BOLD = 14;
+    public static final int SEMI_BOLD_ITALIC = 15;
+
+    public static final int LIGHT = 10;
+    public static final int LIGHT_BOLD = 11;
+    public static final int LIGHT_ITALIC = 12;
+
+    public static final int EXTRA_BOLD = 16;
+    public static final int EXTRA_BOLD_ITALIC = 17;
+
+
     private static final String TAG = "FontUtils";
     private static final SparseArray<String> FONTS = new SparseArray<>();
 
@@ -51,21 +68,29 @@ public class FontUtils {
             textStyle = attrs.getAttributeIntValue(ANDROID_SCHEMA, "textStyle", Typeface.NORMAL);
         }
 
+        Typeface typeface;
+
         if (TextUtils.isEmpty(fontPath)) {
-            Typeface customFont = selectTypeface(context, textStyle);
-            textView.setTypeface(customFont);
+            typeface = selectTypeface(context, textStyle);
         } else {
-            textView.setTypeface(FontCache.getTypeface(fontPath, context));
+            typeface = FontCache.getTypeface(fontPath, context);
+        }
+
+        if (typeface != null) {
+            textView.setTypeface(typeface);
         }
 
         attributeArray.recycle();
     }
 
+    @Nullable
     public static Typeface selectTypeface(Context context, int textStyle) {
 
         if (FONTS.size() == 0) {
-            throw new ArrayIndexOutOfBoundsException("For use custom fonts, firstly you must call addFont()");
+            Log.w(TAG, "For use custom fonts, firstly you must call addFont()");
+            return null;
         }
+
         String fontNewPath = FONTS.get(textStyle);
 
         if (TextUtils.isEmpty(fontNewPath)) {
@@ -79,7 +104,20 @@ public class FontUtils {
         return FontCache.getTypeface(fontNewPath, context);
     }
 
-    @IntDef({Typeface.BOLD, Typeface.ITALIC, Typeface.BOLD_ITALIC, EXTRA_BOLD, EXTRA_LIGHT, LIGHT, MEDIUM, Typeface.NORMAL})
+    @IntDef({
+            NORMAL,
+            MEDIUM,
+            ITALIC,
+            BOLD,
+            BOLD_ITALIC,
+            SEMI_BOLD,
+            SEMI_BOLD_ITALIC,
+            LIGHT,
+            LIGHT_BOLD,
+            LIGHT_ITALIC,
+            EXTRA_BOLD,
+            EXTRA_BOLD_ITALIC
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface TextStyle {
 
