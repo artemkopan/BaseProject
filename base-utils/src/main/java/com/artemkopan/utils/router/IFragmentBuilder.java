@@ -40,6 +40,10 @@ public interface IFragmentBuilder {
 
         FragmentAnim setSharedElements(Pair<View, String>... sharedElements);
 
+        FragmentAnim setEnterOverlap(boolean enterOverlap);
+
+        FragmentAnim setReturnOverlap(boolean returnOverlap);
+
         Builder useCustomAnim(boolean isUse);
 
         Builder main();

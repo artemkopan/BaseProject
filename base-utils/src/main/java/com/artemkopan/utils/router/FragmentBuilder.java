@@ -41,7 +41,9 @@ public class FragmentBuilder implements FragmentAnim, Builder {
     private Pair<View, String>[] sharedElements;
     private Object sharedEnterTransition, sharedReturnTransition;
     private Object enterTransition, exitTransition, reenterTransition, returnTransition;
+    private boolean enterOverlap, returnOverlap;
     private boolean addToBackStack = true, useCustomAnim = true;
+
 
     /**
      * If needed you can set default id res for fragments. Usually call in {@link android.app.Application}
@@ -143,6 +145,18 @@ public class FragmentBuilder implements FragmentAnim, Builder {
     }
 
     @Override
+    public FragmentAnim setEnterOverlap(boolean enterOverlap) {
+        this.enterOverlap = enterOverlap;
+        return this;
+    }
+
+    @Override
+    public FragmentAnim setReturnOverlap(boolean returnOverlap) {
+        this.returnOverlap = returnOverlap;
+        return this;
+    }
+
+    @Override
     public Builder useCustomAnim(boolean isUse) {
         useCustomAnim = isUse;
         return this;
@@ -219,7 +233,7 @@ public class FragmentBuilder implements FragmentAnim, Builder {
         }
         if (method != Method.ADD && idRes <= 0 && idResDefault <= 0) {
             throw new RouterBuilderException("Your fragment container id myst be >= 0.\n\n" +
-                                             "You can call in Application onCreate() Router.setIdResDefault()\n");
+                                                     "You can call in Application onCreate() Router.setIdResDefault()\n");
         }
         int idRes;
 
@@ -238,7 +252,7 @@ public class FragmentBuilder implements FragmentAnim, Builder {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             if (sharedElements != null && sharedElements.length > 0) {
                 Transition transition = TransitionInflater.from(fragment.getContext())
-                                                          .inflateTransition(android.R.transition.move);
+                        .inflateTransition(android.R.transition.move);
 
                 fragment.setSharedElementEnterTransition(sharedEnterTransition == null ? transition
                                                                                        : sharedEnterTransition);
@@ -259,6 +273,9 @@ public class FragmentBuilder implements FragmentAnim, Builder {
         if (exitTransition != null) fragment.setExitTransition(exitTransition);
         if (reenterTransition != null) fragment.setReenterTransition(reenterTransition);
         if (returnTransition != null) fragment.setReturnTransition(returnTransition);
+
+        fragment.setAllowEnterTransitionOverlap(enterOverlap);
+        fragment.setAllowReturnTransitionOverlap(returnOverlap);
 
         if (useCustomAnim) {
             fragmentTransaction.setCustomAnimations(
