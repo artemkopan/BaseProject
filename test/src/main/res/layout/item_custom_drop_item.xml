@@ -1,0 +1,13 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@android:id/text1"
+          style="?android:attr/dropDownItemStyle"
+          android:layout_width="match_parent"
+          android:layout_height="25dp"
+          android:ellipsize="marquee"
+          android:singleLine="true"
+          android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
+          android:textColor="@android:color/holo_blue_light"
+          android:textSize="10sp"
+          tools:text="asdasda"
+    />

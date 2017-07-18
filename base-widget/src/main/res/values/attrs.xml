@@ -34,10 +34,11 @@
     </declare-styleable>
 
     <declare-styleable name="PlacesAutoCompleteView">
-        <attr name="gac_debounce" format="integer"/>
-        <attr name="gac_min_start_search" format="integer"/>
-        <attr name="gac_max_result" format="integer"/>
-        <attr name="gac_init_adapter" format="boolean"/>
+        <attr name="pac_debounce" format="integer"/>
+        <attr name="pac_min_start_search" format="integer"/>
+        <attr name="pac_max_result" format="integer"/>
+        <attr name="pac_init_adapter" format="boolean"/>
+        <attr name="pac_item_layout" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="FontTextView">
