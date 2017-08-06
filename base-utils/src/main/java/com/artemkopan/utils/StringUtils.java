@@ -1,7 +1,5 @@
 package com.artemkopan.utils;
 
-
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
@@ -49,6 +47,15 @@ public final class StringUtils {
         return isEmpty(value) ? null : value.toString().trim();
     }
 
+    public static String trimToStr(CharSequence s) {
+        return trimToStr(s, "");
+    }
+
+    public static String trimToStr(CharSequence s, String fallback) {
+        if (s == null) return fallback;
+        return trim(s).toString();
+    }
+
     public static CharSequence trim(CharSequence s) {
         if (s == null) return null;
 
@@ -67,13 +74,57 @@ public final class StringUtils {
         return s.subSequence(start, end);
     }
 
-
     public static String getHexColorFromRes(Context context, @ColorRes int colorRes,
                                             boolean excludeTransparent) {
         return '#' + (excludeTransparent
                       ? Integer.toHexString(ContextCompat.getColor(context, colorRes) & 0x00ffffff)
                       : Integer.toHexString(ContextCompat.getColor(context, colorRes)));
     }
+
+    /**
+     * Format time: hh:mm:ss. If withSeconds == false hh:mm
+     */
+    public static String formatTime(long currentTime, boolean withSeconds) {
+        return withSeconds
+               ? String.format(Locale.US, "%02d:%02d:%02d",
+                               TimeUnit.SECONDS.toHours(currentTime),
+                               TimeUnit.SECONDS.toMinutes(currentTime) % TimeUnit.HOURS.toMinutes(1),
+                               TimeUnit.SECONDS.toSeconds(currentTime) % TimeUnit.MINUTES.toSeconds(1))
+               : String.format(Locale.US, "%02d:%02d",
+                               TimeUnit.SECONDS.toHours(currentTime),
+                               TimeUnit.SECONDS.toMinutes(currentTime) % TimeUnit.HOURS.toMinutes(1));
+    }
+
+    /**
+     * @return Parse string and return only digits and +*# chars;
+     */
+    @Nullable
+    public static String getPhoneNumber(String value) {
+        if (isEmpty(value)) {
+            return null;
+        }
+        return value.replaceAll("[^0-9+*#]+", "");
+    }
+
+    /**
+     * Get html compat {@link Html#fromHtml(String, int)}
+     */
+    public static CharSequence fromHtml(String value) {
+        if (VERSION.SDK_INT >= VERSION_CODES.N) {
+            return fromHtml(value, FROM_HTML_MODE_LEGACY);
+        } else {
+            return fromHtml(value, 0);
+        }
+    }
+
+    public static CharSequence fromHtml(String value, int flags) {
+        if (VERSION.SDK_INT >= VERSION_CODES.N) {
+            return Html.fromHtml(value, flags);
+        } else {
+            return Html.fromHtml(value);
+        }
+    }
+
 
 
     // Capitalizing
@@ -211,7 +262,6 @@ public final class StringUtils {
         return capitalize(str, delimiters);
     }
 
-
     /**
      * Is the character a delimiter.
      *
@@ -229,48 +279,5 @@ public final class StringUtils {
             }
         }
         return false;
-    }
-
-
-    /**
-     * Format time: hh:mm:ss. If withSeconds == false hh:mm
-     */
-    public static String formatTime(long currentTime, boolean withSeconds) {
-        return withSeconds
-               ? String.format(Locale.US, "%02d:%02d:%02d",
-                               TimeUnit.SECONDS.toHours(currentTime),
-                               TimeUnit.SECONDS.toMinutes(currentTime) % TimeUnit.HOURS.toMinutes(1),
-                               TimeUnit.SECONDS.toSeconds(currentTime) % TimeUnit.MINUTES.toSeconds(1))
-               : String.format(Locale.US, "%02d:%02d",
-                               TimeUnit.SECONDS.toHours(currentTime),
-                               TimeUnit.SECONDS.toMinutes(currentTime) % TimeUnit.HOURS.toMinutes(1));
-    }
-
-
-    /**
-     * @return Parse string and return only digits and +*# chars;
-     */
-    @Nullable
-    public static String getPhoneNumber(String value) {
-        if (isEmpty(value)) {
-            return null;
-        }
-        return value.replaceAll("[^0-9+*#]+", "");
-    }
-
-    /**
-     * Get html compat {@link Html#fromHtml(String, int)}
-     */
-    @TargetApi(VERSION_CODES.N)
-    public static CharSequence fromHtml(String value) {
-        return fromHtml(value, FROM_HTML_MODE_LEGACY);
-    }
-
-    public static CharSequence fromHtml(String value, int flags) {
-        if (VERSION.SDK_INT >= VERSION_CODES.N) {
-            return Html.fromHtml(value, flags);
-        } else {
-            return Html.fromHtml(value);
-        }
     }
 }

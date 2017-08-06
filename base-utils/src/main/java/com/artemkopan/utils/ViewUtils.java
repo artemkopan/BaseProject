@@ -11,6 +11,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
 
 import static com.artemkopan.utils.ViewUtils.DrawableIndex.DRAWABLE_BOTTOM;
 import static com.artemkopan.utils.ViewUtils.DrawableIndex.DRAWABLE_LEFT;
@@ -164,6 +166,28 @@ public final class ViewUtils {
         } else {
             preDrawListener(view, ready);
         }
+    }
+
+    /**
+     * Add new input filters to already exists
+     *
+     * @param text       - view
+     * @param newFilters - new Input filters;
+     */
+    public static void addInputFilter(TextView text, InputFilter... newFilters) {
+        InputFilter[] filters = text.getFilters();
+
+        if (filters == null || filters.length == 0) {
+            text.setFilters(newFilters);
+            return;
+        }
+
+        int length = filters.length;
+
+        filters = Arrays.copyOf(filters, length + newFilters.length);
+        System.arraycopy(newFilters, 0, filters, length, newFilters.length);
+
+        text.setFilters(filters);
     }
 
     public static boolean onDrawableClick(MotionEvent event, TextView view, @DrawableIndex int pos, @Px int fuzz) {

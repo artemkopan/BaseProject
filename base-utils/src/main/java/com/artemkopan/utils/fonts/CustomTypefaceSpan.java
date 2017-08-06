@@ -7,7 +7,7 @@ import android.text.TextPaint;
 import android.text.style.TypefaceSpan;
 
 /**
- * Created by Artem Kopan for MyMoodAndMe
+ * Created by Artem Kopan
  * 24.03.17
  */
 @SuppressWarnings("unused")

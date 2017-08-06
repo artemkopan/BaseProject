@@ -107,7 +107,6 @@ public final class ExtraUtils {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-
     /**
      * Get current width of display
      *
@@ -226,25 +225,19 @@ public final class ExtraUtils {
         };
     }
 
-    /**
-     * @return if true then RTL;
-     */
-    public static boolean isRTL() {
-        return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault())
-               == ViewCompat.LAYOUT_DIRECTION_RTL;
-    }
-
     public static boolean postLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     /**
-     * Calculate some value from start to end;
+     * Calculate value depend on fraction between first and second args;
      *
-     * @param percentage Current percent from 0 to 1;
+     * @param a - first value
+     * @param b - second value
+     * @param f - Current fraction from 0 to 1;
      */
-    public static float calculateFactorValue(@FloatRange(from = 0, to = 1) float percentage, float startValue, float endValue) {
-        return ((startValue - endValue) * (1 - percentage) + endValue);
+    public static float lerp(float a, float b, @FloatRange(from = 0, to = 1) float f) {
+        return a + f * (b - a);
     }
 
 }

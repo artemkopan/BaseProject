@@ -1,4 +1,4 @@
-package com.artemkopan.utils.animations;
+package com.artemkopan.utils;
 
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
@@ -6,15 +6,20 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.os.Build.VERSION_CODES;
+import android.support.annotation.AnimRes;
 import android.support.annotation.RequiresApi;
 import android.support.v4.util.ArrayMap;
 import android.util.Property;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import java.util.ArrayList;
 
@@ -25,6 +30,7 @@ public final class AnimUtils {
     public static final long FAST_DURATION = 200L;
     public static final long MIDDLE_DURATION = 400L;
     public static final long SLOW_DURATION = 700L;
+    public static final long VERY_SLOW_DURATION = 1000L;
 
     public static final Property<View, Integer> BACKGROUND_TINT_LIST =
             new Property<View, Integer>(Integer.class, "backgroundTint") {
@@ -45,7 +51,7 @@ public final class AnimUtils {
 
     public static ObjectAnimator alpha(long duration, float... values) {
         ObjectAnimator objectAnimator = new ObjectAnimator();
-        objectAnimator.setPropertyName("alpha");
+        objectAnimator.setProperty(View.ALPHA);
         objectAnimator.setFloatValues(values);
         objectAnimator.setDuration(duration);
         return objectAnimator;
@@ -116,7 +122,7 @@ public final class AnimUtils {
 
     public static ObjectAnimator rotation(long duration, float... angles) {
         ObjectAnimator textColorAnimator = new ObjectAnimator();
-        textColorAnimator.setPropertyName("rotation");
+        textColorAnimator.setProperty(View.ROTATION);
         textColorAnimator.setFloatValues(angles);
         textColorAnimator.setDuration(duration);
         return textColorAnimator;
@@ -124,7 +130,7 @@ public final class AnimUtils {
 
     public static ObjectAnimator shake(long duration) {
         ObjectAnimator shakeAnim = new ObjectAnimator();
-        shakeAnim.setPropertyName("translationX");
+        shakeAnim.setProperty(View.TRANSLATION_X);
         shakeAnim.setFloatValues(0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
         shakeAnim.setDuration(duration);
         return shakeAnim;
@@ -155,6 +161,28 @@ public final class AnimUtils {
         } finally {
             typedArray.recycle();
         }
+    }
+
+    /**
+     * Call @{{@link #animateLayout(ViewGroup, int)}} with default anim {@link com.artemkopan.utils.R.anim#layout_slide_bottom}
+     *
+     * @param viewGroup - view
+     */
+    public static void animateLayout(final ViewGroup viewGroup) {
+        animateLayout(viewGroup, R.anim.layout_slide_bottom);
+    }
+
+    /**
+     * Simple animate ViewGroup
+     *
+     * @param viewGroup - view
+     * @param animRes   - anim
+     */
+    public static void animateLayout(final ViewGroup viewGroup, @AnimRes int animRes) {
+        final Context context = viewGroup.getContext();
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, animRes);
+        viewGroup.setLayoutAnimation(controller);
+        viewGroup.scheduleLayoutAnimation();
     }
 
     /**

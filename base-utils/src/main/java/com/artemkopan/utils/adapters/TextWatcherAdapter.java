@@ -4,7 +4,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 
 /**
- * Created for MediMee.
  * Author Artem Kopan.
  * Date 09.07.2016 13:12
  */

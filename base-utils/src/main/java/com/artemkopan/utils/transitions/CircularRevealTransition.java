@@ -16,7 +16,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 
 import com.artemkopan.utils.R;
-import com.artemkopan.utils.animations.AnimUtils;
+import com.artemkopan.utils.AnimUtils;
 
 /**
  * Example of use:
