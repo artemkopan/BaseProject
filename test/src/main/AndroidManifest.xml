@@ -10,14 +10,16 @@
         android:theme="@style/Theme.AppCompat.Light"
         >
         <activity android:name=".MainActivity">
+
+        </activity>
+        <activity android:name=".mvp.RotateActivity">
+        </activity>
+        <activity android:name=".recycler.RecyclerActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"/>
 
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".mvp.RotateActivity">
-
         </activity>
     </application>
 

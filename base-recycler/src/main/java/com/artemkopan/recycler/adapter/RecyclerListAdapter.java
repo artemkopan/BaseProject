@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -14,6 +15,7 @@ public abstract class RecyclerListAdapter<M, VH extends RecyclerView.ViewHolder>
     protected List<M> list;
 
     public RecyclerListAdapter() {
+        this(new ArrayList<M>());
     }
 
     public RecyclerListAdapter(List<M> list) {

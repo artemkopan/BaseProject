@@ -22,8 +22,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 
 import com.artemkopan.recycler.R;
-import com.artemkopan.recycler.listeners.OnRecyclerPaginationListener;
-import com.artemkopan.recycler.listeners.OnRecyclerPaginationListener.OnRecyclerPaginationResult;
 import com.artemkopan.widget.drawable.CircularProgressDrawable;
 
 import java.util.concurrent.TimeUnit;
@@ -41,7 +39,6 @@ public class ExRecyclerView extends RecyclerView {
     private TextPaint textPaint;
     private CircularProgressDrawable progressDrawable;
     private Drawable backgroundDrawable;
-    private OnRecyclerPaginationListener paginationListener;
     private Disposable errorTimer;
     private CharSequence textCurrent;
     private int progressSize = NO_VALUE;
@@ -129,39 +126,6 @@ public class ExRecyclerView extends RecyclerView {
             progressDrawable.setBounds(
                     w / 2 - progressSize / 2, h / 2 - progressSize / 2,
                     w / 2 + progressSize / 2, h / 2 + progressSize / 2);
-        }
-    }
-
-    public OnRecyclerPaginationListener createPaginationListener(OnRecyclerPaginationResult listener) {
-        setPaginationListener(new OnRecyclerPaginationListener(getLayoutManager(),
-                                                               OnRecyclerPaginationListener.VERTICAL,
-                                                               listener));
-        return paginationListener;
-    }
-
-    public void setPaginationListener(OnRecyclerPaginationListener scrollListener) {
-        if (paginationListener != null) removeOnScrollListener(paginationListener);
-        paginationListener = scrollListener;
-        addOnScrollListener(scrollListener);
-    }
-
-    public void setPaginationState(boolean isEnable) {
-        if (isEnable) {
-            enablePagination();
-        } else {
-            disablePagination();
-        }
-    }
-
-    public void enablePagination() {
-        if (paginationListener != null) {
-            paginationListener.enablePagination();
-        }
-    }
-
-    public void disablePagination() {
-        if (paginationListener != null) {
-            paginationListener.disablePagination();
         }
     }
 

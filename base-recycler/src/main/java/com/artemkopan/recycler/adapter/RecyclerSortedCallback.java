@@ -15,23 +15,23 @@ public abstract class RecyclerSortedCallback<T2> extends SortedList.Callback<T2>
 
     @Override
     public void onInserted(int position, int count) {
-        adapter.notifyItemRangeInserted(position + adapter.getPosOffset(), count);
+        adapter.notifyItemRangeInserted(position + adapter.getHeaderOffset(), count);
     }
 
     @Override
     public void onRemoved(int position, int count) {
-        adapter.notifyItemRangeRemoved(position + adapter.getPosOffset(), count);
+        adapter.notifyItemRangeRemoved(position + adapter.getHeaderOffset(), count);
     }
 
     @Override
     public void onMoved(int fromPosition, int toPosition) {
-        int offset = adapter.getPosOffset();
+        int offset = adapter.getHeaderOffset();
         adapter.notifyItemMoved(fromPosition + offset, toPosition + offset);
     }
 
     @Override
     public void onChanged(int position, int count) {
-        adapter.notifyItemRangeChanged(position + adapter.getPosOffset(), count);
+        adapter.notifyItemRangeChanged(position + adapter.getHeaderOffset(), count);
     }
 
 }

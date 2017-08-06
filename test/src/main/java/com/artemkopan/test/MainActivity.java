@@ -23,4 +23,5 @@ public class MainActivity extends BaseActivity {
     public int onInflateLayout() {
         return View.NO_ID;
     }
+
 }

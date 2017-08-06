@@ -16,18 +16,32 @@ import com.artemkopan.recycler.listeners.OnItemClickListener;
 public abstract class RecyclerBaseAdapter<M, VH extends ViewHolder> extends RecyclerView.Adapter<VH> {
 
     public static final int HEADER = 98, FOOTER = 99;
-    private boolean isShowHeader = false, isShowFooter = false;
     private OnItemClickListener<M> onItemClickListener;
+    private FooterAdapterDelegate footerDelegate = new FooterAdapterDelegate();
+    private HeaderAdapterDelegate headerDelegate = new HeaderAdapterDelegate();
 
     @Override
     public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
-        onBindViewHolder(holder, getItemByPos(position), position);
+    public final void onBindViewHolder(VH holder, int position) {
+        if (headerDelegate.isHeaderPosition(position))
+            onBindHeaderHolder(holder);
+        else if (footerDelegate.isFooterPosition(position,  headerDelegate.getItemCount(getListSize())))
+            onBindFooterHolder(holder);
+        else
+            onBindViewHolder(holder, getItemByPos(position), position);
     }
 
     public abstract void onBindViewHolder(VH holder, M model, int position);
+
+    public void onBindHeaderHolder(VH holder) {
+
+    }
+
+    public void onBindFooterHolder(VH holder) {
+
+    }
 
     protected abstract M getListItemByPos(int pos);
 
@@ -47,18 +61,18 @@ public abstract class RecyclerBaseAdapter<M, VH extends ViewHolder> extends Recy
 
     @Override
     public int getItemCount() {
-        return getListSize() + getPosOffset() + (isShowFooter ? 1 : 0);
+        return footerDelegate.getItemCount(headerDelegate.getItemCount(getListSize()));
     }
 
     public M getItemByPos(int position) {
-        return getListItemByPos(position - getPosOffset());
+        return getListItemByPos(headerDelegate.getItemPosition(position));
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (isShowHeader && position == 0) {
+        if (headerDelegate.isHeaderPosition(position)) {
             return HEADER;
-        } else if (isShowFooter && getItemCount() - 1 == position) {
+        } else if (footerDelegate.isFooterPosition(position, headerDelegate.getItemCount(getListSize()))) {
             return FOOTER;
         } else {
             return super.getItemViewType(position);
@@ -81,29 +95,23 @@ public abstract class RecyclerBaseAdapter<M, VH extends ViewHolder> extends Recy
     }
 
     public boolean isShowHeader() {
-        return isShowHeader;
+        return headerDelegate.isShowHeader();
     }
 
     public void showHeader(boolean show) {
-        if (isShowHeader == show) return;
-        isShowHeader = show;
-        if (show) notifyItemInserted(0);
-        else notifyItemRemoved(0);
+        headerDelegate.showHeader(this, show);
+    }
+
+    public int getHeaderOffset() {
+        return headerDelegate.getItemPosition(0);
     }
 
     public boolean isShowFooter() {
-        return isShowFooter;
+        return footerDelegate.isShowFooter();
     }
 
     public void showFooter(boolean show) {
-        if (isShowFooter == show) return;
-        isShowFooter = show;
-        if (show) notifyItemInserted(getItemCount());
-        else notifyItemRemoved(getItemCount() + 1); //remove with footer
-    }
-
-    public int getPosOffset() {
-        return isShowHeader ? 1 : 0;
+        footerDelegate.showFooter(this, show);
     }
 
 }
