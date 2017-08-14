@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 
 import com.artemkopan.widget.R;
-import com.artemkopan.widget.fonts.FontUtils;
 import com.artemkopan.widget.vector.VectorCompatViewHelper;
 
 /**
@@ -54,7 +53,6 @@ public class PlacesAutoCompleteView extends AppCompatAutoCompleteTextView {
             }
         }
 
-        FontUtils.applyCustomFont(this, getContext(), attrs);
         VectorCompatViewHelper.loadFromAttributes(this, attrs);
 
         if (initAdapter) {

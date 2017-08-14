@@ -14,14 +14,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.util.Log;
 
 import com.artemkopan.widget.R;
 import com.artemkopan.widget.drawable.CircularProgressDrawable;
-import com.artemkopan.widget.fonts.FontButton;
+import com.artemkopan.widget.vector.VectorCompatViewHelper;
 
-public class ProgressButtonView extends FontButton {
+public class ProgressButtonView extends AppCompatButton {
 
     private static final String TAG = "ProgressButtonView";
     private CircularProgressDrawable progressDrawable;
@@ -46,6 +47,8 @@ public class ProgressButtonView extends FontButton {
     private void init(AttributeSet attrs) {
         int color = Color.BLACK;
         int borderWidth = getResources().getDimensionPixelSize(R.dimen.base_progress_border_width);
+
+        VectorCompatViewHelper.loadFromAttributes(this, attrs);
 
         animDuration = getContext().getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -192,6 +195,17 @@ public class ProgressButtonView extends FontButton {
 
     static class SavedState extends BaseSavedState {
 
+        //required field that makes Parcelables from a Parcel
+        public static final Creator<SavedState> CREATOR =
+                new Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
         boolean showProgress, drawProgress;
 
         SavedState(Parcel source) {
@@ -210,18 +224,6 @@ public class ProgressButtonView extends FontButton {
             dest.writeByte(this.showProgress ? (byte) 1 : (byte) 0);
             dest.writeByte(this.drawProgress ? (byte) 1 : (byte) 0);
         }
-
-        //required field that makes Parcelables from a Parcel
-        public static final Creator<SavedState> CREATOR =
-                new Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
     }
 
 }
