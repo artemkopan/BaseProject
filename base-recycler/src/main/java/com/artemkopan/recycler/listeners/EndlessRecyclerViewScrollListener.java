@@ -96,4 +96,9 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         previousTotalItemCount = 0;
         loading = true;
     }
+
+    public void disableLoading() {
+        loading = false;
+    }
+
 }
