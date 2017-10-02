@@ -5,14 +5,14 @@ ext.versions = [
         buildTools    : '26.0.1',
 
         // Google
-        supportLibrary: '26.0.2',
+        supportLibrary: '26.1.0',
 
         // Rx
-        rxJava        : '2.1.3',
+        rxJava        : '2.1.4',
         rxAndroid     : '2.0.1',
 ]
 
-ext.bintrayVersion = '2.0.20'
+ext.bintrayVersion = '2.0.21'
 
 ext.libraries = [
 
