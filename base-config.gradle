@@ -12,7 +12,7 @@ ext.versions = [
         rxAndroid     : '2.0.1',
 ]
 
-ext.bintrayVersion = '2.0.19'
+ext.bintrayVersion = '2.0.23'
 
 ext.libraries = [
 

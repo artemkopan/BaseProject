@@ -1,5 +1,6 @@
 package com.artemkopan.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -269,6 +270,7 @@ public final class ViewUtils {
     public static void rememberLastClickPos(View view) {
         view.setOnTouchListener(new OnTouchListener() {
             @Override
+            @SuppressLint("ClickableViewAccessibility")
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.setTag(R.id.view_touch_x, (int) event.getRawX());
