@@ -1,6 +1,6 @@
 package com.artemkopan.recycler.adapter;
 
-import android.support.v7.widget.RecyclerView.Adapter;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 
 public class FooterAdapterDelegate {

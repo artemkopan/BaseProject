@@ -1,6 +1,6 @@
 package com.artemkopan.mvp.presenter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.artemkopan.mvp.view.BaseView;
 

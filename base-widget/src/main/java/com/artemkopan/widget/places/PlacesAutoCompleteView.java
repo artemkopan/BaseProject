@@ -3,8 +3,8 @@ package com.artemkopan.widget.places;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.location.Address;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 

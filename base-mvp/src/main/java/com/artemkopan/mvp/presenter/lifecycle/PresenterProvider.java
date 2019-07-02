@@ -16,8 +16,8 @@
 
 package com.artemkopan.mvp.presenter.lifecycle;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 
 import com.artemkopan.mvp.presenter.BasePresenter;
 import com.artemkopan.mvp.view.BaseView;

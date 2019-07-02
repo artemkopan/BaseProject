@@ -2,8 +2,8 @@ package com.artemkopan.utils.router;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.IntDef;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.IntDef;
+import androidx.fragment.app.FragmentTransaction;
 import android.transition.Fade;
 
 import com.artemkopan.utils.R;

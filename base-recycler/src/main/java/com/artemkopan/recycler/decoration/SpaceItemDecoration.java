@@ -1,8 +1,8 @@
 package com.artemkopan.recycler.decoration;
 
 import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.State;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.State;
 import android.view.View;
 
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {

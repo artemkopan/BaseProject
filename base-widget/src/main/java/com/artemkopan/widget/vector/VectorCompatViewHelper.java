@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.v4.widget.TextViewCompat;
+import androidx.core.widget.TextViewCompat;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.artemkopan.widget.R;
 
-import static android.support.v4.content.ContextCompat.getDrawable;
+import static androidx.core.content.ContextCompat.getDrawable;
 
 /**
  * Created by Artem Kopan for jabrool

@@ -1,8 +1,8 @@
 package com.artemkopan.widget.vector;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatCheckedTextView;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatCheckedTextView;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 /**

@@ -1,13 +1,14 @@
 package com.artemkopan.mvp.presentation;
 
 import android.app.Activity;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +29,7 @@ public interface PresentationManager {
 
     /**
      * In {@link android.app.Activity} call before {@link Activity#onDestroy()}
-     * In {@link android.support.v4.app.Fragment} or {@link android.support.v4.app.DialogFragment} call befor {@link Fragment#onDestroyView()}
+     * In {@link Fragment} or {@link DialogFragment} call befor {@link Fragment#onDestroyView()}
      */
     void onDetach();
 
@@ -40,7 +41,7 @@ public interface PresentationManager {
     CompositeDisposable getDetachDisposable();
 
     /**
-     * Find toolbar by id and set to {@link android.support.v7.app.AppCompatActivity#setSupportActionBar(Toolbar)}
+     * Find toolbar by id and set to {@link androidx.appcompat.app.AppCompatActivity#setSupportActionBar(Toolbar)}
      *
      * @param toolbarId R.id.{toolbar_id}
      */
@@ -48,7 +49,7 @@ public interface PresentationManager {
     Toolbar onToolbarInit(@IdRes int toolbarId);
 
     /**
-     * Find toolbar by id and set to {@link android.support.v7.app.AppCompatActivity#setSupportActionBar(Toolbar)}
+     * Find toolbar by id and set to {@link androidx.appcompat.app.AppCompatActivity#setSupportActionBar(Toolbar)}
      *
      * @param toolbarId    R.id.{toolbar_id}
      * @param fromActivity if true, then find toolbar was in activity. For activities always true
@@ -57,7 +58,7 @@ public interface PresentationManager {
     Toolbar onToolbarInit(@IdRes int toolbarId, boolean fromActivity);
 
     /**
-     * Find toolbar by id and set to {@link android.support.v7.app.AppCompatActivity#setSupportActionBar(Toolbar)}
+     * Find toolbar by id and set to {@link androidx.appcompat.app.AppCompatActivity#setSupportActionBar(Toolbar)}
      *
      * @param toolbarId    R.id.{toolbar_id}
      * @param homeDrawable set drawable resource for home button (left button)
@@ -66,7 +67,7 @@ public interface PresentationManager {
     Toolbar onToolbarInit(@IdRes int toolbarId, @DrawableRes int homeDrawable);
 
     /**
-     * Find toolbar by id and set to {@link android.support.v7.app.AppCompatActivity#setSupportActionBar(Toolbar)}
+     * Find toolbar by id and set to {@link androidx.appcompat.app.AppCompatActivity#setSupportActionBar(Toolbar)}
      *
      * @param toolbarId    R.id.{toolbar_id}
      * @param homeDrawable set drawable resource for home button (left button)

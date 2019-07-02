@@ -2,7 +2,7 @@ package com.artemkopan.utils.transitions;
 
 
 import android.os.Build.VERSION_CODES;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.transition.Transition;
 import android.transition.Transition.TransitionListener;
 

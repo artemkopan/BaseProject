@@ -1,6 +1,6 @@
 package com.artemkopan.recycler.listeners;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class TopScrollListener extends RecyclerView.OnScrollListener {
 
