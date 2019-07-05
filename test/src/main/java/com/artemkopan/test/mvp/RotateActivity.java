@@ -1,7 +1,7 @@
 package com.artemkopan.test.mvp;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.artemkopan.mvp.activity.BaseActivity;
 import com.artemkopan.mvp.presenter.BasePresenter;

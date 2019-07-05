@@ -1,8 +1,8 @@
 package co.inteza.all.dialog;
 
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.DialogFragment;
 import android.util.Log;
 
 import com.artemkopan.mvp.presentation.Presentation;

@@ -1,7 +1,7 @@
 package com.artemkopan.widget.places;
 
 import android.location.Address;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Created by Artem Kopan for BaseProject

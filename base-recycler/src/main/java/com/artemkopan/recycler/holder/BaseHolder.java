@@ -1,16 +1,9 @@
 package com.artemkopan.recycler.holder;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.TreeMap;
+import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
 
 /**
  * Created by Artem Kopan for jabrool

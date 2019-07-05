@@ -1,10 +1,10 @@
 package com.artemkopan.mvp.presenter.lifecycle;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.artemkopan.mvp.presenter.BasePresenter;
 import com.artemkopan.mvp.presenter.lifecycle.PresenterProvider.Factory;

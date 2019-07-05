@@ -1,8 +1,8 @@
 package com.artemkopan.mvp.view;
 
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.annotation.UiThread;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.annotation.UiThread;
 
 /**
  * Base interface that any class that wants to act as a View in the MVP (Model View BasePresenter)

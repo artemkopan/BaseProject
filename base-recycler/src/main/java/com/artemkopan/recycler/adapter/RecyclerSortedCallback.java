@@ -1,6 +1,6 @@
 package com.artemkopan.recycler.adapter;
 
-import android.support.v7.util.SortedList;
+import androidx.recyclerview.widget.SortedList;
 
 /**
  * Adapted RecyclerSorted Callback for {@link RecyclerSortedAdapter}. You can safely use {@link RecyclerBaseAdapter#showHeader(boolean)}} or {@link RecyclerBaseAdapter#showFooter(boolean)}

@@ -12,9 +12,9 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.support.v7.widget.AppCompatButton;
+import androidx.annotation.NonNull;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
+import androidx.appcompat.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.util.Log;
 
@@ -36,7 +36,7 @@ public class ProgressButtonView extends AppCompatButton {
     }
 
     public ProgressButtonView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.support.v7.appcompat.R.attr.buttonStyle);
+        this(context, attrs, androidx.appcompat.appcompat.R.attr.buttonStyle);
     }
 
     public ProgressButtonView(Context context, AttributeSet attrs, int defStyle) {

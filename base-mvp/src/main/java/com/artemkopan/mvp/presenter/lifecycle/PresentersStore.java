@@ -16,9 +16,9 @@
 
 package com.artemkopan.mvp.presenter.lifecycle;
 
-import android.support.annotation.MainThread;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.MainThread;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import static com.artemkopan.mvp.presenter.lifecycle.PresenterHolderFragment.holderFragmentFor;
 
